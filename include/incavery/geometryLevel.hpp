@@ -12,7 +12,8 @@
 namespace icv {
 
     // 
-    struct Attributes {
+    struct Attributes 
+    {
         uint32_t texcoords = 0u;
         uint32_t normals = 0u;
         uint32_t tangents = 0u;
@@ -20,7 +21,8 @@ namespace icv {
     };
 
     // 
-    struct VertexInfo {
+    struct VertexInfo 
+    {
         uint32_t buffer = 0u;
         uint32_t offset = 0u;
         uint32_t stride = 16u;
@@ -30,20 +32,23 @@ namespace icv {
     };
 
     // 
-    struct IndexInfo {
+    struct IndexInfo 
+    {
         uint32_t buffer = 0u;
         uint32_t type = 0u; // 0 = none, 1 = uint32_t, 2 = uint16_t, 3 = uint8_t
         
     };
 
     //
-    struct PrimitiveInfo {
+    struct PrimitiveInfo 
+    {
         uint32_t count = 3u;
         uint32_t reserved = 0u;
     };
 
     // 
-    struct GeometryInfo {
+    struct GeometryInfo 
+    {
         glm::mat3x4 transform = glm::mat3x4(1.f);
 
         uint32_t 
@@ -63,14 +68,16 @@ namespace icv {
     };
 
     // 
-    struct GeometryLevelInfo {
+    struct GeometryLevelInfo 
+    {
         std::vector<GeometryInfo> geometries = {};
         
         uint32_t maxGeometryCount = 128u;
     };
 
     // Vulkan needs f&cking SoA, EVERY TIME!
-    struct BuildInfo {
+    struct BuildInfo 
+    {
         std::vector<vkh::VkAccelerationStructureGeometryKHR> builds = {};
         std::vector<vkh::VkAccelerationStructureBuildRangeInfoKHR> ranges = {};
         vkh::VkAccelerationStructureBuildGeometryInfoKHR info = {};
@@ -96,10 +103,10 @@ namespace icv {
         vkt::Vector<uint8_t> accScratch = {};
 
         //
-        virtual void constructor(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<GeometryLevelInfo> info = GeometryLevelInfo{}) {
+        virtual void constructor(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<GeometryLevelInfo> info = GeometryLevelInfo{}) 
+        {
             this->info = info;
             this->device = device;
-
             this->geometries = createBuffer(VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, sizeof(GeometryInfo) * info->maxGeometryCount, sizeof(GeometryInfo));
         };
 
@@ -108,15 +115,18 @@ namespace icv {
         GeometryLevel(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<GeometryLevelInfo> info = GeometryLevelInfo{}) { this->constructor(device, info); };
 
         // 
-        virtual void makeDescriptorSet(vkt::uni_arg<DescriptorInfo> info = DescriptorInfo{}) {
+        virtual void makeDescriptorSet(vkt::uni_arg<DescriptorInfo> info = DescriptorInfo{}) 
+        {
             // create descriptor set
             vkh::VsDescriptorSetCreateInfoHelper descriptorSetHelper(info->layout, device->descriptorPool);
-            descriptorSetHelper.pushDescription<vkh::VkDescriptorBufferInfo>(vkh::VkDescriptorUpdateTemplateEntry{
+            descriptorSetHelper.pushDescription<vkh::VkDescriptorBufferInfo>(vkh::VkDescriptorUpdateTemplateEntry
+            {
                 .dstBinding = 0u,
                 .descriptorCount = 1u,
                 .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER
             }) = geometries;
-            descriptorSetHelper.pushDescription<vkh::VkDescriptorBufferInfo>(vkh::VkDescriptorUpdateTemplateEntry{
+            descriptorSetHelper.pushDescription<vkh::VkDescriptorBufferInfo>(vkh::VkDescriptorUpdateTemplateEntry
+            {
                 .dstBinding = 1u,
                 .descriptorCount = 1u,
                 .descriptorType = VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR
@@ -125,19 +135,29 @@ namespace icv {
         };
 
         // TODO: copy buffer
-        virtual void buildCommand(VkCommandBuffer commandBuffer) {
-            
+        virtual void buildCommand(VkCommandBuffer commandBuffer) 
+        {
+            buildInfo.ranges.resize(info.geometries.size());
+            for (uint32_t i=0;i<buildInfo.builds.size();i++) 
+            {   // 
+                buildInfo.ranges[i].firstVertex = info.geometries[i].vertex.first;
+                buildInfo.ranges[i].primitiveCount = info.geometries[i].primitive.count;
+                buildInfo.ranges[i].primitiveOffset = info.geometries[i].vertex.offset;
+                buildInfo.ranges[i].transformOffset = sizeof(GeometryInfo) * i;
+            };
             device->CmdBuildAccelerationStructuresKHR(commandBuffer, 1u, buildInfo.info, buildInfo.ranges.data());
         };
 
-        //
-        virtual void makeAccelerationStructure() {
+        // 
+        virtual void makeAccelerationStructure() 
+        {
             auto accelerationStructureType = VK_ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL_KHR;
 
             {   // 
                 buildInfo.builds.resize(info.geometries.size());
                 buildInfo.ranges.resize(info.geometries.size());
-                for (uint32_t i=0;i<buildInfo.builds.size();i++) {
+                for (uint32_t i=0;i<buildInfo.builds.size();i++) 
+                {
                     // fill ranges
                     buildInfo.ranges[i].firstVertex = info.geometries[i].vertex.first;
                     buildInfo.ranges[i].primitiveCount = info.geometries[i].primitive.count;
@@ -146,7 +166,8 @@ namespace icv {
 
                     // fill build info
                     buildInfo.builds[i].geometryType = VK_GEOMETRY_TYPE_TRIANGLES_KHR;
-                    buildInfo.builds[i].geometry = vkh::VkAccelerationStructureGeometryTrianglesDataKHR{
+                    buildInfo.builds[i].geometry = vkh::VkAccelerationStructureGeometryTrianglesDataKHR
+                    {
                         .vertexFormat = info.geometries[i].useHalf ? VK_FORMAT_R16G16B16_SFLOAT : VK_FORMAT_R32G32B32_SFLOAT,
                         .vertexData = ( registry->info.buffers[info.geometries[i].vertex.buffer] ).deviceAddress(),
                         .vertexStride = info.geometries[i].vertex.stride,
@@ -157,7 +178,8 @@ namespace icv {
                     };
 
                     //
-                    if (buildInfo.geometries[i].isOpaque) {
+                    if (buildInfo.geometries[i].isOpaque) 
+                    {
                         buildInfo.builds[i].flags |= VK_GEOMETRY_OPAQUE_BIT_KHR;
                     };
                 };
@@ -171,7 +193,8 @@ namespace icv {
             vkh::VkAccelerationStructureBuildSizesInfoKHR sizes = {};
             {   // 
                 std::vector<uint32_t> primitiveCount = {};
-                for (uint32_t i=0;i<buildInfo.builds.size();i++) {
+                for (uint32_t i=0;i<buildInfo.builds.size();i++) 
+                {
                     primitiveCount.push_back(info,geometries[i].primitive.count);
                 };
 
@@ -198,9 +221,13 @@ namespace icv {
         };
 
         // 
-        virtual void flush(vkt::uni_ptr<vkf::Queue> queue = {}) {
+        virtual void flush(vkt::uni_ptr<vkf::Queue> queue = {}) 
+        {   // 
             queue->uploadIntoBuffer(geometries, info.geometries.data(), std::min(info.geometries.size()*sizeof(GeometryInfo), geometries.range()));
-            
+            queue->submitOnce([this,&](VkCommandBuffer commandBuffer) 
+            {   // 
+                this->buildCommand(commandBuffer);
+            });
         };
     };
 

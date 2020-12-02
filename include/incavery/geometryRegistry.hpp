@@ -11,7 +11,8 @@
 namespace icv {
 
     // 
-    struct BindingInfo {
+    struct BindingInfo 
+    {
         uint32_t format = 0u; // reserved
         uint32_t buffer = 0u;
         uint32_t offset = 0u;
@@ -19,9 +20,10 @@ namespace icv {
     };
 
     // 
-    struct GeometryRegistryInfo {
+    struct GeometryRegistryInfo 
+    {
         std::vector<BindingInfo> bindings = {};
-        std::vector<vkt::Vector> buffers = {};
+        std::vector<vkt::VectorBase> buffers = {};
 
         uint32_t maxBindingCount = 128u;
         
@@ -38,39 +40,28 @@ namespace icv {
         bool created = false;
 
         // 
-        virtual void constructor(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<GeometryRegistryInfo> info = GeometryRegistryInfo{}) {
+        virtual void constructor(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<GeometryRegistryInfo> info = GeometryRegistryInfo{}) 
+        {
             this->info = info;
             this->device = device;
-
-            auto createBuffer = [&](FLAGS(VkBufferUsage) usage, VkDeviceSize size = 16ull, VkDeviceSize stride = sizeof(uint8_t)) {
-                auto bufferCreateInfo = vkh::VkBufferCreateInfo{
-                    .size = size,
-                    .usage = VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT | usage
-                };
-                auto vmaCreateInfo = vkt::VmaMemoryInfo{
-                    .memUsage = VMA_MEMORY_USAGE_GPU_ONLY,
-                    .instanceDispatch = device->instance->dispatch,
-                    .deviceDispatch = device->dispatch
-                };
-                auto allocation = std::make_shared<vkt::VmaBufferAllocation>(device->allocator, bufferCreateInfo, vmaCreateInfo);
-                return vkt::VectorBase(allocation, 0ull, size, sizeof(uint8_t));
-            };
-
             this->bindings = createBuffer(VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, sizeof(BindingInfo) * info->maxBindingCount, sizeof(BindingInfo));
         };
+        
         public:
         GeometryRegistry() {};
         GeometryRegistry(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<GeometryRegistryInfo> info = GeometryRegistryInfo{}) { this->constructor(device, info); };
 
         // 
-        virtual void makeDescriptorSet(vkt::uni_arg<DescriptorInfo> info = DescriptorInfo{}) {
+        virtual void makeDescriptorSet(vkt::uni_arg<DescriptorInfo> info = DescriptorInfo{}) 
+        {
             vkh::VsDescriptorSetCreateInfoHelper descriptorSetHelper(info->layout, device->descriptorPool);
             auto handle = descriptorSetHelper.pushDescription<uint64_t>(vkh::VkDescriptorUpdateTemplateEntry{
                 .dstBinding = 0u,
                 .descriptorCount = info.buffers.size(),
                 .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER
             });
-            for (uint32_t i=0;i<info.buffers.size();i++) {
+            for (uint32_t i=0;i<info.buffers.size();i++) 
+            {
                 handle[i] = info.buffers[i];
             };
             descriptorSetHelper.pushDescription<vkh::VkDescriptorBufferInfo>(vkh::VkDescriptorUpdateTemplateEntry{
@@ -82,8 +73,27 @@ namespace icv {
         };
 
         // 
-        virtual void flush(vkt::uni_ptr<vkf::Queue> queue = {}) {
+        virtual void flush(vkt::uni_ptr<vkf::Queue> queue = {}) 
+        {
             queue->uploadIntoBuffer(bindings, info.bindings.data(), std::min(info.bindings.size()*sizeof(BindingInfo), bindings.range()));
+        };
+
+        //
+        virtual void pushBinding(vkt::VectorBase buffer, vkt::uni_arg<BindingInfo> binding) 
+        {   
+            binding->buffer = this->info.buffers.size();
+            this->info.buffers.push_back(buffer);
+            this->info.bindings.push_back(binding);
+        };
+
+        // 
+        virtual void setBinding(uintptr_t index, vkt::VectorBase buffer, vkt::uni_arg<BindingInfo> binding)
+        {
+            if (this->info.buffers.size() <= index) { this->info.buffers.resize(index+1u); };
+            if (this->info.bindings.size() <= index) { this->info.bindings.resize(index+1u); };
+            binding->buffer = index;
+            this->info.buffers[index] = buffer;
+            this->info.bindings[index] = binding;
         };
     };
 
