@@ -33,6 +33,15 @@ namespace icv {
             auto allocation = std::make_shared<vkt::VmaBufferAllocation>(device->allocator, bufferCreateInfo, vmaCreateInfo);
             return vkt::VectorBase(allocation, 0ull, size, sizeof(uint8_t));
         };
+
+        // 
+        virtual VkIndexType getIndexType(uint32_t indexType = 0u) {
+            if (indexType == 0u) { return VK_INDEX_TYPE_NONE_KHR; }; 
+            if (indexType == 1u) { return VK_INDEX_TYPE_UINT32; };
+            if (indexType == 2u) { return VK_INDEX_TYPE_UINT16; };
+            if (indexType == 3u) { return VK_INDEX_TYPE_UINT8_EXT; };
+            return VK_INDEX_TYPE_NONE_KHR;
+        };
     };
 
 };

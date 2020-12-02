@@ -24,12 +24,12 @@ namespace icv {
         uint32_t buffer = 0u;
         uint32_t offset = 0u;
         uint32_t stride = 16u;
-        
+
         uint32_t max = 1u;
         uint32_t first = 0u;
     };
 
-    //
+    // 
     struct IndexInfo {
         uint32_t buffer = 0u;
         uint32_t type = 0u; // 0 = none, 1 = uint32_t, 2 = uint16_t, 3 = uint8_t
@@ -45,7 +45,7 @@ namespace icv {
     // 
     struct GeometryInfo {
         glm::mat3x4 transform = glm::mat3x4(1.f);
-        
+
         uint32_t 
             isOpaque: 1,
             useHalf : 1,
@@ -54,7 +54,7 @@ namespace icv {
             hasTangents: 1,
             hasColors: 1,
             hasTransform: 1;
-        
+
         VertexInfo vertex = {};
         IndexInfo index = {};
         PrimitiveInfo count = {};
@@ -81,6 +81,7 @@ namespace icv {
         protected: 
         vkt::uni_ptr<GeometryRegistry> registry = {};
 
+        // 
         GeometryLevelInfo info = {};
         BuildInfo buildInfo = {};
 
