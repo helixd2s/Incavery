@@ -20,7 +20,7 @@ namespace icv {
         vkt::uni_ptr<vkf::Device> device = {};
 
         // 
-        void createBuffer(FLAGS(VkBufferUsage) usage, VkDeviceSize size = 16ull, VkDeviceSize stride = sizeof(uint8_t)) {
+        virtual void createBuffer(FLAGS(VkBufferUsage) usage, VkDeviceSize size = 16ull, VkDeviceSize stride = sizeof(uint8_t)) {
             auto bufferCreateInfo = vkh::VkBufferCreateInfo{
                 .size = size,
                 .usage = VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT | usage

@@ -12,10 +12,10 @@ namespace icv {
 
     // 
     struct BindingInfo {
+        uint32_t format = 0u; // reserved
         uint32_t buffer = 0u;
         uint32_t offset = 0u;
         uint32_t stride = 16u;
-        uint32_t format = 0u; // reserved
     };
 
     // 
@@ -30,7 +30,6 @@ namespace icv {
     // 
     class GeometryRegistry: public DeviceBased {
         protected: 
-        
         GeometryRegistryInfo info = {};
 
         // 
@@ -39,7 +38,7 @@ namespace icv {
         bool created = false;
 
         // 
-        void constructor(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<GeometryRegistryInfo> info = GeometryRegistryInfo{}) {
+        virtual void constructor(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<GeometryRegistryInfo> info = GeometryRegistryInfo{}) {
             this->info = info;
             this->device = device;
 
@@ -64,7 +63,7 @@ namespace icv {
         GeometryRegistry(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<GeometryRegistryInfo> info = GeometryRegistryInfo{}) { this->constructor(device, info); };
 
         // 
-        void makeDescriptorSet(vkt::uni_arg<DescriptorInfo> info = DescriptorInfo{}) {
+        virtual void makeDescriptorSet(vkt::uni_arg<DescriptorInfo> info = DescriptorInfo{}) {
             vkh::VsDescriptorSetCreateInfoHelper descriptorSetHelper(info->layout, device->descriptorPool);
             auto handle = descriptorSetHelper.pushDescription<uint64_t>(vkh::VkDescriptorUpdateTemplateEntry{
                 .dstBinding = 0u,
@@ -83,7 +82,7 @@ namespace icv {
         };
 
         // 
-        void flush(vkt::uni_ptr<vkf::Queue> queue = {}) {
+        virtual void flush(vkt::uni_ptr<vkf::Queue> queue = {}) {
             queue->uploadIntoBuffer(bindings, info.bindings.data(), std::min(info.bindings.size()*sizeof(BindingInfo), bindings.range()));
         };
     };
