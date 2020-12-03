@@ -101,7 +101,7 @@ namespace icv {
                 .descriptorCount = 1u,
                 .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER
             }) = instances->getDeviceBuffer();
-            descriptorSetHelper.pushDescription<vkh::VkDescriptorBufferInfo>(vkh::VkDescriptorUpdateTemplateEntry
+            descriptorSetHelper.pushDescription<VkAccelerationStructureKHR>(vkh::VkDescriptorUpdateTemplateEntry
             {
                 .dstBinding = 1u,
                 .descriptorCount = 1u,
