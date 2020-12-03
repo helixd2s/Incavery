@@ -75,14 +75,6 @@ namespace icv {
         uint32_t maxGeometryCount = 128u;
     };
 
-    // Vulkan needs f&cking SoA, EVERY TIME!
-    struct BuildInfo 
-    {
-        std::vector<vkh::VkAccelerationStructureGeometryKHR> builds = {};
-        std::vector<vkh::VkAccelerationStructureBuildRangeInfoKHR> ranges = {};
-        vkh::VkAccelerationStructureBuildGeometryInfoKHR info = {};
-    };
-
     // 
     class GeometryLevel: public DeviceBased {
         protected: 
@@ -114,24 +106,20 @@ namespace icv {
         GeometryLevel() {};
         GeometryLevel(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<GeometryLevelInfo> info = GeometryLevelInfo{}) { this->constructor(device, info); };
 
-        // 
-        virtual void makeDescriptorSet(vkt::uni_arg<DescriptorInfo> info = DescriptorInfo{}) 
-        {
-            // create descriptor set
-            vkh::VsDescriptorSetCreateInfoHelper descriptorSetHelper(info->layout, device->descriptorPool);
-            descriptorSetHelper.pushDescription<vkh::VkDescriptorBufferInfo>(vkh::VkDescriptorUpdateTemplateEntry
-            {
-                .dstBinding = 0u,
-                .descriptorCount = 1u,
-                .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER
-            }) = geometries;
-            descriptorSetHelper.pushDescription<vkh::VkDescriptorBufferInfo>(vkh::VkDescriptorUpdateTemplateEntry
-            {
-                .dstBinding = 1u,
-                .descriptorCount = 1u,
-                .descriptorType = VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR
-            }) = acceleration;
-            vkh::AllocateDescriptorSetWithUpdate(device->dispatch, descriptorSetHelper, set, created);
+        //
+        virtual const vkt::Vector<GeometryInfo>& getBuffer() const {
+            return geometries;
+        };
+
+        //
+        virtual vkt::Vector<GeometryInfo>& getBuffer() {
+            return geometries;
+        };
+
+        //
+        virtual uint64_t getDeviceAddress() const {
+            if (!acceleration) { this->makeAccelerationStructure(); };
+            return device->dispatch->GetAccelerationStructureDeviceAddressKHR(&(deviceAddressInfo = acceleration));
         };
 
         // TODO: copy buffer
@@ -184,7 +172,7 @@ namespace icv {
                     };
                 };
                 buildInfo.info.type = accelerationStructureType;
-                buildInfo.info.flags = VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_TRACE_BIT_KHR;
+                buildInfo.info.flags = VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_BUILD_BIT_KHR;
                 buildInfo.info.mode = VK_BUILD_ACCELERATION_STRUCTURE_MODE_BUILD_KHR;
                 buildInfo.info.geometryCount = buildInfo.builds.size();
                 buildInfo.info.pGeometries = buildInfo.builds.data();

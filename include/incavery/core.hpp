@@ -14,11 +14,20 @@ namespace icv {
         
     };
 
+    // Vulkan needs f&cking SoA, EVERY TIME!
+    struct BuildInfo 
+    {
+        std::vector<vkh::VkAccelerationStructureGeometryKHR> builds = {};
+        std::vector<vkh::VkAccelerationStructureBuildRangeInfoKHR> ranges = {};
+        vkh::VkAccelerationStructureBuildGeometryInfoKHR info = {};
+    };
+
     //
     class DeviceBased {
         protected: 
         vkt::uni_ptr<vkf::Device> device = {};
-
+        vkh::VkAccelerationStructureDeviceAddressInfoKHR deviceAddressInfo = {};
+        
         // 
         virtual void createBuffer(FLAGS(VkBufferUsage) usage, VkDeviceSize size = 16ull, VkDeviceSize stride = sizeof(uint8_t)) {
             auto bufferCreateInfo = vkh::VkBufferCreateInfo{
