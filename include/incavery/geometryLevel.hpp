@@ -108,6 +108,26 @@ namespace icv {
         GeometryLevel(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<GeometryLevelInfo> info = GeometryLevelInfo{}) { this->constructor(device, info); };
 
         //
+        virtual const VkDescriptorSet& getDescriptorSet() const {
+            return set;
+        };
+
+        //
+        virtual VkDescriptorSet& getDescriptorSet() {
+            return set;
+        };
+
+        //
+        virtual const GeometryLevelInfo& getInfo() const {
+            return info;
+        };
+
+        //
+        virtual GeometryLevelInfo& getInfo() {
+            return info;
+        };
+
+        //
         virtual const vkt::Vector<GeometryInfo>& getBuffer() const {
             return geometries.getDeviceBuffer();
         };

@@ -55,6 +55,26 @@ namespace icv {
         InstanceLevel(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<InstanceLevelInfo> info = InstanceLevelInfo{}) { this->constructor(device, info); };
 
         //
+        virtual const VkDescriptorSet& getDescriptorSet() const {
+            return set;
+        };
+
+        //
+        virtual VkDescriptorSet& getDescriptorSet() {
+            return set;
+        };
+
+        //
+        virtual const InstanceLevelInfo& getInfo() const {
+            return info;
+        };
+
+        //
+        virtual InstanceLevelInfo& getInfo() {
+            return info;
+        };
+
+        //
         virtual const vkt::Vector<InstanceInfo>& getBuffer() const {
             return instances->getDeviceBuffer();
         };

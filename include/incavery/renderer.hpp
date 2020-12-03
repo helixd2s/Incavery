@@ -11,15 +11,19 @@ namespace icv {
 
     struct RendererInfo
     {
-        vkt::uni_ptr<GeometryRegistry> registry = {};
+        vkt::uni_ptr<GeometryRegistry> geometryRegistry = {};
         vkt::uni_ptr<InstanceLevel> instanceLevel = {};
     };
 
     struct FramebufferInfo
     {
         std::vector<vkt::ImageRegion> images = {};
-        VkFramebuffer framebuffer = VK_NULL_HANDLE;
         vkt::ImageRegion depthImage = {};
+
+        //
+        VkFramebuffer framebuffer = VK_NULL_HANDLE;
+        VkDescriptorSet set = VK_NULL_HANDLE;
+        bool created = false;
 
         // planned multiple viewports
         vkh::VkViewport viewport = {};
@@ -61,20 +65,39 @@ namespace icv {
         };
     };
 
+    struct PushConstantInfo 
+    {
+        uint32_t instanceId = 0u;
+        uint32_t geometryId = 0u;
+        uint32_t reserved0 = 0u;
+        uint32_t reserved1 = 0u;
+    };
+
+    struct DrawInfo
+    {
+        uint32_t type = 0u;
+        uint32_t reserved0 = 0u;
+        PushConstantInfo constants = {};
+    };
+
+    struct DescriptorLayouts 
+    {   // 
+        VkDescriptorSetLayout framebuffer = VK_NULL_HANDLE;
+        VkDescriptorSetLayout geometryRegistry = VK_NULL_HANDLE;
+        VkDescriptorSetLayout instanceLevel = VK_NULL_HANDLE;
+    };
+
     class Renderer: public DeviceBased
     {
         protected: 
         RendererInfo info = {};
         FramebufferInfo framebuffer = {};
         PipelineInfo pipeline = {};
-
-        // 
-        VkDescriptorSetLayout framebufferLayout = VK_NULL_HANDLE;
-        VkDescriptorSetLayout geometryRegistryLayout = VK_NULL_HANDLE;
-        VkDescriptorSetLayout instanceLevelLayout = VK_NULL_HANDLE;
+        DescriptorLayouts layouts = {};
 
         // 
         VkRenderPass renderPass = VK_NULL_HANDLE;
+        std::vector<VkDescriptorSet> descriptorSets = {};
 
         // 
         constexpr uint32_t FBO_COUNT = 4u;
@@ -91,6 +114,18 @@ namespace icv {
         Renderer() {};
         Renderer(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<RendererInfo> info = RendererInfo{}) { this->constructor(device, info); };
 
+        // 
+        virtual std::vector<VkDescriptorSet>& editDescriptorSets() 
+        {
+            return descriptorSets;
+        };
+
+        // 
+        virtual const std::vector<VkDescriptorSet>& editDescriptorSets() const
+        {
+            return descriptorSets;
+        };
+
         //
         virtual VkDescriptorSetLayout& getInstanceLevelLayout() 
         {   //
@@ -98,7 +133,7 @@ namespace icv {
             auto indexedf = vkh::VkDescriptorBindingFlags{ .eUpdateAfterBind = 1, .eUpdateUnusedWhilePending = 1, .ePartiallyBound = 1 };
             auto dflags = vkh::VkDescriptorSetLayoutCreateFlags{ .eUpdateAfterBindPool = 1 };
 
-            if (!instanceLevelLayout) 
+            if (!layouts.instanceLevel) 
             {   // create descriptor set layout
                 vkh::VsDescriptorSetLayoutCreateInfoHelper descriptorSetLayoutHelper(vkh::VkDescriptorSetLayoutCreateInfo{});
                 descriptorSetLayoutHelper.pushBinding(vkh::VkDescriptorSetLayoutBinding{
@@ -119,10 +154,10 @@ namespace icv {
                     .descriptorCount = 256u,
                     .stageFlags = pipusage
                 }, vkh::VkDescriptorBindingFlags{ .ePartiallyBound = 1, .eVariableDescriptorCount = 1 });
-                vkh::handleVk(device->dispatch->CreateDescriptorSetLayout(descriptorSetLayoutHelper.format(), nullptr, &instanceLevelLayout));
+                vkh::handleVk(device->dispatch->CreateDescriptorSetLayout(descriptorSetLayoutHelper.format(), nullptr, &layouts.instanceLevel));
             };
 
-            return instanceLevelLayout;
+            return layouts.instanceLevel;
         };
 
         //
@@ -132,7 +167,7 @@ namespace icv {
             auto indexedf = vkh::VkDescriptorBindingFlags{ .eUpdateAfterBind = 1, .eUpdateUnusedWhilePending = 1, .ePartiallyBound = 1 };
             auto dflags = vkh::VkDescriptorSetLayoutCreateFlags{ .eUpdateAfterBindPool = 1 };
 
-            if (!geometryRegistryLayout) 
+            if (!layouts.geometryRegistry) 
             {   // create descriptor set layout
                 vkh::VsDescriptorSetLayoutCreateInfoHelper descriptorSetLayoutHelper(vkh::VkDescriptorSetLayoutCreateInfo{});
                 descriptorSetLayoutHelper.pushBinding(vkh::VkDescriptorSetLayoutBinding{
@@ -147,10 +182,10 @@ namespace icv {
                     .descriptorCount = 1u,
                     .stageFlags = pipusage
                 }, vkh::VkDescriptorBindingFlags{ .ePartiallyBound = 1, .eVariableDescriptorCount = 1 });
-                vkh::handleVk(device->dispatch->CreateDescriptorSetLayout(descriptorSetLayoutHelper.format(), nullptr, &geometryRegistryLayout));
+                vkh::handleVk(device->dispatch->CreateDescriptorSetLayout(descriptorSetLayoutHelper.format(), nullptr, &layouts.geometryRegistry));
             };
 
-            return geometryRegistryLayout;
+            return layouts.geometryRegistry;
         };
 
         //
@@ -160,7 +195,7 @@ namespace icv {
             auto indexedf = vkh::VkDescriptorBindingFlags{ .eUpdateAfterBind = 1, .eUpdateUnusedWhilePending = 1, .ePartiallyBound = 1 };
             auto dflags = vkh::VkDescriptorSetLayoutCreateFlags{ .eUpdateAfterBindPool = 1 };
 
-            if (!framebufferLayout) 
+            if (!layouts.framebuffer) 
             {   // create descriptor set layout
                 vkh::VsDescriptorSetLayoutCreateInfoHelper descriptorSetLayoutHelper(vkh::VkDescriptorSetLayoutCreateInfo{});
                 descriptorSetLayoutHelper.pushBinding(vkh::VkDescriptorSetLayoutBinding{
@@ -169,29 +204,29 @@ namespace icv {
                     .descriptorCount = FBO_COUNT,
                     .stageFlags = pipusage
                 }, vkh::VkDescriptorBindingFlags{ .ePartiallyBound = 1, .eVariableDescriptorCount = 1 });
-                vkh::handleVk(device->dispatch->CreateDescriptorSetLayout(descriptorSetLayoutHelper.format(), nullptr, &framebufferLayout));
+                vkh::handleVk(device->dispatch->CreateDescriptorSetLayout(descriptorSetLayoutHelper.format(), nullptr, &layouts.framebuffer));
             };
 
-            return framebufferLayout;
+            return layouts.framebuffer;
         };
 
 
         //
         virtual const VkDescriptorSetLayout& getInstanceLevelLayout() const 
         {   // 
-            return instanceLevelLayout;
+            return layouts.instanceLevel;
         };
 
         //
         virtual const VkDescriptorSetLayout& getGeometryRegistryLayout() const 
         {   // 
-            return geometryRegistryLayout;
+            return layouts.geometryRegistry;
         };
 
         //
         virtual const VkDescriptorSetLayout& getFramebufferLayout() const 
         {   // 
-            return framebufferLayout;
+            return layouts.framebuffer;
         };
 
 
@@ -206,7 +241,7 @@ namespace icv {
             layouts.insert(layouts.begin(), this->getInstanceLevelLayout()); // 3th
             layouts.insert(layouts.begin(), this->getGeometryRegistryLayout()); // secondly
             layouts.insert(layouts.begin(), this->getFramebufferLayout()); // firstly
-            
+
             // 
             std::vector<vkh::VkPushConstantRange> rtRanges = { vkh::VkPushConstantRange{.stageFlags = pipusage, .offset = 0u, .size = 16u } };
             vkh::handleVk(device->dispatch->CreatePipelineLayout(vkh::VkPipelineLayoutCreateInfo{  }.setSetLayouts(layouts).setPushConstantRanges(rtRanges), nullptr, &pipeline.layout));
@@ -289,8 +324,8 @@ namespace icv {
         //
         virtual VkPipelineLayout& getPipelineLayout() 
         {   // 
-            if (!pipelineLayout) { this->createPipelineLayout(); };
-            return pipelineLayout;
+            if (!pipeline.layout) { this->createPipelineLayout(); };
+            return pipeline.layout;
         };
 
         // 
@@ -309,11 +344,28 @@ namespace icv {
                 views.push_back(framebuffer.depthImage);
             };
 
-            vkh::handleVk(device->dispatch->CreateFramebuffer(vkh::VkFramebufferCreateInfo{ .flags = {}, .renderPass = renderpass, .attachmentCount = uint32_t(views.size()), .pAttachments = views.data(), .width = size.x, .height = size.y, .layers = 1u }, nullptr, &framebuffer.framebuffer));
+            {   // 
+                vkh::handleVk(device->dispatch->CreateFramebuffer(vkh::VkFramebufferCreateInfo{ .flags = {}, .renderPass = renderpass, .attachmentCount = uint32_t(views.size()), .pAttachments = views.data(), .width = size.x, .height = size.y, .layers = 1u }, nullptr, &framebuffer.framebuffer));
+            };
 
             {   // 
                 framebuffer.scissor = vkh::VkRect2D{ vkh::VkOffset2D{0, 0}, vkh::VkExtent2D{ size.x, size.y } };
                 framebuffer.viewport = vkh::VkViewport{ 0.0f, 0.0f, static_cast<float>(size.x), static_cast<float>(size.y), 0.f, 1.f };
+            };
+
+            {   // create descriptor set
+                vkh::VsDescriptorSetCreateInfoHelper descriptorSetHelper(layouts[0], device->descriptorPool);
+                auto handle = descriptorSetHelper.pushDescription<vkh::VkDescriptorImageInfo>(vkh::VkDescriptorUpdateTemplateEntry
+                {
+                    .dstBinding = 0u,
+                    .descriptorCount = uint32_t(FBO_COUNT),
+                    .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE
+                });
+                for (uint32_t i=0;i<FBO_COUNT;i++) 
+                {
+                    handle[i] = framebuffer.images[i];
+                };
+                vkh::AllocateDescriptorSetWithUpdate(device->dispatch, descriptorSetHelper, framebuffer.set, framebuffer.created);
             };
 
             return framebuffer;
@@ -382,10 +434,122 @@ namespace icv {
             return pipeline;
         };
 
+        //
+        virtual std::vector<VkDescriptorSet>& makeDescriptorSets()
+        {   //
+            if (this->descriptorSets.size() < 3u) { this->descriptorSets.resize(3u); };
+            this->descriptorSets[0u] = this->framebuffer.set;
+            this->descriptorSets[1u] = this->geometryRegistry->makeDescriptorSet();
+            this->descriptorSets[2u] = this->instanceLevel->makeDescriptorSet();
+            return this->descriptorSets;
+        };
+
         // 
-        virtual void createRenderingCommand(VkCommandBuffer commandBuffer) {
+        virtual void createRenderingCommand(VkCommandBuffer commandBuffer) 
+        {   //
+            auto pipusage = vkh::VkShaderStageFlags{ .eVertex = 1, .eGeometry = 1, .eFragment = 1, .eCompute = 1, .eRaygen = 1, .eAnyHit = 1, .eClosestHit = 1, .eMiss = 1 };
+            auto indexedf = vkh::VkDescriptorBindingFlags{ .eUpdateAfterBind = 1, .eUpdateUnusedWhilePending = 1, .ePartiallyBound = 1 };
+            auto dflags = vkh::VkDescriptorSetLayoutCreateFlags{ .eUpdateAfterBindPool = 1 };
+
+            //
+            //auto descriptorSets = std::vector<VkDescriptorSet>();
+            //descriptorSets.resize(3u);
+            //for (auto& set : this->descriptorSets) {
+            //    descriptorSets.push_back(set);
+            //};
+
+            // 
             const uint32_t LOCAL_GROUP_X = 32u, LOCAL_GROUP_Y = 24u;
             
+            // draw items
+            std::vector<DrawInfo> opaque = {};
+            std::vector<DrawInfo> translucent = {};
+
+            // select opaque and translucent for draw
+            auto instanceLevelInfo = info.instanceLevel->getInfo();
+            for (uint32_t I=0;I<instanceLevelInfo.instances.size();I++) {
+                auto& instanceInfo = instanceLevelInfo.instances[I];
+                auto& geometryLevel = instanceLevelInfo.geometries[instanceInfo.instanceCustomIndex];
+                auto& geometryLevelInfo = geometryLevel->getInfo();
+                for (uint32_t G=0;G<geometryLevelInfo.geometries.size();G++) {
+                    auto& geometryInfo = geometryLevelInfo.geometries[G];
+                    if (geometryInfo.isOpaque) {
+                        opaque.push_back(DrawInfo
+                        {
+                            .type = 0u,
+                            .constants = {I, G, 0u, 0u}
+                        });
+                    } else
+                    {
+                        translucent.push_back(DrawInfo
+                        {
+                            .type = 1u,
+                            .constants = {I, G, 0u, 0u}
+                        });
+                    }
+                };
+            };
+
+            // TODO: use with framebuffer as native
+            std::vector<vkh::VkClearValue> clearValues = {};
+            for (uint32_t i=0;i<FBO_COUNT;i++) {
+                clearValues.push_back(vkh::VkClearColorValue{});
+                clearValues.back().color.float32 = glm::vec4(0.f, 0.f, 0.f, 0.f);
+            };
+            clearValues.push_back(VkClearDepthStencilValue{ 1.0f, 0 });
+
+            // shortify code by lambda function
+            auto& geometryRegistryInfo = info.geometryRegistry->getInfo();
+            auto drawItem = [&,this](DrawInfo& item){
+                auto& instanceInfo = instanceLevelInfo.instances[item.constants.instanceId];
+                auto& geometryLevel = instanceLevelInfo.geometries[instanceInfo.instanceCustomIndex];
+                auto& geometryLevelInfo = geometryLevel->getInfo();
+                auto& geometryInfo = geometryLevelInfo.geometries[item.constants.geometryId];
+
+                // 
+                auto& vertexBuffer = geometryRegistryInfo.buffers[geometryInfo.vertex.buffer];
+                std::vector<VkBuffer> buffers = { vertexBuffer };
+                std::vector<VkDeviceSize> offsets = { vertexBuffer.offset() + geometryInfo.vertex.offset };
+                std::vector<VkDeviceSize> ranges = { vertexBuffer.range() };
+                std::vector<VkDeviceSize> strides = { geometryInfo.vertex.stride };
+
+                // 
+                device->dispatch->CmdPushConstants(commandBuffer, pipeline.layout, pipusage, 0u, sizeof(PushConstantInfo), &item.constants);
+                device->dispatch->CmdBindVertexBuffers2EXT(commandBuffer, 0u, buffers.size(), buffers.data(), offsets.data(), ranges.data(), strides.data());
+                device->dispatch->CmdDraw(commandBuffer, geometryInfo.primitive.count*3u, 1, 0, 0);
+            };
+
+            {
+                device->dispatch->CmdBeginRenderPass(commandBuffer, vkh::VkRenderPassBeginInfo{ .renderPass = renderPass, .framebuffer = framebuffer.frameBuffer, .renderArea = framebuffer.scissor, .clearValueCount = uint32_t(clearValues.size()), .pClearValues = reinterpret_cast<vkh::VkClearValue*>(clearValues.data()) }, VK_SUBPASS_CONTENTS_INLINE);
+
+                {   // initial rasterization layout
+                    device->dispatch->CmdSetViewport(commandBuffer, 0u, 1u, framebuffer.viewport);
+                    device->dispatch->CmdSetScissor(commandBuffer, 0u, 1u, framebuffer.scissor);
+                    device->dispatch->CmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.layout, 0u, descriptorSets.size(), descriptorSets.data(), 0u, nullptr);
+                };
+
+                {   // 
+                    device->dispatch->CmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, opaqueRasterization);
+
+                    // draw opaque
+                    for (auto& item : opaque) { drawItem(item); };
+                    vkt::commandBarrier(device->dispatch, commandBuffer);
+
+                    // draw translucent
+                    for (auto& item : translucent) { drawItem(item); };
+                    vkt::commandBarrier(device->dispatch, commandBuffer);
+                };
+
+                device->dispatch->CmdEndRenderPass(commandBuffer);
+            };
+
+            {   // compute ray tracing
+                device->dispatch->CmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, rayTracing);
+                device->dispatch->CmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline.layout, 0u, descriptorSets.size(), descriptorSets.data(), 0u, nullptr);
+                device->dispatch->CmdDispatch(commandBuffer, framebuffer.scissor.extent.width/LOCAL_GROUP_X, framebuffer.scissor.extent.height/LOCAL_GROUP_Y, 1u);
+                vkt::commandBarrier(device->dispatch, commandBuffer);
+            };
+
         };
 
     };

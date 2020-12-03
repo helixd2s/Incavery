@@ -51,6 +51,26 @@ namespace icv {
         GeometryRegistry(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<GeometryRegistryInfo> info = GeometryRegistryInfo{}) { this->constructor(device, info); };
 
         //
+        virtual const VkDescriptorSet& getDescriptorSet() const {
+            return set;
+        };
+
+        //
+        virtual VkDescriptorSet& getDescriptorSet() {
+            return set;
+        };
+
+        //
+        virtual const GeometryRegistryInfo& getInfo() const {
+            return info;
+        };
+
+        //
+        virtual GeometryRegistryInfo& getInfo() {
+            return info;
+        };
+
+        //
         virtual const vkt::Vector<BindingInfo>& getBuffer() const {
             return bindings.getDeviceBuffer();
         };
