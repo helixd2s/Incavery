@@ -24,6 +24,10 @@ namespace icv {
         std::vector<vkt::ImageRegion> images = {};
         VkFramebuffer framebuffer = VK_NULL_HANDLE;
         vkt::ImageRegion depthImage = {};
+
+        // planned multiple viewports
+        vkh::VkViewport viewport = {};
+        vkh::VkRect2D scissor = {};
     };
 
     struct PipelineInfo
@@ -72,16 +76,14 @@ namespace icv {
         VkDescriptorSetLayout framebufferLayout = VK_NULL_HANDLE;
         VkDescriptorSetLayout geometryRegistryLayout = VK_NULL_HANDLE;
         VkDescriptorSetLayout instanceLevelLayout = VK_NULL_HANDLE;
-        
+
         // 
         VkRenderPass renderPass = VK_NULL_HANDLE;
 
         // 
-        
-
-
         constexpr uint32_t FBO_COUNT = 4u;
 
+        // 
         virtual void constructor(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<RendererInfo> info = RendererInfo{}) 
         {
             this->info = info;
@@ -217,11 +219,11 @@ namespace icv {
         // 
         virtual VkRenderPass& createRenderPass() 
         {   // 
-            auto render_pass_helper = vkh::VsRenderPassCreateInfoHelper();
+            auto renderPassHelper = vkh::VsRenderPassCreateInfoHelper();
 
             for (uint32_t i=0;i<FBO_COUNT;i++) 
             {
-                render_pass_helper.addColorAttachment(vkh::VkAttachmentDescription
+                renderPassHelper.addColorAttachment(vkh::VkAttachmentDescription
                 {
                     .format = VK_FORMAT_R32G32B32A32_SFLOAT,
                     .loadOp = VK_ATTACHMENT_LOAD_OP_LOAD,
@@ -233,7 +235,7 @@ namespace icv {
                 });
             };
 
-            render_pass_helper.setDepthStencilAttachment(vkh::VkAttachmentDescription
+            renderPassHelper.setDepthStencilAttachment(vkh::VkAttachmentDescription
             {
                 .format = VK_FORMAT_D32_SFLOAT_S8_UINT,
                 .loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
@@ -273,11 +275,11 @@ namespace icv {
             };
 
             // 
-            render_pass_helper.addSubpassDependency(dp0);
-            render_pass_helper.addSubpassDependency(dp1);
+            renderPassHelper.addSubpassDependency(dp0);
+            renderPassHelper.addSubpassDependency(dp1);
 
             // 
-            vkh::handleVk(device->dispatch->CreateRenderPass(render_pass_helper, nullptr, &renderPass));
+            vkh::handleVk(device->dispatch->CreateRenderPass(renderPassHelper, nullptr, &renderPass));
             return renderPass;
         };
 
@@ -301,17 +303,22 @@ namespace icv {
             std::vector<VkImageView> views = {};
 
             for (uint32_t i=0;i<FBO_COUNT;i++) 
-            {
+            {   // 
                 framebuffer.images.push_back(createImage2D(VK_IMAGE_USAGE_STORAGE_BIT|VK_IMAGE_USAGE_SAMPLED_BIT|VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VK_FORMAT_R32G32B32A32_SFLOAT, size, false));
                 views.push_back(framebuffer.images.back());
             };
 
-            {
+            {   // 
                 framebuffer.depthImage = createImage2D(VK_IMAGE_USAGE_TRANSFER_DST_BIT|VK_IMAGE_USAGE_TRANSFER_SRC_BIT|VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_FORMAT_D32_SFLOAT_S8_UINT, size, true);
                 views.push_back(framebuffer.depthImage);
             };
 
             vkh::handleVk(device->dispatch->CreateFramebuffer(vkh::VkFramebufferCreateInfo{ .flags = {}, .renderPass = renderpass, .attachmentCount = uint32_t(views.size()), .pAttachments = views.data(), .width = size.x, .height = size.y, .layers = 1u }, nullptr, &framebuffer.framebuffer));
+
+            {   // 
+                framebuffer.scissor = vkh::VkRect2D{ vkh::VkOffset2D{0, 0}, vkh::VkExtent2D{ size.x, size.y } };
+                framebuffer.viewport = vkh::VkViewport{ 0.0f, 0.0f, static_cast<float>(size.x), static_cast<float>(size.y), 0.f, 1.f };
+            };
 
             return framebuffer;
         };
@@ -319,6 +326,69 @@ namespace icv {
         // 
         virtual PipelineInfo& createPipeline(vkt::uni_arg<PipelineCreateInfo> info = PipelineCreateInfo{}) 
         {   // 
+            pipeline.rayTracing = vkt::createCompute(device->dispatch, info->rayTracing.path, this->getPipelineLayout(), device->pipelineCache, 32u);
+
+            // 
+            vkh::VsGraphicsPipelineCreateInfoConstruction pipelineInfo = {};
+            {   // initial state
+                pipelineInfo.inputAssemblyState.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+                pipelineInfo.graphicsPipelineCreateInfo.layout = this->getPipelineLayout();
+                pipelineInfo.graphicsPipelineCreateInfo.renderPass = this->getRenderPass();
+                pipelineInfo.viewportState.pViewports = &reinterpret_cast<::VkViewport&>(framebuffer.viewport);
+                pipelineInfo.viewportState.pScissors = &reinterpret_cast<::VkRect2D&>(framebuffer.scissor);
+                pipelineInfo.colorBlendAttachmentStates = {};
+                pipelineInfo.dynamicStates = { VK_DYNAMIC_STATE_SCISSOR, VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_VERTEX_INPUT_BINDING_STRIDE_EXT };
+            };
+
+            //
+            {   // vertex input for dynamic bindings
+                pipelineInfo.vertexInputAttributeDescriptions.push_back(vkh::VkVertexInputAttributeDescription
+                {
+                    .location = 0u, 
+                    .binding = 0u,
+                    .format = VK_FORMAT_R32G32B32A32_SFLOAT,
+                    .offset = 0u // infeasible with dynamic state bindings
+                });
+                pipelineInfo.vertexInputBindingDescriptions.push_back(vkh::VkVertexInputBindingDescription
+                {
+                    .binding = 0u,
+                    .stride = 16u, // can be changed
+                    .inputRate = VK_VERTEX_INPUT_RATE_VERTEX 
+                });
+            }
+
+            // blend states
+            for (uint32_t i=0;i<FBO_COUNT;i++) 
+            {   // TODO: full blending support
+                pipelineInfo.colorBlendAttachmentStates.push_back(vkh::VkPipelineColorBlendAttachmentState{
+                    .blendEnable = false
+                });
+            };
+
+            {   // opaque rasterization
+                pipelineInfo.stages = {
+                    vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->opaque.vertex), VK_SHADER_STAGE_VERTEX_BIT),
+                    vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->opaque.geometry), VK_SHADER_STAGE_GEOMETRY_BIT),
+                    vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->opaque.fragment), VK_SHADER_STAGE_FRAGMENT_BIT)
+                };
+                vkh::handleVk(device->dispatch->CreateGraphicsPipelines(device->pipelineCache, 1u, pipelineInfo, nullptr, &opaqueRasterization));
+            };
+
+            {   // translucent rasterization
+                pipelineInfo.stages = {
+                    vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->translucent.vertex), VK_SHADER_STAGE_VERTEX_BIT),
+                    vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->translucent.geometry), VK_SHADER_STAGE_GEOMETRY_BIT),
+                    vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->translucent.fragment), VK_SHADER_STAGE_FRAGMENT_BIT)
+                };
+                vkh::handleVk(device->dispatch->CreateGraphicsPipelines(device->pipelineCache, 1u, pipelineInfo, nullptr, &translucentRasterization);
+            };
+
+            return pipeline;
+        };
+
+        // 
+        virtual void createRenderingCommand(VkCommandBuffer commandBuffer) {
+            const uint32_t LOCAL_GROUP_X = 32u, LOCAL_GROUP_Y = 24u;
             
         };
 
