@@ -1,12 +1,9 @@
 #pragma once
 
 // 
-#include <glm/glm.hpp>
-#include <vkf/swapchain.hpp>
-
-// 
 #include "./core.hpp"
 #include "./geometryRegistry.hpp"
+#include "./dataSet.hpp"
 
 // 
 namespace icv {
@@ -76,7 +73,8 @@ namespace icv {
     };
 
     // 
-    class GeometryLevel: public DeviceBased {
+    class GeometryLevel: public DeviceBased 
+    {
         protected: 
         vkt::uni_ptr<GeometryRegistry> registry = {};
 
@@ -85,7 +83,7 @@ namespace icv {
         BuildInfo buildInfo = {};
 
         // 
-        vkt::Vector<GeometryInfo> geometries = {};
+        vkt::uni_ptr<DataSet<GeometryInfo>> geometries = {};
         VkDescriptorSet set = VK_NULL_HANDLE;
         bool created = false;
 
@@ -99,7 +97,10 @@ namespace icv {
         {
             this->info = info;
             this->device = device;
-            this->geometries = createBuffer(VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, sizeof(GeometryInfo) * info->maxGeometryCount, sizeof(GeometryInfo));
+            this->geometries = std::make_shared<DataSet<GeometryInfo>>(device, DataSetInfo{
+                .count = info->maxGeometryCount
+                .usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT
+            });
         };
 
         public: 
@@ -108,12 +109,12 @@ namespace icv {
 
         //
         virtual const vkt::Vector<GeometryInfo>& getBuffer() const {
-            return geometries;
+            return geometries.getDeviceBuffer();
         };
 
         //
         virtual vkt::Vector<GeometryInfo>& getBuffer() {
-            return geometries;
+            return geometries.getDeviceBuffer();
         };
 
         //
@@ -122,9 +123,13 @@ namespace icv {
             return device->dispatch->GetAccelerationStructureDeviceAddressKHR(&(deviceAddressInfo = acceleration));
         };
 
-        // TODO: copy buffer
+        // 
         virtual void buildCommand(VkCommandBuffer commandBuffer) 
-        {
+        {   
+            {   // TODO: indirect condition
+                geometries->copyFromVector(info.geometries);
+                geometries->cmdCopyFromCpu(commandBuffer);
+            };
             buildInfo.ranges.resize(info.geometries.size());
             for (uint32_t i=0;i<buildInfo.builds.size();i++) 
             {   // 
@@ -183,7 +188,7 @@ namespace icv {
                 std::vector<uint32_t> primitiveCount = {};
                 for (uint32_t i=0;i<buildInfo.builds.size();i++) 
                 {
-                    primitiveCount.push_back(info,geometries[i].primitive.count);
+                    primitiveCount.push_back(info.geometries[i].primitive.count);
                 };
 
                 // 
@@ -211,7 +216,6 @@ namespace icv {
         // 
         virtual void flush(vkt::uni_ptr<vkf::Queue> queue = {}) 
         {   // 
-            queue->uploadIntoBuffer(geometries, info.geometries.data(), std::min(info.geometries.size()*sizeof(GeometryInfo), geometries.range()));
             queue->submitOnce([this,&](VkCommandBuffer commandBuffer) 
             {   // 
                 this->buildCommand(commandBuffer);

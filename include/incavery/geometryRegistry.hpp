@@ -1,10 +1,6 @@
 #pragma once
 
 // 
-#include <glm/glm.hpp>
-#include <vkf/swapchain.hpp>
-
-// 
 #include "./core.hpp"
 
 // 
@@ -35,7 +31,7 @@ namespace icv {
         GeometryRegistryInfo info = {};
 
         // 
-        vkt::Vector<BindingInfo> bindings = {};
+        vkt::uni_ptr<DataSet<BindingInfo>> bindings = {};
         VkDescriptorSet set = VK_NULL_HANDLE;
         bool created = false;
 
@@ -44,12 +40,25 @@ namespace icv {
         {
             this->info = info;
             this->device = device;
-            this->bindings = createBuffer(VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, sizeof(BindingInfo) * info->maxBindingCount, sizeof(BindingInfo));
+            this->bindings = std::make_shared<DataSet<BindingInfo>>(device, DataSetInfo{
+                .count = info->maxBindingCount
+                .usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT
+            });
         };
         
         public:
         GeometryRegistry() {};
         GeometryRegistry(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<GeometryRegistryInfo> info = GeometryRegistryInfo{}) { this->constructor(device, info); };
+
+        //
+        virtual const vkt::Vector<BindingInfo>& getBuffer() const {
+            return bindings.getDeviceBuffer();
+        };
+
+        //
+        virtual vkt::Vector<BindingInfo>& getBuffer() {
+            return bindings.getDeviceBuffer();
+        };
 
         // 
         virtual void makeDescriptorSet(vkt::uni_arg<DescriptorInfo> info = DescriptorInfo{}) 
@@ -72,10 +81,19 @@ namespace icv {
             vkh::AllocateDescriptorSetWithUpdate(device->dispatch, descriptorSetHelper, set, created);
         };
 
+        //
+        virtual void copyCommand(VkCommandBuffer commandBuffer)
+        {   // 
+            bindings->copyFromVector(info.bindings);
+            bindings->cmdCopyFromCpu(commandBuffer);
+        };
+
         // 
         virtual void flush(vkt::uni_ptr<vkf::Queue> queue = {}) 
-        {
-            queue->uploadIntoBuffer(bindings, info.bindings.data(), std::min(info.bindings.size()*sizeof(BindingInfo), bindings.range()));
+        {   // 
+            queue->submitOnce([&,this](VkCommandBuffer commandBuffer){
+                this->copyCommand(commandBuffer);
+            });
         };
 
         //
@@ -89,10 +107,12 @@ namespace icv {
         // 
         virtual void setBinding(uintptr_t index, vkt::VectorBase buffer, vkt::uni_arg<BindingInfo> binding)
         {
-            if (this->info.buffers.size() <= index) { this->info.buffers.resize(index+1u); };
+            binding->buffer = index; // prefer same index
+
+            if (this->info.buffers.size() <= (binding->buffer)) { this->info.buffers.resize((binding->buffer)+1u); };
             if (this->info.bindings.size() <= index) { this->info.bindings.resize(index+1u); };
-            binding->buffer = index;
-            this->info.buffers[index] = buffer;
+
+            this->info.buffers[binding->buffer] = buffer;
             this->info.bindings[index] = binding;
         };
     };

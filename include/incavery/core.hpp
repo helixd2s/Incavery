@@ -29,14 +29,14 @@ namespace icv {
         vkh::VkAccelerationStructureDeviceAddressInfoKHR deviceAddressInfo = {};
         
         // 
-        virtual vkt::VectorBase createBuffer(FLAGS(VkBufferUsage) usage, VkDeviceSize size = 16ull, VkDeviceSize stride = sizeof(uint8_t)) 
+        virtual vkt::VectorBase createBuffer(FLAGS(VkBufferUsage) usage, VkDeviceSize size = 16ull, VkDeviceSize stride = sizeof(uint8_t), VmaMemoryUsage memoryUsage = VMA_MEMORY_USAGE_GPU_ONLY) 
         {   // 
             auto bufferCreateInfo = vkh::VkBufferCreateInfo{
                 .size = size,
-                .usage = VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT | usage
+                .usage = (memoryUsage == VMA_MEMORY_USAGE_GPU_ONLY ? VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT : 0u) | usage
             };
             auto vmaCreateInfo = vkt::VmaMemoryInfo{
-                .memUsage = VMA_MEMORY_USAGE_GPU_ONLY,
+                .memUsage = memoryUsage,
                 .instanceDispatch = device->instance->dispatch,
                 .deviceDispatch = device->dispatch
             };

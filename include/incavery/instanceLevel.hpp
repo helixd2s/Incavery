@@ -1,10 +1,6 @@
 #pragma once
 
 // 
-#include <glm/glm.hpp>
-#include <vkf/swapchain.hpp>
-
-// 
 #include "./core.hpp"
 #include "./geometryRegistry.hpp"
 #include "./geometryLevel.hpp"
@@ -48,7 +44,10 @@ namespace icv {
         {
             this->info = info;
             this->device = device;
-            this->instances = createBuffer(VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, sizeof(InstanceInfo) * info->maxInstanceCount, sizeof(InstanceInfo));
+            this->instances = std::make_shared<DataSet<InstanceInfo>>(device, DataSetInfo{
+                .count = info->maxInstanceCount
+                .usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT
+            });
         };
 
         public: 
@@ -57,12 +56,12 @@ namespace icv {
 
         //
         virtual const vkt::Vector<InstanceInfo>& getBuffer() const {
-            return geometries;
+            return instances->getDeviceBuffer();
         };
 
         //
         virtual vkt::Vector<InstanceInfo>& getBuffer() {
-            return geometries;
+            return instances->getDeviceBuffer();
         };
 
         //
@@ -81,7 +80,7 @@ namespace icv {
                 .dstBinding = 0u,
                 .descriptorCount = 1u,
                 .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER
-            }) = instances;
+            }) = instances->getDeviceBuffer();
             descriptorSetHelper.pushDescription<vkh::VkDescriptorBufferInfo>(vkh::VkDescriptorUpdateTemplateEntry
             {
                 .dstBinding = 1u,
@@ -109,6 +108,10 @@ namespace icv {
             //for (uint32_t i=0;i<this->info.geometries.size();i++) {
             //    this->info.geometries[i]->buildCommand(commandBuffer);
             //};
+            {   // TODO: indirect condition
+                instances->copyFromVector(info.instances);
+                instances->cmdCopyFromCpu(commandBuffer);
+            };
             buildInfo.ranges[0u].primitiveCount = info.instances.size();
             device->CmdBuildAccelerationStructuresKHR(commandBuffer, 1u, buildInfo.info, buildInfo.ranges.data());
         };
@@ -201,7 +204,6 @@ namespace icv {
         // 
         virtual void flush(vkt::uni_ptr<vkf::Queue> queue = {}) 
         {   // 
-            queue->uploadIntoBuffer(instances, info.instances.data(), std::min(info.instances.size()*sizeof(GeometryInfo), instances.range()));
             queue->submitOnce([this,&](VkCommandBuffer commandBuffer) 
             {   // 
                 this->buildCommand(commandBuffer);

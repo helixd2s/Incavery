@@ -1,10 +1,6 @@
 #pragma once
 
 // 
-#include <glm/glm.hpp>
-#include <vkf/swapchain.hpp>
-
-// 
 #include "./core.hpp"
 #include "./geometryRegistry.hpp"
 #include "./geometryLevel.hpp"
@@ -207,10 +203,10 @@ namespace icv {
             auto dflags = vkh::VkDescriptorSetLayoutCreateFlags{ .eUpdateAfterBindPool = 1 };
 
             // 
-            layouts.insert(layouts.begin(), this->getFramebufferLayout());
-            layouts.insert(layouts.begin(), this->getGeometryRegistryLayout());
-            layouts.insert(layouts.begin(), this->getInstanceLevelLayout());
-
+            layouts.insert(layouts.begin(), this->getInstanceLevelLayout()); // 3th
+            layouts.insert(layouts.begin(), this->getGeometryRegistryLayout()); // secondly
+            layouts.insert(layouts.begin(), this->getFramebufferLayout()); // firstly
+            
             // 
             std::vector<vkh::VkPushConstantRange> rtRanges = { vkh::VkPushConstantRange{.stageFlags = pipusage, .offset = 0u, .size = 16u } };
             vkh::handleVk(device->dispatch->CreatePipelineLayout(vkh::VkPipelineLayoutCreateInfo{  }.setSetLayouts(layouts).setPushConstantRanges(rtRanges), nullptr, &pipeline.layout));
@@ -326,7 +322,7 @@ namespace icv {
         // 
         virtual PipelineInfo& createPipeline(vkt::uni_arg<PipelineCreateInfo> info = PipelineCreateInfo{}) 
         {   // 
-            pipeline.rayTracing = vkt::createCompute(device->dispatch, info->rayTracing.path, this->getPipelineLayout(), device->pipelineCache, 32u);
+            pipeline.rayTracing = vkt::createCompute(device->dispatch, info->rayTracing.path, this->getPipelineLayout(), device->pipelineCache);
 
             // 
             vkh::VsGraphicsPipelineCreateInfoConstruction pipelineInfo = {};
