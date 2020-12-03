@@ -106,6 +106,9 @@ namespace icv {
         // TODO: copy buffer
         virtual void buildCommand(VkCommandBuffer commandBuffer) 
         {
+            //for (uint32_t i=0;i<this->info.geometries.size();i++) {
+            //    this->info.geometries[i]->buildCommand(commandBuffer);
+            //};
             buildInfo.ranges[0u].primitiveCount = info.instances.size();
             device->CmdBuildAccelerationStructuresKHR(commandBuffer, 1u, buildInfo.info, buildInfo.ranges.data());
         };
