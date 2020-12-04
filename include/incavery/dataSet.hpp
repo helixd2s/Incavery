@@ -18,6 +18,8 @@ namespace icv {
     class DataSetBase: public DeviceBased
     {
         protected: 
+        DataSetInfo info = {};
+
         virtual void constructor(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<DataSetInfo> info = DataSetInfo{}) {
             this->info = info;
             this->device = device;
@@ -35,15 +37,20 @@ namespace icv {
         protected:
         vkt::Vector<T> cpuCache = {};
         vkt::Vector<T> deviceBuffer = {};
-        DataSetInfo info = {};
+        
 
         // 
         virtual void constructor(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<DataSetInfo> info = DataSetInfo{}) {
             this->info = info;
             this->device = device;
 
-            this->cpuCache = createBuffer(VK_BUFFER_USAGE_TRANSFER_DST_BIT|VK_BUFFER_USAGE_TRANSFER_SRC_BIT, sizeof(T) * info->count, sizeof(T), VMA_MEMORY_USAGE_CPU_TO_GPU);
-            this->deviceBuffer = createBuffer(VK_BUFFER_USAGE_TRANSFER_DST_BIT|VK_BUFFER_USAGE_TRANSFER_SRC_BIT|info->usage, sizeof(T) * info->count, sizeof(T), VMA_MEMORY_USAGE_GPU_ONLY);
+            // 
+            auto _cpuCache = createBuffer(VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, sizeof(T) * info->count, sizeof(T), VMA_MEMORY_USAGE_CPU_TO_GPU);
+            auto _deviceBuffer = createBuffer(VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VkBufferUsageFlags(info->usage), sizeof(T) * info->count, sizeof(T), VMA_MEMORY_USAGE_GPU_ONLY);
+
+            // 
+            this->cpuCache = vkt::Vector<T>(_cpuCache.getAllocation(), _cpuCache.offset(), _cpuCache.range(), _cpuCache.stride());
+            this->deviceBuffer = vkt::Vector<T>(_deviceBuffer.getAllocation(), _deviceBuffer.offset(), _deviceBuffer.range(), _deviceBuffer.stride());
         };
         
         public:
@@ -106,7 +113,7 @@ namespace icv {
         };
 
         //
-        virtual void copyFromCpu(vkt::uni_ptr<vlf::Queue> queue) {
+        virtual void copyFromCpu(vkt::uni_ptr<vkf::Queue> queue) {
             queue->submitOnce([&,this](VkCommandBuffer commandBuffer){
                 this->cmdCopyFromCpu(commandBuffer);
             });

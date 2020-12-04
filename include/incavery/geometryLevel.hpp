@@ -59,7 +59,7 @@ namespace icv {
 
         VertexInfo vertex = {};
         IndexInfo index = {};
-        PrimitiveInfo count = {};
+        PrimitiveInfo primitive = {};
 
         Attributes attributes = {};
     };
@@ -89,8 +89,8 @@ namespace icv {
 
         // 
         VkAccelerationStructureKHR acceleration = VK_NULL_HANDLE;
-        vkt::Vector<uint8_t> accStorage = {};
-        vkt::Vector<uint8_t> accScratch = {};
+        vkt::VectorBase accStorage = {};
+        vkt::VectorBase accScratch = {};
 
         //
         virtual void constructor(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<GeometryLevelInfo> info = GeometryLevelInfo{}) 
@@ -98,7 +98,7 @@ namespace icv {
             this->info = info;
             this->device = device;
             this->geometries = std::make_shared<DataSet<GeometryInfo>>(device, DataSetInfo{
-                .count = info->maxGeometryCount
+                .count = info->maxGeometryCount,
                 .usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT
             });
         };
@@ -129,19 +129,25 @@ namespace icv {
 
         //
         virtual const vkt::Vector<GeometryInfo>& getBuffer() const {
-            return geometries.getDeviceBuffer();
+            return geometries->getDeviceBuffer();
         };
 
         //
         virtual vkt::Vector<GeometryInfo>& getBuffer() {
-            return geometries.getDeviceBuffer();
+            return geometries->getDeviceBuffer();
         };
 
         //
-        virtual uint64_t getDeviceAddress() const {
+        virtual VkDeviceAddress getDeviceAddress() {
             if (!acceleration) { this->makeAccelerationStructure(); };
             return device->dispatch->GetAccelerationStructureDeviceAddressKHR(&(deviceAddressInfo = acceleration));
         };
+
+        //
+        //virtual VkDeviceAddress getDeviceAddress() const {
+        //    vkh::VkAccelerationStructureDeviceAddressInfoKHR deviceAddressInfo = {};
+        //    return device->dispatch->GetAccelerationStructureDeviceAddressKHR(&(deviceAddressInfo = acceleration));
+        //};
 
         // 
         virtual void buildCommand(VkCommandBuffer commandBuffer) 
@@ -158,7 +164,9 @@ namespace icv {
                 buildInfo.ranges[i].primitiveOffset = info.geometries[i].vertex.offset;
                 buildInfo.ranges[i].transformOffset = sizeof(GeometryInfo) * i;
             };
-            device->CmdBuildAccelerationStructuresKHR(commandBuffer, 1u, buildInfo.info, buildInfo.ranges.data());
+
+            const auto ptr = &buildInfo.ranges[0u];
+            device->dispatch->CmdBuildAccelerationStructuresKHR(commandBuffer, 1u, buildInfo.info, &ptr);
         };
 
         // 
@@ -182,16 +190,16 @@ namespace icv {
                     buildInfo.builds[i].geometry = vkh::VkAccelerationStructureGeometryTrianglesDataKHR
                     {
                         .vertexFormat = info.geometries[i].useHalf ? VK_FORMAT_R16G16B16_SFLOAT : VK_FORMAT_R32G32B32_SFLOAT,
-                        .vertexData = ( registry->info.buffers[info.geometries[i].vertex.buffer] ).deviceAddress(),
+                        .vertexData = ( registry->getInfo().buffers[info.geometries[i].vertex.buffer] ).deviceAddress(),
                         .vertexStride = info.geometries[i].vertex.stride,
                         .maxVertex = info.geometries[i].vertex.max,
                         .indexType = getIndexType(info.geometries[i].index.type),
-                        .indexData = ( registry->info.buffers[info.geometries[i].index.buffer] ).deviceAddress(),
-                        .transformData = geometries.deviceAddress();
+                        .indexData = ( registry->getInfo().buffers[info.geometries[i].index.buffer] ).deviceAddress(),
+                        .transformData = geometries->getDeviceBuffer().deviceAddress()
                     };
 
                     //
-                    if (buildInfo.geometries[i].isOpaque) 
+                    if (info.geometries[i].isOpaque) 
                     {
                         buildInfo.builds[i].flags |= VK_GEOMETRY_OPAQUE_BIT_KHR;
                     };
@@ -200,7 +208,7 @@ namespace icv {
                 buildInfo.info.flags = VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_BUILD_BIT_KHR;
                 buildInfo.info.mode = VK_BUILD_ACCELERATION_STRUCTURE_MODE_BUILD_KHR;
                 buildInfo.info.geometryCount = buildInfo.builds.size();
-                buildInfo.info.pGeometries = buildInfo.builds.data();
+                buildInfo.info.pGeometries = &buildInfo.builds[0u];
             };
 
             vkh::VkAccelerationStructureBuildSizesInfoKHR sizes = {};
@@ -212,7 +220,7 @@ namespace icv {
                 };
 
                 // 
-                device->dispatch->GetAccelerationStructureBuildSizesKHR(VK_ACCELERATION_STRUCTURE_BUILD_TYPE_DEVICE_KHR, &buildInfo.info, primitiveCounts.data(), &sizes);
+                device->dispatch->GetAccelerationStructureBuildSizesKHR(VK_ACCELERATION_STRUCTURE_BUILD_TYPE_DEVICE_KHR, &buildInfo.info, primitiveCount.data(), &sizes);
             };
 
             {   // 
@@ -236,7 +244,7 @@ namespace icv {
         // 
         virtual void flush(vkt::uni_ptr<vkf::Queue> queue = {}) 
         {   // 
-            queue->submitOnce([this,&](VkCommandBuffer commandBuffer) 
+            queue->submitOnce([&,this](VkCommandBuffer commandBuffer) 
             {   // 
                 this->buildCommand(commandBuffer);
             });

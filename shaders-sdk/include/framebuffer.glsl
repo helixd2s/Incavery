@@ -34,7 +34,7 @@ IntersectionInfo rasterization(in RayData rays, in float maxT) {
     // compute hitT from rasterization
     if (any(greaterThan(result.barycentric, 0.f.xxx))) {
         GeometryInfo geometryInfo = readGeometryInfo(result.instanceId, result.geometryId);
-        mat3x4 vertices = readVertices(geometryInfo.vertex, result.primitiveId);
+        mat3x4 vertices = readVertices(geometryInfo.vertex, readIndices(geometryInfo.index, result.primitiveId));
         vec4 origin = vertices * result.barycentric;
         result.hitT = distance(rays.origin.xyz, origin.xyz);
     };

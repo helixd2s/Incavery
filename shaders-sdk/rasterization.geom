@@ -14,7 +14,7 @@
 const float3 bary[3] = { float3(1.f,0.f,0.f), float3(0.f,1.f,0.f), float3(0.f,0.f,1.f) };
 
 //
-layout (points) in;
+layout (triangles) in;
 layout (triangle_strip, max_vertices = 3) out;
 
 //
@@ -50,8 +50,8 @@ void main()
     indices = uvec4(pushed.instanceId, pushed.geometryId, gl_PrimitiveIDIn, 0u);
     for (int i=0;i<3;i++) 
     {
-        original = position;
-        transformed = vec4(vec4(position * geometryInfo.transform, 1.f) * instanceInfo.transform, 1.f);
+        original = position[i];
+        transformed = vec4(vec4(position[i] * geometryInfo.transform, 1.f) * instanceInfo.transform, 1.f);
         barycentric = vec4(bary[i], 1.f);
         
 

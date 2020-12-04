@@ -53,12 +53,12 @@ namespace icv {
     struct PipelineCreateInfo
     {
         ComputePipelineSource rayTracing = { "./shaders/rayTracing.comp.spv" };
-        GraphicsPipelineSource opaqueRasterization = {
+        GraphicsPipelineSource opaque = {
             "./shaders/opaque.vert.spv",
             "./shaders/opaque.geom.spv",
             "./shaders/opaque.frag.spv"
         };
-        GraphicsPipelineSource translucentRasterization = {
+        GraphicsPipelineSource translucent = {
             "./shaders/translucent.vert.spv",
             "./shaders/translucent.geom.spv",
             "./shaders/translucent.frag.spv"
@@ -100,7 +100,7 @@ namespace icv {
         std::vector<VkDescriptorSet> descriptorSets = {};
 
         // 
-        constexpr uint32_t FBO_COUNT = 4u;
+        const uint32_t FBO_COUNT = 4u;
 
         // 
         virtual void constructor(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<RendererInfo> info = RendererInfo{}) 
@@ -245,6 +245,7 @@ namespace icv {
             // 
             std::vector<vkh::VkPushConstantRange> rtRanges = { vkh::VkPushConstantRange{.stageFlags = pipusage, .offset = 0u, .size = 16u } };
             vkh::handleVk(device->dispatch->CreatePipelineLayout(vkh::VkPipelineLayoutCreateInfo{  }.setSetLayouts(layouts).setPushConstantRanges(rtRanges), nullptr, &pipeline.layout));
+            return pipeline.layout;
         };
 
         // 
@@ -345,16 +346,16 @@ namespace icv {
             };
 
             {   // 
-                vkh::handleVk(device->dispatch->CreateFramebuffer(vkh::VkFramebufferCreateInfo{ .flags = {}, .renderPass = renderpass, .attachmentCount = uint32_t(views.size()), .pAttachments = views.data(), .width = size.x, .height = size.y, .layers = 1u }, nullptr, &framebuffer.framebuffer));
+                vkh::handleVk(device->dispatch->CreateFramebuffer(vkh::VkFramebufferCreateInfo{ .flags = {}, .renderPass = renderPass, .attachmentCount = uint32_t(views.size()), .pAttachments = views.data(), .width = size.width, .height = size.height, .layers = 1u }, nullptr, &framebuffer.framebuffer));
             };
 
             {   // 
-                framebuffer.scissor = vkh::VkRect2D{ vkh::VkOffset2D{0, 0}, vkh::VkExtent2D{ size.x, size.y } };
-                framebuffer.viewport = vkh::VkViewport{ 0.0f, 0.0f, static_cast<float>(size.x), static_cast<float>(size.y), 0.f, 1.f };
+                framebuffer.scissor = vkh::VkRect2D{ vkh::VkOffset2D{0, 0}, vkh::VkExtent2D{ size.width, size.height } };
+                framebuffer.viewport = vkh::VkViewport{ 0.0f, 0.0f, static_cast<float>(size.width), static_cast<float>(size.height), 0.f, 1.f };
             };
 
             {   // create descriptor set
-                vkh::VsDescriptorSetCreateInfoHelper descriptorSetHelper(layouts[0], device->descriptorPool);
+                vkh::VsDescriptorSetCreateInfoHelper descriptorSetHelper(layouts.framebuffer, device->descriptorPool);
                 auto handle = descriptorSetHelper.pushDescription<vkh::VkDescriptorImageInfo>(vkh::VkDescriptorUpdateTemplateEntry
                 {
                     .dstBinding = 0u,
@@ -419,7 +420,7 @@ namespace icv {
                     vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->opaque.geometry), VK_SHADER_STAGE_GEOMETRY_BIT),
                     vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->opaque.fragment), VK_SHADER_STAGE_FRAGMENT_BIT)
                 };
-                vkh::handleVk(device->dispatch->CreateGraphicsPipelines(device->pipelineCache, 1u, pipelineInfo, nullptr, &opaqueRasterization));
+                vkh::handleVk(device->dispatch->CreateGraphicsPipelines(device->pipelineCache, 1u, pipelineInfo, nullptr, &pipeline.opaqueRasterization));
             };
 
             {   // translucent rasterization
@@ -428,7 +429,7 @@ namespace icv {
                     vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->translucent.geometry), VK_SHADER_STAGE_GEOMETRY_BIT),
                     vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->translucent.fragment), VK_SHADER_STAGE_FRAGMENT_BIT)
                 };
-                vkh::handleVk(device->dispatch->CreateGraphicsPipelines(device->pipelineCache, 1u, pipelineInfo, nullptr, &translucentRasterization);
+                vkh::handleVk(device->dispatch->CreateGraphicsPipelines(device->pipelineCache, 1u, pipelineInfo, nullptr, &pipeline.translucentRasterization));
             };
 
             return pipeline;
@@ -437,10 +438,11 @@ namespace icv {
         //
         virtual std::vector<VkDescriptorSet>& makeDescriptorSets()
         {   //
+            
             if (this->descriptorSets.size() < 3u) { this->descriptorSets.resize(3u); };
             this->descriptorSets[0u] = this->framebuffer.set;
-            this->descriptorSets[1u] = this->geometryRegistry->makeDescriptorSet();
-            this->descriptorSets[2u] = this->instanceLevel->makeDescriptorSet();
+            this->descriptorSets[1u] = this->info.geometryRegistry->makeDescriptorSet( DescriptorInfo{ .layout = layouts.geometryRegistry, .pipelineLayout = pipeline.layout } );
+            this->descriptorSets[2u] = this->info.instanceLevel->makeDescriptorSet( DescriptorInfo{ .layout = layouts.instanceLevel, .pipelineLayout = pipeline.layout } );
             return this->descriptorSets;
         };
 
@@ -496,7 +498,7 @@ namespace icv {
                 clearValues.push_back(vkh::VkClearColorValue{});
                 clearValues.back().color.float32 = glm::vec4(0.f, 0.f, 0.f, 0.f);
             };
-            clearValues.push_back(VkClearDepthStencilValue{ 1.0f, 0 });
+            clearValues.push_back(vkh::VkClearDepthStencilValue{ 1.0f, 0 });
 
             // shortify code by lambda function
             auto& geometryRegistryInfo = info.geometryRegistry->getInfo();
@@ -521,14 +523,14 @@ namespace icv {
                 if (geometryInfo.index.type == 0u) {
                     device->dispatch->CmdDraw(commandBuffer, geometryInfo.primitive.count*3u, 1u, geometryInfo.vertex.first, 0u);
                 } else {
-                    auto buffer = info.geometryRegistry->info.buffers[geometryInfo.index.buffer];
+                    auto buffer = info.geometryRegistry->getInfo().buffers[geometryInfo.index.buffer];
                     device->dispatch->CmdBindIndexBuffer(commandBuffer, buffer, buffer.offset(), getIndexType(geometryInfo.index.type));
                     device->dispatch->CmdDrawIndexed(commandBuffer, geometryInfo.primitive.count*3u, 1u, geometryInfo.vertex.first, 0, 0u);
                 };
             };
 
             {
-                device->dispatch->CmdBeginRenderPass(commandBuffer, vkh::VkRenderPassBeginInfo{ .renderPass = renderPass, .framebuffer = framebuffer.frameBuffer, .renderArea = framebuffer.scissor, .clearValueCount = uint32_t(clearValues.size()), .pClearValues = reinterpret_cast<vkh::VkClearValue*>(clearValues.data()) }, VK_SUBPASS_CONTENTS_INLINE);
+                device->dispatch->CmdBeginRenderPass(commandBuffer, vkh::VkRenderPassBeginInfo{ .renderPass = renderPass, .framebuffer = framebuffer.framebuffer, .renderArea = framebuffer.scissor, .clearValueCount = uint32_t(clearValues.size()), .pClearValues = reinterpret_cast<vkh::VkClearValue*>(clearValues.data()) }, VK_SUBPASS_CONTENTS_INLINE);
 
                 {   // initial rasterization layout
                     device->dispatch->CmdSetViewport(commandBuffer, 0u, 1u, framebuffer.viewport);
@@ -537,7 +539,7 @@ namespace icv {
                 };
 
                 {   // 
-                    device->dispatch->CmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, opaqueRasterization);
+                    device->dispatch->CmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.opaqueRasterization);
 
                     // draw opaque
                     for (auto& item : opaque) { drawItem(item); };
@@ -552,7 +554,7 @@ namespace icv {
             };
 
             {   // compute ray tracing
-                device->dispatch->CmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, rayTracing);
+                device->dispatch->CmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline.rayTracing);
                 device->dispatch->CmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline.layout, 0u, descriptorSets.size(), descriptorSets.data(), 0u, nullptr);
                 device->dispatch->CmdDispatch(commandBuffer, framebuffer.scissor.extent.width/LOCAL_GROUP_X, framebuffer.scissor.extent.height/LOCAL_GROUP_Y, 1u);
                 vkt::commandBarrier(device->dispatch, commandBuffer);

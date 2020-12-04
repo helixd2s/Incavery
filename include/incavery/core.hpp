@@ -33,7 +33,7 @@ namespace icv {
         {   // 
             auto bufferCreateInfo = vkh::VkBufferCreateInfo{
                 .size = size,
-                .usage = (memoryUsage == VMA_MEMORY_USAGE_GPU_ONLY ? VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT : 0u) | usage
+                .usage = (memoryUsage == VMA_MEMORY_USAGE_GPU_ONLY ? VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT : 0u) | VkBufferUsageFlags(usage)
             };
             auto vmaCreateInfo = vkt::VmaMemoryInfo{
                 .memUsage = memoryUsage,
@@ -50,7 +50,7 @@ namespace icv {
             vkh::VkImageCreateInfo imageCreateInfo = {};
             imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
             imageCreateInfo.format = format;
-            imageCreateInfo.extent = vkh::VkExtent3D{ size.x, size.y, 1u };
+            imageCreateInfo.extent = vkh::VkExtent3D{ size.width, size.height, 1u };
             imageCreateInfo.mipLevels = 1u;
             imageCreateInfo.arrayLayers = 1u;
             imageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -61,16 +61,19 @@ namespace icv {
             // 
             auto vmaCreateInfo = vkt::VmaMemoryInfo{
                 .memUsage = VMA_MEMORY_USAGE_GPU_ONLY,
-                .instanceDispatch = instance->dispatch,
+                .instanceDispatch = device->instance->dispatch,
                 .deviceDispatch = device->dispatch
             };
+
+            //
+            auto aspectFlags = isDepth ? (VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT) : (VK_IMAGE_ASPECT_COLOR_BIT);
 
             // 
             vkh::VkImageViewCreateInfo imageViewCreateInfo = {};
             imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
             imageViewCreateInfo.format = format;
             imageViewCreateInfo.components = vkh::VkComponentMapping{};
-            imageViewCreateInfo.subresourceRange = vkh::VkImageSubresourceRange{ .aspectMask = isDepth?(VK_IMAGE_ASPECT_DEPTH_BIT|VK_IMAGE_ASPECT_STENCIL_BIT):(VK_IMAGE_ASPECT_COLOR_BIT), .baseMipLevel = 0u, .levelCount = 1u, .baseArrayLayer = 0u, .layerCount = 1u };
+            imageViewCreateInfo.subresourceRange = vkh::VkImageSubresourceRange{ .aspectMask = VkImageAspectFlags(aspectFlags), .baseMipLevel = 0u, .levelCount = 1u, .baseArrayLayer = 0u, .layerCount = 1u };
 
             // 
             auto allocation = std::make_shared<vkt::VmaImageAllocation>(device->allocator, imageCreateInfo, vmaCreateInfo);

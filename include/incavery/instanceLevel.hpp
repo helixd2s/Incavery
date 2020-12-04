@@ -30,14 +30,14 @@ namespace icv {
         BuildInfo buildInfo = {};
 
         // 
-        vkt::Vector<InstanceLevel> instances = {};
+        vkt::uni_ptr<DataSet<InstanceInfo>> instances = {};
         VkDescriptorSet set = VK_NULL_HANDLE;
         bool created = false;
 
         // 
         VkAccelerationStructureKHR acceleration = VK_NULL_HANDLE;
-        vkt::Vector<uint8_t> accStorage = {};
-        vkt::Vector<uint8_t> accScratch = {};
+        vkt::VectorBase accStorage = {};
+        vkt::VectorBase accScratch = {};
 
         //
         virtual void constructor(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<InstanceLevelInfo> info = InstanceLevelInfo{}) 
@@ -45,7 +45,7 @@ namespace icv {
             this->info = info;
             this->device = device;
             this->instances = std::make_shared<DataSet<InstanceInfo>>(device, DataSetInfo{
-                .count = info->maxInstanceCount
+                .count = info->maxInstanceCount,
                 .usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT
             });
         };
@@ -85,14 +85,24 @@ namespace icv {
         };
 
         //
-        virtual uint64_t getDeviceAddress() const {
+        virtual VkDeviceAddress getDeviceAddress() {
             if (!acceleration) { this->makeAccelerationStructure(); };
             return device->dispatch->GetAccelerationStructureDeviceAddressKHR(&(deviceAddressInfo = acceleration));
         };
 
         //
-        virtual void makeDescriptorSet(vkt::uni_arg<DescriptorInfo> info = DescriptorInfo{}) 
+        //virtual VkDeviceAddress getDeviceAddress() const {
+        //    vkh::VkAccelerationStructureDeviceAddressInfoKHR deviceAddressInfo = {};
+        //    return device->dispatch->GetAccelerationStructureDeviceAddressKHR(&(deviceAddressInfo = acceleration));
+        //};
+
+        //
+        virtual VkDescriptorSet& makeDescriptorSet(vkt::uni_arg<DescriptorInfo> info = DescriptorInfo{}) 
         {
+            if (!acceleration) {
+                this->makeAccelerationStructure();
+            };
+
             // create descriptor set
             vkh::VsDescriptorSetCreateInfoHelper descriptorSetHelper(info->layout, device->descriptorPool);
             descriptorSetHelper.pushDescription<vkh::VkDescriptorBufferInfo>(vkh::VkDescriptorUpdateTemplateEntry
@@ -112,7 +122,7 @@ namespace icv {
             auto handle = descriptorSetHelper.pushDescription<vkh::VkDescriptorBufferInfo>(vkh::VkDescriptorUpdateTemplateEntry
             {
                 .dstBinding = 2u,
-                .descriptorCount = this->info.geometries.size(),
+                .descriptorCount = uint32_t(this->info.geometries.size()),
                 .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER
             });
             for (uint32_t i=0;i<this->info.geometries.size();i++) {
@@ -120,6 +130,7 @@ namespace icv {
             };
 
             vkh::AllocateDescriptorSetWithUpdate(device->dispatch, descriptorSetHelper, set, created);
+            return set;
         };
 
         // TODO: copy buffer
@@ -133,7 +144,9 @@ namespace icv {
                 instances->cmdCopyFromCpu(commandBuffer);
             };
             buildInfo.ranges[0u].primitiveCount = info.instances.size();
-            device->CmdBuildAccelerationStructuresKHR(commandBuffer, 1u, buildInfo.info, buildInfo.ranges.data());
+            
+            const auto ptr = &buildInfo.ranges[0u];
+            device->dispatch->CmdBuildAccelerationStructuresKHR(commandBuffer, 1u, &buildInfo.info, &ptr);
         };
 
         // 
@@ -153,20 +166,20 @@ namespace icv {
                     buildInfo.builds[0u].geometry = vkh::VkAccelerationStructureGeometryInstancesDataKHR
                     {
                         .arrayOfPointers = false,
-                        .data = this->instances.deviceAddress()
+                        .data = this->instances->getDeviceBuffer().deviceAddress()
                     };
                 };
                 buildInfo.info.type = accelerationStructureType;
                 buildInfo.info.flags = VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_TRACE_BIT_KHR;
                 buildInfo.info.mode = VK_BUILD_ACCELERATION_STRUCTURE_MODE_BUILD_KHR;
                 buildInfo.info.geometryCount = buildInfo.builds.size();
-                buildInfo.info.pGeometries = buildInfo.builds.data();
+                buildInfo.info.pGeometries = &buildInfo.builds[0];
             };
 
             vkh::VkAccelerationStructureBuildSizesInfoKHR sizes = {};
             {   // 
-                std::vector<uint32_t> primitiveCount = { info.instances.size() };
-                device->dispatch->GetAccelerationStructureBuildSizesKHR(VK_ACCELERATION_STRUCTURE_BUILD_TYPE_DEVICE_KHR, &buildInfo.info, primitiveCounts.data(), &sizes);
+                std::vector<uint32_t> primitiveCount = { uint32_t(info.instances.size()) };
+                device->dispatch->GetAccelerationStructureBuildSizesKHR(VK_ACCELERATION_STRUCTURE_BUILD_TYPE_DEVICE_KHR, &buildInfo.info, primitiveCount.data(), &sizes);
             };
 
             {   // 
@@ -224,7 +237,7 @@ namespace icv {
         // 
         virtual void flush(vkt::uni_ptr<vkf::Queue> queue = {}) 
         {   // 
-            queue->submitOnce([this,&](VkCommandBuffer commandBuffer) 
+            queue->submitOnce([&,this](VkCommandBuffer commandBuffer) 
             {   // 
                 this->buildCommand(commandBuffer);
             });

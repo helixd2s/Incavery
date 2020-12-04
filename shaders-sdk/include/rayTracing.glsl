@@ -12,7 +12,7 @@ layout (binding = 1, set = INSTANCE_LEVEL_MAP) uniform accelerationStructureEXT 
 
 IntersectionInfo traceRays(in RayData rays, in float maxT) {
     rayQueryEXT rayQuery;
-    rayQueryInitializeEXT(rayQuery, acceleration, gl_RayFlagsNoneEXT, 0xff, rays.origin, 0.001f, rays.direction, maxT);
+    rayQueryInitializeEXT(rayQuery, acceleration, gl_RayFlagsNoneEXT, 0xff, rays.origin.xyz, 0.001f, rays.direction.xyz, maxT);
 
     while(rayQueryProceedEXT(rayQuery)) {
         bool isOpaque = true;

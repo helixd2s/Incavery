@@ -29,6 +29,14 @@ layout (location = 2) in vec4 barycentric;
 layout (location = 3) flat in uvec4 indices;
 
 // 
+layout(push_constant) uniform pushConstants {
+    uint instanceId;
+    uint geometryId;
+    uint reserved0;
+    uint reserved1;
+} pushed;
+
+// 
 void main() 
 {
     GeometryInfo geometryInfo = readGeometryInfo(pushed.instanceId, pushed.geometryId);

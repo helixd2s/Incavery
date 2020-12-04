@@ -41,7 +41,7 @@ namespace icv {
             this->info = info;
             this->device = device;
             this->bindings = std::make_shared<DataSet<BindingInfo>>(device, DataSetInfo{
-                .count = info->maxBindingCount
+                .count = info->maxBindingCount,
                 .usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT
             });
         };
@@ -72,33 +72,34 @@ namespace icv {
 
         //
         virtual const vkt::Vector<BindingInfo>& getBuffer() const {
-            return bindings.getDeviceBuffer();
+            return bindings->getDeviceBuffer();
         };
 
         //
         virtual vkt::Vector<BindingInfo>& getBuffer() {
-            return bindings.getDeviceBuffer();
+            return bindings->getDeviceBuffer();
         };
 
         // 
-        virtual void makeDescriptorSet(vkt::uni_arg<DescriptorInfo> info = DescriptorInfo{}) 
+        virtual VkDescriptorSet& makeDescriptorSet(vkt::uni_arg<DescriptorInfo> info = DescriptorInfo{}) 
         {
             vkh::VsDescriptorSetCreateInfoHelper descriptorSetHelper(info->layout, device->descriptorPool);
-            auto handle = descriptorSetHelper.pushDescription<uint64_t>(vkh::VkDescriptorUpdateTemplateEntry{
+            auto handle = descriptorSetHelper.pushDescription<vkh::VkDescriptorBufferInfo>(vkh::VkDescriptorUpdateTemplateEntry{
                 .dstBinding = 0u,
-                .descriptorCount = info.buffers.size(),
+                .descriptorCount = uint32_t(this->info.buffers.size()),
                 .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER
             });
-            for (uint32_t i=0;i<info.buffers.size();i++) 
+            for (uint32_t i=0;i<this->info.buffers.size();i++) 
             {
-                handle[i] = info.buffers[i];
+                handle[i] = this->info.buffers[i];
             };
             descriptorSetHelper.pushDescription<vkh::VkDescriptorBufferInfo>(vkh::VkDescriptorUpdateTemplateEntry{
                 .dstBinding = 1u,
                 .descriptorCount = 1u,
                 .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER
-            }) = bindings;
+            }) = bindings->getDeviceBuffer();
             vkh::AllocateDescriptorSetWithUpdate(device->dispatch, descriptorSetHelper, set, created);
+            return set;
         };
 
         //
@@ -117,17 +118,33 @@ namespace icv {
         };
 
         //
-        virtual void pushBinding(vkt::VectorBase buffer, vkt::uni_arg<BindingInfo> binding) 
+        virtual uintptr_t pushBuffer(vkt::VectorBase buffer) 
         {   
-            binding->buffer = this->info.buffers.size();
+            uintptr_t index = this->info.buffers.size();
             this->info.buffers.push_back(buffer);
+            return index;
+        };
+
+        //
+        virtual uintptr_t pushBinding(vkt::uni_arg<BindingInfo> binding) 
+        {   
+            uintptr_t index = this->info.bindings.size();
             this->info.bindings.push_back(binding);
+            return index;
+        };
+
+        //
+        virtual uintptr_t pushBufferWithBinding(vkt::VectorBase buffer, vkt::uni_arg<BindingInfo> binding) 
+        {   
+            binding->buffer = pushBuffer(buffer);
+            pushBinding(binding);
+            return binding->buffer;
         };
 
         // 
-        virtual void setBinding(uintptr_t index, vkt::VectorBase buffer, vkt::uni_arg<BindingInfo> binding)
+        virtual void setBufferWithBinding(uintptr_t index, vkt::VectorBase buffer, vkt::uni_arg<BindingInfo> binding)
         {
-            binding->buffer = index; // prefer same index
+            //binding->buffer = index; // prefer same index
 
             if (this->info.buffers.size() <= (binding->buffer)) { this->info.buffers.resize((binding->buffer)+1u); };
             if (this->info.bindings.size() <= index) { this->info.bindings.resize(index+1u); };

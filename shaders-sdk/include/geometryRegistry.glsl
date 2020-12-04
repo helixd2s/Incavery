@@ -24,22 +24,22 @@ layout (binding = 1, set = GEOMETRY_REGISTRY_MAP) buffer BindingsBuffer { Bindin
 
 uint8_t readUint8(in uint bufferId, in uint byteOffset) 
 {
-    return buffers[bufferId].data[offset+0u];
+    return buffers[bufferId].data[byteOffset+0u];
 };
 
 uint16_t readUint16(in uint bufferId, in uint byteOffset) 
 {
     return pack16(u8vec2(
-        readUint8(bufferId, offset+0u),
-        readUint8(bufferId, offset+1u)
+        readUint8(bufferId, byteOffset+0u),
+        readUint8(bufferId, byteOffset+1u)
     ));
 };
 
 uint32_t readUint32(in uint bufferId, in uint byteOffset) 
 {
     return pack32(u16vec2(
-        readUint16(bufferId, offset+0u),
-        readUint16(bufferId, offset+2u)
+        readUint16(bufferId, byteOffset+0u),
+        readUint16(bufferId, byteOffset+2u)
     ));
 };
 

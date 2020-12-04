@@ -1,6 +1,15 @@
 #define VMA_IMPLEMENTATION
 
+//
 #include <vkf/swapchain.hpp>
+
+//
+#include <incavery/core.hpp>
+#include <incavery/dataSet.hpp>
+#include <incavery/geometryRegistry.hpp>
+#include <incavery/geometryLevel.hpp>
+#include <incavery/instanceLevel.hpp>
+#include <incavery/renderer.hpp>
 
 // 
 void error(int errnum, const char* errmsg)
@@ -9,7 +18,7 @@ void error(int errnum, const char* errmsg)
 };
 
 // 
-const uint32_t SCR_WIDTH = 800u, SCR_HEIGHT = 600u;
+const uint32_t SCR_WIDTH = 640u, SCR_HEIGHT = 360u;
 
 // 
 int main() {
@@ -66,20 +75,107 @@ int main() {
     auto viewport = vkh::VkViewport{ 0.0f, 0.0f, static_cast<float>(renderArea.extent.width), static_cast<float>(renderArea.extent.height), 0.f, 1.f };
 
 
-    // TODO: Inline Uniforms
-    VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
-    auto pipusage = vkh::VkShaderStageFlags{ .eVertex = 1, .eGeometry = 1, .eFragment = 1, .eCompute = 1, .eRaygen = 1, .eAnyHit = 1, .eClosestHit = 1, .eMiss = 1 };
-    auto indexedf = vkh::VkDescriptorBindingFlags{ .eUpdateAfterBind = 1, .eUpdateUnusedWhilePending = 1, .ePartiallyBound = 1 };
-    auto dflags = vkh::VkDescriptorSetLayoutCreateFlags{ .eUpdateAfterBindPool = 1 };
-    std::vector<VkDescriptorSetLayout> layouts = {};
-    std::vector<vkh::VkPushConstantRange> ranges = { vkh::VkPushConstantRange{.stageFlags = pipusage, .offset = 0u, .size = 16u } };
-    vkh::handleVk(device->dispatch->CreatePipelineLayout(vkh::VkPipelineLayoutCreateInfo{  }.setSetLayouts(layouts).setPushConstantRanges(ranges), nullptr, &pipelineLayout));
 
-    // TODO: Descriptor Sets
-    std::vector<VkDescriptorSet> descriptorSets = {};
+    //
+    std::vector<uint16_t> indices = { 0, 1, 2 };
+    std::vector<glm::vec4> vertices = {
+        glm::vec4(1.f, -1.f, 0.f, 1.f),
+        glm::vec4(-1.f, -1.f, 0.f, 1.f),
+        glm::vec4(0.f,  1.f, 0.f, 1.f)
+    };
+    std::vector<uint32_t> primitiveCounts = { 1u };
+    std::vector<uint32_t> instanceCounts = { 1u };
+
+    //
+    vkt::Vector<uint16_t> indicesBuffer = {};
+    vkt::Vector<glm::vec4> verticesBuffer = {};
+
+    {   // vertices
+        auto size = vertices.size() * sizeof(glm::vec4);
+        auto bufferCreateInfo = vkh::VkBufferCreateInfo{
+            .size = size,
+            .usage = VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT | VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT
+        };
+        auto vmaCreateInfo = vkt::VmaMemoryInfo{
+            .memUsage = VMA_MEMORY_USAGE_GPU_ONLY,
+            .instanceDispatch = instance->dispatch,
+            .deviceDispatch = device->dispatch
+        };
+        auto allocation = std::make_shared<vkt::VmaBufferAllocation>(device->allocator, bufferCreateInfo, vmaCreateInfo);
+        verticesBuffer = vkt::Vector<glm::vec4>(allocation, 0ull, size, sizeof(glm::vec4));
+        //memcpy(verticesBuffer.map(), vertices.data(), size);
+        queue->uploadIntoBuffer(verticesBuffer, vertices.data(), size); // use internal cache for upload buffer
+    };
+
+    {   // indices
+        auto size = indices.size() * sizeof(uint16_t);
+        auto bufferCreateInfo = vkh::VkBufferCreateInfo{
+            .size = size,
+            .usage = VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT | VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR | VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT
+        };
+        auto vmaCreateInfo = vkt::VmaMemoryInfo{
+            .memUsage = VMA_MEMORY_USAGE_GPU_ONLY,
+            .instanceDispatch = instance->dispatch,
+            .deviceDispatch = device->dispatch
+        };
+        auto allocation = std::make_shared<vkt::VmaBufferAllocation>(device->allocator, bufferCreateInfo, vmaCreateInfo);
+        indicesBuffer = vkt::Vector<uint16_t>(allocation, 0ull, size, sizeof(uint16_t));
+        //memcpy(indicesBuffer.map(), indices.data(), size);
+        queue->uploadIntoBuffer(indicesBuffer, indices.data(), size); // use internal cache for upload buffer
+    };
+
+    //
+    auto geometryRegistry = std::make_shared<icv::GeometryRegistry>(device, icv::GeometryRegistryInfo{
+        .maxBindingCount = 8u
+    });
+
+    //
+    auto geometryLevel = std::make_shared<icv::GeometryLevel>(device, icv::GeometryLevelInfo{
+        .maxGeometryCount = 1u
+    });
+
+    // 
+    auto instanceLevel = std::make_shared<icv::InstanceLevel>(device, icv::InstanceLevelInfo{
+        .maxInstanceCount = 1u
+    });
+
+    // 
+    auto renderer = std::make_shared<icv::Renderer>(device, icv::RendererInfo{
+        .geometryRegistry = geometryRegistry, 
+        .instanceLevel = instanceLevel
+    });
+
+    // TODO: separate buffer and binding push
+    geometryRegistry->pushBufferWithBinding(indicesBuffer, icv::BindingInfo{
+        .format = 0u,
+        .buffer = 0u,
+        .offset = 0u,
+        .stride = 2u
+    });
+
+    //
+    instanceLevel->pushInstance(icv::InstanceInfo{
+        .instanceCustomIndex = uint32_t(instanceLevel->pushGeometryLevel(geometryLevel))
+    });
 
 
     // 
+    auto& descriptorSets = renderer->editDescriptorSets();
+    auto& pipelineLayout = renderer->getPipelineLayout();
+
+
+
+    //
+    auto pipusage = vkh::VkShaderStageFlags{ .eVertex = 1, .eGeometry = 1, .eFragment = 1, .eCompute = 1, .eRaygen = 1, .eAnyHit = 1, .eClosestHit = 1, .eMiss = 1 };
+    auto indexedf = vkh::VkDescriptorBindingFlags{ .eUpdateAfterBind = 1, .eUpdateUnusedWhilePending = 1, .ePartiallyBound = 1 };
+    auto dflags = vkh::VkDescriptorSetLayoutCreateFlags{ .eUpdateAfterBindPool = 1 };
+
+
+
+
+
+
+    // graphics pipeline
     vkh::VsGraphicsPipelineCreateInfoConstruction pipelineInfo = {};
     pipelineInfo.stages = {
         vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(std::string("./shaders/render.vert.spv")), VK_SHADER_STAGE_VERTEX_BIT),
@@ -96,6 +192,10 @@ int main() {
     // 
     VkPipeline finalPipeline = {};
     vkh::handleVk(device->dispatch->CreateGraphicsPipelines(device->pipelineCache, 1u, pipelineInfo, nullptr, &finalPipeline));
+
+
+
+
 
     // 
     int64_t currSemaphore = -1;
@@ -134,29 +234,39 @@ int main() {
         if (!commandBuffer) {
             commandBuffer = vkt::createCommandBuffer(device->dispatch, queue->commandPool, false, false); // do reference of cmd buffer
 
-            // Use as present image
-            {
+            {   // Use as present image
                 auto aspect = vkh::VkImageAspectFlags{ .eColor = 1u };
                 vkt::imageBarrier(commandBuffer, vkt::ImageBarrierInfo{
                     .image = framebuffers[currentBuffer].image,
                     .targetLayout = VK_IMAGE_LAYOUT_GENERAL,
                     .originLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
                     .subresourceRange = vkh::VkImageSubresourceRange{ aspect, 0u, 1u, 0u, 1u }
-                });
+                    });
             };
 
-            // Reuse depth as general
-            {
+            {   // Reuse depth as general
                 auto aspect = vkh::VkImageAspectFlags{ .eDepth = 1u, .eStencil = 1u };
                 vkt::imageBarrier(commandBuffer, vkt::ImageBarrierInfo{
                     .image = manager->depthImage.getImage(),
                     .targetLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
                     .originLayout = VK_IMAGE_LAYOUT_GENERAL,
                     .subresourceRange = vkh::VkImageSubresourceRange{ aspect, 0u, 1u, 0u, 1u }
-                });
+                    });
             };
 
-            // 
+            // ray tracing
+            //device->dispatch->CmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR, rayTracingPipeline);
+            //device->dispatch->CmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR, pipelineLayout, 0u, descriptorSets.size(), descriptorSets.data(), 0u, nullptr);
+            //device->dispatch->CmdTraceRaysKHR(commandBuffer, &rayGenSbt, &missSbt, &hitSbt, nullptr, 1280, 720, 1);
+            //vkt::commandBarrier(device->dispatch, commandBuffer);
+
+            // ray query hack
+            //device->dispatch->CmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, rayQueryPipeline);
+            //device->dispatch->CmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipelineLayout, 0u, descriptorSets.size(), descriptorSets.data(), 0u, nullptr);
+            //device->dispatch->CmdDispatch(commandBuffer, 1280u/32u, 720u/4u, 1u);
+            //vkt::commandBarrier(device->dispatch, commandBuffer);
+
+            // rasterization
             device->dispatch->CmdBeginRenderPass(commandBuffer, vkh::VkRenderPassBeginInfo{ .renderPass = renderPass, .framebuffer = framebuffers[currentBuffer].frameBuffer, .renderArea = renderArea, .clearValueCount = 2u, .pClearValues = reinterpret_cast<vkh::VkClearValue*>(&clearValues[0]) }, VK_SUBPASS_CONTENTS_INLINE);
             device->dispatch->CmdSetViewport(commandBuffer, 0u, 1u, viewport);
             device->dispatch->CmdSetScissor(commandBuffer, 0u, 1u, renderArea);
@@ -174,7 +284,7 @@ int main() {
                     .targetLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
                     .originLayout = VK_IMAGE_LAYOUT_GENERAL,
                     .subresourceRange = vkh::VkImageSubresourceRange{ aspect, 0u, 1u, 0u, 1u }
-                });
+                    });
             };
 
             // Reuse depth as general
@@ -185,7 +295,7 @@ int main() {
                     .targetLayout = VK_IMAGE_LAYOUT_GENERAL,
                     .originLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
                     .subresourceRange = vkh::VkImageSubresourceRange{ aspect, 0u, 1u, 0u, 1u }
-                });
+                    });
             };
 
             // 
@@ -197,7 +307,7 @@ int main() {
             .waitSemaphoreCount = static_cast<uint32_t>(waitSemaphores.size()), .pWaitSemaphores = waitSemaphores.data(), .pWaitDstStageMask = waitStages.data(),
             .commandBufferCount = 1u, .pCommandBuffers = &commandBuffer,
             .signalSemaphoreCount = static_cast<uint32_t>(signalSemaphores.size()), .pSignalSemaphores = signalSemaphores.data()
-        }, framebuffers[currentBuffer].waitFence));
+            }, framebuffers[currentBuffer].waitFence));
 
         // 
         waitSemaphores = { framebuffers[c_semaphore].drawSemaphore };
@@ -205,7 +315,7 @@ int main() {
             .waitSemaphoreCount = static_cast<uint32_t>(waitSemaphores.size()), .pWaitSemaphores = waitSemaphores.data(),
             .swapchainCount = 1, .pSwapchains = &swapchain,
             .pImageIndices = &currentBuffer, .pResults = nullptr
-        }));
+            }));
 
 
 
