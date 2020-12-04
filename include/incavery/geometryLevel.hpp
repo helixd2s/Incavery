@@ -67,8 +67,9 @@ namespace icv {
     // 
     struct GeometryLevelInfo 
     {
+        vkt::uni_ptr<GeometryRegistry> registry = {};
         std::vector<GeometryInfo> geometries = {};
-        
+
         uint32_t maxGeometryCount = 128u;
     };
 
@@ -76,7 +77,6 @@ namespace icv {
     class GeometryLevel: public DeviceBased 
     {
         protected: 
-        vkt::uni_ptr<GeometryRegistry> registry = {};
 
         // 
         GeometryLevelInfo info = {};
@@ -152,6 +152,7 @@ namespace icv {
         // 
         virtual void buildCommand(VkCommandBuffer commandBuffer) 
         {   
+            if (!acceleration) { this->makeAccelerationStructure(); };
             {   // TODO: indirect condition
                 geometries->copyFromVector(info.geometries);
                 geometries->cmdCopyFromCpu(commandBuffer);
@@ -190,11 +191,11 @@ namespace icv {
                     buildInfo.builds[i].geometry = vkh::VkAccelerationStructureGeometryTrianglesDataKHR
                     {
                         .vertexFormat = info.geometries[i].useHalf ? VK_FORMAT_R16G16B16_SFLOAT : VK_FORMAT_R32G32B32_SFLOAT,
-                        .vertexData = ( registry->getInfo().buffers[info.geometries[i].vertex.buffer] ).deviceAddress(),
+                        .vertexData = ( info.registry->getInfo().buffers[info.geometries[i].vertex.buffer] ).deviceAddress(),
                         .vertexStride = info.geometries[i].vertex.stride,
                         .maxVertex = info.geometries[i].vertex.max,
                         .indexType = getIndexType(info.geometries[i].index.type),
-                        .indexData = ( registry->getInfo().buffers[info.geometries[i].index.buffer] ).deviceAddress(),
+                        .indexData = ( info.registry->getInfo().buffers[info.geometries[i].index.buffer] ).deviceAddress(),
                         .transformData = geometries->getDeviceBuffer().deviceAddress()
                     };
 
@@ -239,6 +240,19 @@ namespace icv {
                 buildInfo.info.dstAccelerationStructure = this->acceleration;
                 buildInfo.info.scratchData = this->accScratch;
             };
+        };
+
+        //
+        uintptr_t pushGeometry(vkt::uni_arg<GeometryInfo> geometryInfo) {
+            uintptr_t last = info.geometries.size();
+            info.geometries.push_back(geometryInfo);
+            return last;
+        };
+
+        //
+        void setGeometry(uintptr_t index, vkt::uni_arg<GeometryInfo> geometryInfo) {
+            if (info.geometries.size() <= index) { info.geometries.resize(index+1u); };
+            info.geometries[index] = geometryInfo;
         };
 
         // 

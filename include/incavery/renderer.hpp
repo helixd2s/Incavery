@@ -28,6 +28,17 @@ namespace icv {
         // planned multiple viewports
         vkh::VkViewport viewport = {};
         vkh::VkRect2D scissor = {};
+
+        //
+        FramebufferInfo& transfer(vkt::uni_ptr<vkf::Queue> queue) {
+            queue->submitOnce([&](VkCommandBuffer commandBuffer){
+                for (auto& image : this->images) {
+                    image.transfer(commandBuffer);
+                };
+                depthImage.transfer(commandBuffer);
+            });
+            return *this;
+        };
     };
 
     struct PipelineInfo
@@ -525,7 +536,7 @@ namespace icv {
                 } else {
                     auto buffer = info.geometryRegistry->getInfo().buffers[geometryInfo.index.buffer];
                     device->dispatch->CmdBindIndexBuffer(commandBuffer, buffer, buffer.offset(), getIndexType(geometryInfo.index.type));
-                    device->dispatch->CmdDrawIndexed(commandBuffer, geometryInfo.primitive.count*3u, 1u, geometryInfo.vertex.first, 0, 0u);
+                    device->dispatch->CmdDrawIndexed(commandBuffer, geometryInfo.primitive.count*3u, 1u, 0u, geometryInfo.vertex.first, 0u);
                 };
             };
 

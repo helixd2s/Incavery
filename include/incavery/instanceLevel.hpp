@@ -14,6 +14,7 @@ namespace icv {
     // 
     struct InstanceLevelInfo 
     {
+        vkt::uni_ptr<GeometryRegistry> registry = {};
         std::vector<vkt::uni_ptr<GeometryLevel>> geometries = {}; // ONLY for descriptor sets
         std::vector<InstanceInfo> instances = {};
         
@@ -23,7 +24,7 @@ namespace icv {
     // 
     class InstanceLevel: public DeviceBased {
         protected: 
-        vkt::uni_ptr<GeometryRegistry> registry = {};
+        
 
         // 
         InstanceLevelInfo info = {};
@@ -136,6 +137,7 @@ namespace icv {
         // TODO: copy buffer
         virtual void buildCommand(VkCommandBuffer commandBuffer) 
         {
+            if (!acceleration) { this->makeAccelerationStructure(); };
             //for (uint32_t i=0;i<this->info.geometries.size();i++) {
             //    this->info.geometries[i]->buildCommand(commandBuffer);
             //};
@@ -143,8 +145,9 @@ namespace icv {
                 instances->copyFromVector(info.instances);
                 instances->cmdCopyFromCpu(commandBuffer);
             };
+            buildInfo.ranges.resize(1u);
             buildInfo.ranges[0u].primitiveCount = info.instances.size();
-            
+
             const auto ptr = &buildInfo.ranges[0u];
             device->dispatch->CmdBuildAccelerationStructuresKHR(commandBuffer, 1u, &buildInfo.info, &ptr);
         };

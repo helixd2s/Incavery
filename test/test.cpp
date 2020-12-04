@@ -125,24 +125,43 @@ int main() {
     };
 
     //
-    auto geometryRegistry = std::make_shared<icv::GeometryRegistry>(device, icv::GeometryRegistryInfo{
+    vkt::uni_ptr<icv::GeometryRegistry> geometryRegistry = std::make_shared<icv::GeometryRegistry>(device, icv::GeometryRegistryInfo{
         .maxBindingCount = 8u
     });
 
     //
-    auto geometryLevel = std::make_shared<icv::GeometryLevel>(device, icv::GeometryLevelInfo{
+    vkt::uni_ptr<icv::GeometryLevel> geometryLevel = std::make_shared<icv::GeometryLevel>(device, icv::GeometryLevelInfo{
+        .registry = geometryRegistry,
         .maxGeometryCount = 1u
     });
 
     // 
-    auto instanceLevel = std::make_shared<icv::InstanceLevel>(device, icv::InstanceLevelInfo{
+    vkt::uni_ptr<icv::InstanceLevel> instanceLevel = std::make_shared<icv::InstanceLevel>(device, icv::InstanceLevelInfo{
+        .registry = geometryRegistry,
         .maxInstanceCount = 1u
     });
 
     // 
-    auto renderer = std::make_shared<icv::Renderer>(device, icv::RendererInfo{
+    vkt::uni_ptr<icv::Renderer> renderer = std::make_shared<icv::Renderer>(device, icv::RendererInfo{
         .geometryRegistry = geometryRegistry, 
         .instanceLevel = instanceLevel
+    });
+
+    //
+    geometryLevel->pushGeometry(icv::GeometryInfo{
+        .vertex = {
+            .buffer = 1u,
+            .offset = 0u,
+            .stride = sizeof(glm::vec4),
+            .max = 3u
+        },
+        .index = {
+            .buffer = 0u,
+            .type = 2u
+        },
+        .primitive = {
+            .count = 1u
+        },
     });
 
     // TODO: separate buffer and binding push
@@ -153,11 +172,27 @@ int main() {
         .stride = 2u
     });
 
+    geometryRegistry->pushBufferWithBinding(verticesBuffer, icv::BindingInfo{
+        .format = 0u,
+        .buffer = 1u,
+        .offset = 0u,
+        .stride = sizeof(glm::vec4)
+    });
+
+    //
+    //geometryLevel
+
     //
     instanceLevel->pushInstance(icv::InstanceInfo{
         .instanceCustomIndex = uint32_t(instanceLevel->pushGeometryLevel(geometryLevel))
     });
 
+    // create renderer
+    renderer->createRenderPass();
+    renderer->createPipelineLayout({});
+    renderer->createFramebuffer(vkh::VkExtent3D{ renderArea.extent.width, renderArea.extent.height, 1u }).transfer(queue);
+    renderer->createPipeline(icv::PipelineCreateInfo{});
+    renderer->makeDescriptorSets();
 
     // 
     auto& descriptorSets = renderer->editDescriptorSets();
@@ -264,7 +299,12 @@ int main() {
             //device->dispatch->CmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, rayQueryPipeline);
             //device->dispatch->CmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipelineLayout, 0u, descriptorSets.size(), descriptorSets.data(), 0u, nullptr);
             //device->dispatch->CmdDispatch(commandBuffer, 1280u/32u, 720u/4u, 1u);
-            //vkt::commandBarrier(device->dispatch, commandBuffer);
+
+            // 
+            geometryLevel->buildCommand(commandBuffer);
+            instanceLevel->buildCommand(commandBuffer);
+            renderer->createRenderingCommand(commandBuffer);
+            vkt::commandBarrier(device->dispatch, commandBuffer);
 
             // rasterization
             device->dispatch->CmdBeginRenderPass(commandBuffer, vkh::VkRenderPassBeginInfo{ .renderPass = renderPass, .framebuffer = framebuffers[currentBuffer].frameBuffer, .renderArea = renderArea, .clearValueCount = 2u, .pClearValues = reinterpret_cast<vkh::VkClearValue*>(&clearValues[0]) }, VK_SUBPASS_CONTENTS_INLINE);

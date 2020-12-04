@@ -11,6 +11,10 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE -DVKT_CORE_USE_VMA -DVKT_USE_
 target_link_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/lib)
 target_link_libraries(${PROJECT_NAME} ${CMAKE_DL_LIBS} glfw3)
 
+if (MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
+endif()
+
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
