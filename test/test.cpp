@@ -2,6 +2,7 @@
 
 //
 #include <vkf/swapchain.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 //
 #include <incavery/core.hpp>
@@ -19,6 +20,13 @@ void error(int errnum, const char* errmsg)
 
 // 
 const uint32_t SCR_WIDTH = 640u, SCR_HEIGHT = 360u;
+
+//
+struct Constants
+{
+    glm::mat4x4 perspective = glm::mat4x4(1.f);
+    glm::mat3x4 lookAt = glm::mat3x4(1.f);
+};
 
 // 
 int main() {
@@ -75,13 +83,15 @@ int main() {
     auto viewport = vkh::VkViewport{ 0.0f, 0.0f, static_cast<float>(renderArea.extent.width), static_cast<float>(renderArea.extent.height), 0.f, 1.f };
 
 
+    //
+    Constants constants = {};
 
     //
     std::vector<uint16_t> indices = { 0, 1, 2 };
     std::vector<glm::vec4> vertices = {
-        glm::vec4(1.f, -1.f, 0.f, 1.f),
-        glm::vec4(-1.f, -1.f, 0.f, 1.f),
-        glm::vec4(0.f,  1.f, 0.f, 1.f)
+        glm::vec4(1.f, -1.f, 1.f, 1.f),
+        glm::vec4(-1.f, -1.f, 1.f, 1.f),
+        glm::vec4(0.f,  1.f, 1.f, 1.f)
     };
     std::vector<uint32_t> primitiveCounts = { 1u };
     std::vector<uint32_t> instanceCounts = { 1u };
@@ -89,6 +99,7 @@ int main() {
     //
     vkt::Vector<uint16_t> indicesBuffer = {};
     vkt::Vector<glm::vec4> verticesBuffer = {};
+    vkt::Vector<Constants> constantsBuffer = {};
 
     {   // vertices
         auto size = vertices.size() * sizeof(glm::vec4);
@@ -123,6 +134,60 @@ int main() {
         //memcpy(indicesBuffer.map(), indices.data(), size);
         queue->uploadIntoBuffer(indicesBuffer, indices.data(), size); // use internal cache for upload buffer
     };
+
+    {   // constants (with direct host access)
+        auto size = sizeof(Constants);
+        auto bufferCreateInfo = vkh::VkBufferCreateInfo{
+            .size = size,
+            .usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT
+        };
+        auto vmaCreateInfo = vkt::VmaMemoryInfo{
+            .memUsage = VMA_MEMORY_USAGE_CPU_TO_GPU,
+            .instanceDispatch = instance->dispatch,
+            .deviceDispatch = device->dispatch
+        };
+        auto allocation = std::make_shared<vkt::VmaBufferAllocation>(device->allocator, bufferCreateInfo, vmaCreateInfo);
+        constantsBuffer = vkt::Vector<Constants>(allocation, 0ull, size, sizeof(Constants));
+        memcpy(constantsBuffer.map(), &constants, size);
+        //queue->uploadIntoBuffer(constantsBuffer, &constants, size); // use internal cache for upload buffer
+    };
+
+
+
+    //
+    auto pipusage = vkh::VkShaderStageFlags{ .eVertex = 1, .eGeometry = 1, .eFragment = 1, .eCompute = 1, .eRaygen = 1, .eAnyHit = 1, .eClosestHit = 1, .eMiss = 1 };
+    auto indexedf = vkh::VkDescriptorBindingFlags{ .eUpdateAfterBind = 1, .eUpdateUnusedWhilePending = 1, .ePartiallyBound = 1 };
+    auto dflags = vkh::VkDescriptorSetLayoutCreateFlags{ .eUpdateAfterBindPool = 1 };
+
+    //
+    VkDescriptorSetLayout constantsLayout = VK_NULL_HANDLE;
+    VkDescriptorSet constantsSet = VK_NULL_HANDLE;
+
+    // create descriptor set layout
+    vkh::VsDescriptorSetLayoutCreateInfoHelper descriptorSetLayoutHelper(vkh::VkDescriptorSetLayoutCreateInfo{});
+    descriptorSetLayoutHelper.pushBinding(vkh::VkDescriptorSetLayoutBinding{
+        .binding = 0u,
+        .descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+        .descriptorCount = 1u, // TODO: fix descriptor counting
+        .stageFlags = pipusage
+    }, vkh::VkDescriptorBindingFlags{});
+    vkh::handleVk(device->dispatch->CreateDescriptorSetLayout(descriptorSetLayoutHelper.format(), nullptr, &constantsLayout));
+
+
+
+    // create descriptor set
+    vkh::VsDescriptorSetCreateInfoHelper descriptorSetHelper(constantsLayout, device->descriptorPool);
+    descriptorSetHelper.pushDescription<vkh::VkDescriptorBufferInfo>(vkh::VkDescriptorUpdateTemplateEntry{
+        .dstBinding = 0u,
+        .descriptorCount = 1u,
+        .descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER
+    }) = constantsBuffer;
+
+    bool created = false;
+    vkh::AllocateDescriptorSetWithUpdate(device->dispatch, descriptorSetHelper, constantsSet, created);
+
+
+
 
     //
     vkt::uni_ptr<icv::GeometryRegistry> geometryRegistry = std::make_shared<icv::GeometryRegistry>(device, icv::GeometryRegistryInfo{
@@ -189,7 +254,7 @@ int main() {
 
     // create renderer
     renderer->createRenderPass();
-    renderer->createPipelineLayout({});
+    renderer->createPipelineLayout({ constantsLayout });
     renderer->createFramebuffer(vkh::VkExtent3D{ renderArea.extent.width, renderArea.extent.height, 1u }).transfer(queue);
     renderer->createPipeline(icv::PipelineCreateInfo{});
     renderer->makeDescriptorSets();
@@ -198,13 +263,8 @@ int main() {
     auto& descriptorSets = renderer->editDescriptorSets();
     auto& pipelineLayout = renderer->getPipelineLayout();
 
-
-
-    //
-    auto pipusage = vkh::VkShaderStageFlags{ .eVertex = 1, .eGeometry = 1, .eFragment = 1, .eCompute = 1, .eRaygen = 1, .eAnyHit = 1, .eClosestHit = 1, .eMiss = 1 };
-    auto indexedf = vkh::VkDescriptorBindingFlags{ .eUpdateAfterBind = 1, .eUpdateUnusedWhilePending = 1, .ePartiallyBound = 1 };
-    auto dflags = vkh::VkDescriptorSetLayoutCreateFlags{ .eUpdateAfterBindPool = 1 };
-
+    // additional descriptor set
+    descriptorSets.push_back(constantsSet);
 
 
 
@@ -229,7 +289,9 @@ int main() {
     vkh::handleVk(device->dispatch->CreateGraphicsPipelines(device->pipelineCache, 1u, pipelineInfo, nullptr, &finalPipeline));
 
 
-
+    // set perspective
+    constants.perspective = glm::transpose(glm::perspective(60.f/180*glm::pi<float>(), viewport.width/viewport.height, 0.001f, 10000.f));
+    constants.lookAt = glm::mat3x4(glm::transpose(glm::lookAt(glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.f, 1.f, 0.f))));
 
 
     // 
@@ -276,7 +338,7 @@ int main() {
                     .targetLayout = VK_IMAGE_LAYOUT_GENERAL,
                     .originLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
                     .subresourceRange = vkh::VkImageSubresourceRange{ aspect, 0u, 1u, 0u, 1u }
-                    });
+                });
             };
 
             {   // Reuse depth as general
@@ -286,7 +348,7 @@ int main() {
                     .targetLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
                     .originLayout = VK_IMAGE_LAYOUT_GENERAL,
                     .subresourceRange = vkh::VkImageSubresourceRange{ aspect, 0u, 1u, 0u, 1u }
-                    });
+                });
             };
 
             // ray tracing
@@ -299,6 +361,10 @@ int main() {
             //device->dispatch->CmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, rayQueryPipeline);
             //device->dispatch->CmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipelineLayout, 0u, descriptorSets.size(), descriptorSets.data(), 0u, nullptr);
             //device->dispatch->CmdDispatch(commandBuffer, 1280u/32u, 720u/4u, 1u);
+
+            // 
+            memcpy(constantsBuffer.map(), &constants, sizeof(Constants));
+            vkt::commandBarrier(device->dispatch, commandBuffer);
 
             // 
             geometryLevel->buildCommand(commandBuffer);
@@ -324,7 +390,7 @@ int main() {
                     .targetLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
                     .originLayout = VK_IMAGE_LAYOUT_GENERAL,
                     .subresourceRange = vkh::VkImageSubresourceRange{ aspect, 0u, 1u, 0u, 1u }
-                    });
+                });
             };
 
             // Reuse depth as general
@@ -335,7 +401,7 @@ int main() {
                     .targetLayout = VK_IMAGE_LAYOUT_GENERAL,
                     .originLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
                     .subresourceRange = vkh::VkImageSubresourceRange{ aspect, 0u, 1u, 0u, 1u }
-                    });
+                });
             };
 
             // 
@@ -347,7 +413,7 @@ int main() {
             .waitSemaphoreCount = static_cast<uint32_t>(waitSemaphores.size()), .pWaitSemaphores = waitSemaphores.data(), .pWaitDstStageMask = waitStages.data(),
             .commandBufferCount = 1u, .pCommandBuffers = &commandBuffer,
             .signalSemaphoreCount = static_cast<uint32_t>(signalSemaphores.size()), .pSignalSemaphores = signalSemaphores.data()
-            }, framebuffers[currentBuffer].waitFence));
+        }, framebuffers[currentBuffer].waitFence));
 
         // 
         waitSemaphores = { framebuffers[c_semaphore].drawSemaphore };
@@ -355,7 +421,7 @@ int main() {
             .waitSemaphoreCount = static_cast<uint32_t>(waitSemaphores.size()), .pWaitSemaphores = waitSemaphores.data(),
             .swapchainCount = 1, .pSwapchains = &swapchain,
             .pImageIndices = &currentBuffer, .pResults = nullptr
-            }));
+        }));
 
 
 

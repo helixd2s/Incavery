@@ -34,6 +34,12 @@ layout(push_constant) uniform pushConstants {
     uint reserved1;
 } pushed;
 
+//
+layout(binding = 0, set = 3) uniform Constants {
+    mat4x4 perspective;
+    mat3x4 lookAt;
+} constants;
+
 // 
 void main() 
 {
@@ -55,7 +61,7 @@ void main()
         barycentric = vec4(bary[i], 1.f);
 
         // TODO: perspective projection
-        gl_Position = transformed; // * perspective;
+        gl_Position = vec4(transformed * constants.lookAt, 1.f) * constants.perspective;
         EmitVertex();
     };
     EndPrimitive();
