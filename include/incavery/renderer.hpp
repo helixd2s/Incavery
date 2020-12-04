@@ -516,7 +516,15 @@ namespace icv {
                 // 
                 device->dispatch->CmdPushConstants(commandBuffer, pipeline.layout, pipusage, 0u, sizeof(PushConstantInfo), &item.constants);
                 device->dispatch->CmdBindVertexBuffers2EXT(commandBuffer, 0u, buffers.size(), buffers.data(), offsets.data(), ranges.data(), strides.data());
-                device->dispatch->CmdDraw(commandBuffer, geometryInfo.primitive.count*3u, 1, 0, 0);
+
+                // rasterize command
+                if (geometryInfo.index.type == 0u) {
+                    device->dispatch->CmdDraw(commandBuffer, geometryInfo.primitive.count*3u, 1u, geometryInfo.vertex.first, 0u);
+                } else {
+                    auto buffer = info.geometryRegistry->info.buffers[geometryInfo.index.buffer];
+                    device->dispatch->CmdBindIndexBuffer(commandBuffer, buffer, buffer.offset(), getIndexType(geometryInfo.index.type));
+                    device->dispatch->CmdDrawIndexed(commandBuffer, geometryInfo.primitive.count*3u, 1u, geometryInfo.vertex.first, 0, 0u);
+                };
             };
 
             {
