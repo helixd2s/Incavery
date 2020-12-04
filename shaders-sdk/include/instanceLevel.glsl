@@ -16,7 +16,6 @@ struct InstanceInfo
 
 //
 layout (binding = 0, set = INSTANCE_LEVEL_MAP) buffer InstanceBuffer { InstanceInfo instances[]; };
-layout (binding = 1, set = INSTANCE_LEVEL_MAP) uniform accelerationStructureEXT acceleration;
 
 // 
 struct Attributes 
