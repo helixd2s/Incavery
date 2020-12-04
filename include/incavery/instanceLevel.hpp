@@ -9,7 +9,7 @@
 namespace icv {
 
     //
-    using InstanceInfo = VkAccelerationStructureInstanceKHR;
+    using InstanceInfo = vkh::VkAccelerationStructureInstanceKHR;
 
     // 
     struct InstanceLevelInfo 

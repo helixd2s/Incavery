@@ -18,4 +18,5 @@ layout (location = 0) out vec4 position;
 void main() 
 {
     position = vec4(vertex.xyz, 1.f);
+    gl_Position = position;
 };

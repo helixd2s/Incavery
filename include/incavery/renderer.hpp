@@ -520,6 +520,7 @@ namespace icv {
                 auto& geometryInfo = geometryLevelInfo.geometries[item.constants.geometryId];
 
                 // 
+                auto& indexBuffer = geometryRegistryInfo.buffers[geometryInfo.index.buffer];
                 auto& vertexBuffer = geometryRegistryInfo.buffers[geometryInfo.vertex.buffer];
                 std::vector<VkBuffer> buffers = { vertexBuffer };
                 std::vector<VkDeviceSize> offsets = { vertexBuffer.offset() + geometryInfo.vertex.offset };
@@ -534,8 +535,8 @@ namespace icv {
                 if (geometryInfo.index.type == 0u) {
                     device->dispatch->CmdDraw(commandBuffer, geometryInfo.primitive.count*3u, 1u, geometryInfo.vertex.first, 0u);
                 } else {
-                    auto buffer = info.geometryRegistry->getInfo().buffers[geometryInfo.index.buffer];
-                    device->dispatch->CmdBindIndexBuffer(commandBuffer, buffer, buffer.offset(), getIndexType(geometryInfo.index.type));
+                    
+                    device->dispatch->CmdBindIndexBuffer(commandBuffer, indexBuffer, indexBuffer.offset(), getIndexType(geometryInfo.index.type));
                     device->dispatch->CmdDrawIndexed(commandBuffer, geometryInfo.primitive.count*3u, 1u, 0u, geometryInfo.vertex.first, 0u);
                 };
             };
@@ -549,14 +550,13 @@ namespace icv {
                     device->dispatch->CmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.layout, 0u, descriptorSets.size(), descriptorSets.data(), 0u, nullptr);
                 };
 
-                {   // 
+                {   // draw opaque
                     device->dispatch->CmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.opaqueRasterization);
-
-                    // draw opaque
                     for (auto& item : opaque) { drawItem(item); };
                     vkt::commandBarrier(device->dispatch, commandBuffer);
 
                     // draw translucent
+                    device->dispatch->CmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.translucentRasterization);
                     for (auto& item : translucent) { drawItem(item); };
                     vkt::commandBarrier(device->dispatch, commandBuffer);
                 };

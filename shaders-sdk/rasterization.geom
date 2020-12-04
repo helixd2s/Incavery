@@ -53,7 +53,6 @@ void main()
         original = position[i];
         transformed = vec4(vec4(position[i] * geometryInfo.transform, 1.f) * instanceInfo.transform, 1.f);
         barycentric = vec4(bary[i], 1.f);
-        
 
         // TODO: perspective projection
         gl_Position = transformed; // * perspective;
