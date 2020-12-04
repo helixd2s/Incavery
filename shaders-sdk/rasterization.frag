@@ -15,7 +15,7 @@
 #include "./include/geometryRegistry.glsl"
 #include "./include/instanceLevel.glsl"
 #include "./include/material.glsl"
-#include "./include/rayTracing.glsl"
+//#include "./include/rayTracing.glsl"
 
 //
 #ifdef OPAQUE

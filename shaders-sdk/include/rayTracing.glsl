@@ -4,25 +4,11 @@
 #include "./driver.glsl"
 #include "./constants.glsl"
 #include "./common.glsl"
-#include "./framebuffer.glsl"
 #include "./geometryRegistry.glsl"
 #include "./instanceLevel.glsl"
 #include "./material.glsl"
 
 layout (binding = 1, set = INSTANCE_LEVEL_MAP) uniform accelerationStructureEXT acceleration;
-
-struct RayData
-{
-    vec4 origin;
-    vec4 direction;
-    
-};
-
-struct IntersectionInfo 
-{
-    vec3 barycentric; float hitT;
-    uint instanceId, geometryId, primitiveId, reserved0;
-};
 
 IntersectionInfo traceRays(in RayData rays, in float maxT) {
     rayQueryEXT rayQuery;

@@ -17,8 +17,12 @@
 layout (local_size_x = 32, local_size_y = 24, local_size_z = 1) in;
 
 
-// 
+// TODO: real ray-tracing 
 void main() 
 {
-    
+    uvec2 launchId = gl_GlobalInvocationID.xy;
+
+    // how from rasterization 
+    vec4 barycentric = imageLoad(imageBuffers[0], ivec2(launchId));
+    imageStore(imageBuffers[2], ivec2(launchId), vec4(barycentric.xyz, 1.f));
 };

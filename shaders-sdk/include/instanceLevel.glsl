@@ -1,6 +1,11 @@
 #ifndef INSTANCE_LEVEL_GLSL
 #define INSTANCE_LEVEL_GLSL
 
+#include "./driver.glsl"
+#include "./constants.glsl"
+#include "./common.glsl"
+#include "./geometryRegistry.glsl"
+
 #ifndef INSTANCE_LEVEL_MAP
 #define INSTANCE_LEVEL_MAP 2
 #endif
@@ -87,7 +92,8 @@ struct AttributeInterpolated
 };
 
 //
-uint readIndex(inout IndexInfo indexInfo, in uint primitiveId) {
+uint readIndex(inout IndexInfo indexInfo, in uint primitiveId) 
+{
     if (indexInfo.type == 1u) { return readUint32(indexInfo.bufferId, primitiveId*3u*4u); };
     if (indexInfo.type == 2u) { return readUint16(indexInfo.bufferId, primitiveId*3u*2u); };
     if (indexInfo.type == 3u) { return readUint8(indexInfo.bufferId, primitiveId*3u); };
@@ -95,18 +101,21 @@ uint readIndex(inout IndexInfo indexInfo, in uint primitiveId) {
 };
 
 // 
-uvec3 readIndices(inout IndexInfo indexInfo, in uint primitiveId) {
+uvec3 readIndices(inout IndexInfo indexInfo, in uint primitiveId) 
+{
     return uvec3(readIndex(indexInfo, primitiveId), readIndex(indexInfo, primitiveId+1u), readIndex(indexInfo, primitiveId+2u));
 };
 
 //
-vec4 readVertex(inout VertexInfo vertexInfo, in uint index) {
+vec4 readVertex(inout VertexInfo vertexInfo, in uint index) 
+{
     uint offset = vertexInfo.stride * index + vertexInfo.offset;
     return vec4(readFloat4(vertexInfo.bufferId, offset).xyz, 1.f);
 };
 
 //
-mat3x4 readVertices(inout VertexInfo vertexInfo, in uvec3 indices) {
+mat3x4 readVertices(inout VertexInfo vertexInfo, in uvec3 indices) 
+{
     return mat3x4(
         readVertex(vertexInfo, indices.x),
         readVertex(vertexInfo, indices.y),
@@ -115,13 +124,15 @@ mat3x4 readVertices(inout VertexInfo vertexInfo, in uvec3 indices) {
 };
 
 // 
-GeometryInfo readGeometryInfo(in uint instanceId, in uint geometryId) {
+GeometryInfo readGeometryInfo(in uint instanceId, in uint geometryId) 
+{
     uint customIndex = bitfieldExtract(instances[instanceId].customIndex24_mask8, 0, 24);
     return registry[customIndex].geometries[geometryId];
 };
 
 //
-AttributeMap readAttributes(inout Attributes attributes, in uvec3 indices) {
+AttributeMap readAttributes(inout Attributes attributes, in uvec3 indices) 
+{
     AttributeMap map;
     map.texcoords = readAttribute(attributes.texcoords, indices);
     map.normals = readAttribute(attributes.normals, indices);
@@ -131,12 +142,13 @@ AttributeMap readAttributes(inout Attributes attributes, in uvec3 indices) {
 };
 
 //
-AttributeInterpolated interpolateAttributes(inout AttributeMap map, in vec3 barycentric) {
+AttributeInterpolated interpolateAttributes(inout AttributeMap map, in vec3 barycentric) 
+{
     AttributeInterpolated interpolated;
-    interpolated.texcoords = barycentric * map.texcoords;
-    interpolated.normals = barycentric * map.normals;
-    interpolated.tangents = barycentric * map.tangents;
-    interpolated.colors = barycentric * map.colors;
+    interpolated.texcoords = map.texcoords * barycentric;
+    interpolated.normals = map.normals * barycentric;
+    interpolated.tangents = map.tangents * barycentric;
+    interpolated.colors = map.colors * barycentric;
     return interpolated;
 };
 
