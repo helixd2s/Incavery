@@ -23,9 +23,6 @@ namespace icv {
         uint32_t buffer = 0u;
         uint32_t offset = 0u;
         uint32_t stride = 16u;
-
-        uint32_t max = 1u;
-        uint32_t first = 0u;
     };
 
     // 
@@ -33,7 +30,8 @@ namespace icv {
     {
         uint32_t buffer = 0u;
         uint32_t type = 0u; // 0 = none, 1 = uint32_t, 2 = uint16_t, 3 = uint8_t
-        
+        uint32_t first = 0u;
+        uint32_t max = 1u;
     };
 
     //
@@ -160,7 +158,7 @@ namespace icv {
             buildInfo.ranges.resize(info.geometries.size());
             for (uint32_t i=0;i<buildInfo.builds.size();i++) 
             {   // 
-                buildInfo.ranges[i].firstVertex = info.geometries[i].vertex.first;
+                buildInfo.ranges[i].firstVertex = info.geometries[i].index.first;
                 buildInfo.ranges[i].primitiveCount = info.geometries[i].primitive.count;
                 buildInfo.ranges[i].primitiveOffset = info.geometries[i].vertex.offset;
                 buildInfo.ranges[i].transformOffset = sizeof(GeometryInfo) * i;
@@ -181,7 +179,7 @@ namespace icv {
                 for (uint32_t i=0;i<buildInfo.builds.size();i++) 
                 {
                     // fill ranges
-                    buildInfo.ranges[i].firstVertex = info.geometries[i].vertex.first;
+                    buildInfo.ranges[i].firstVertex = info.geometries[i].index.first;
                     buildInfo.ranges[i].primitiveCount = info.geometries[i].primitive.count;
                     buildInfo.ranges[i].primitiveOffset = info.geometries[i].vertex.offset;
                     buildInfo.ranges[i].transformOffset = sizeof(GeometryInfo) * i;
@@ -193,7 +191,7 @@ namespace icv {
                         .vertexFormat = info.geometries[i].useHalf ? VK_FORMAT_R16G16B16_SFLOAT : VK_FORMAT_R32G32B32_SFLOAT,
                         .vertexData = ( info.registry->getInfo().buffers[info.geometries[i].vertex.buffer] ).deviceAddress(),
                         .vertexStride = info.geometries[i].vertex.stride,
-                        .maxVertex = info.geometries[i].vertex.max,
+                        .maxVertex = info.geometries[i].index.max,
                         .indexType = getIndexType(info.geometries[i].index.type),
                         .indexData = ( info.registry->getInfo().buffers[info.geometries[i].index.buffer] ).deviceAddress(),
                         .transformData = geometries->getDeviceBuffer().deviceAddress()

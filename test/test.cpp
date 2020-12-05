@@ -219,12 +219,12 @@ int main() {
         .vertex = {
             .buffer = 1u,
             .offset = 0u,
-            .stride = sizeof(glm::vec4),
-            .max = 3u
+            .stride = sizeof(glm::vec4)
         },
         .index = {
             .buffer = 0u,
-            .type = 2u
+            .type = 2u,
+            .max = 3u
         },
         .primitive = {
             .count = 1u

@@ -533,11 +533,11 @@ namespace icv {
 
                 // rasterize command
                 if (geometryInfo.index.type == 0u) {
-                    device->dispatch->CmdDraw(commandBuffer, geometryInfo.primitive.count*3u, 1u, geometryInfo.vertex.first, 0u);
+                    device->dispatch->CmdDraw(commandBuffer, geometryInfo.primitive.count*3u, 1u, geometryInfo.index.first, 0u);
                 } else {
                     
                     device->dispatch->CmdBindIndexBuffer(commandBuffer, indexBuffer, indexBuffer.offset(), getIndexType(geometryInfo.index.type));
-                    device->dispatch->CmdDrawIndexed(commandBuffer, geometryInfo.primitive.count*3u, 1u, 0u, geometryInfo.vertex.first, 0u);
+                    device->dispatch->CmdDrawIndexed(commandBuffer, geometryInfo.primitive.count*3u, 1u, 0u, geometryInfo.index.first, 0u);
                 };
             };
 

@@ -40,9 +40,6 @@ struct VertexInfo
     uint32_t bufferId;
     uint32_t offset;
     uint32_t stride;
-
-    uint32_t max;
-    uint32_t first;
 };
 
 // 
@@ -50,6 +47,8 @@ struct IndexInfo
 {
     uint32_t bufferId;
     uint32_t type; // 0 = none, 1 = uint32_t, 2 = uint16_t, 3 = uint8_t
+    uint32_t first;
+    uint32_t max;
 };
 
 //
@@ -97,10 +96,10 @@ struct AttributeInterpolated
 //
 uint readIndex(inout IndexInfo indexInfo, in uint primitiveId) 
 {
-    if (indexInfo.type == 1u) { return readUint32(indexInfo.bufferId, primitiveId*3u*4u); };
-    if (indexInfo.type == 2u) { return readUint16(indexInfo.bufferId, primitiveId*3u*2u); };
-    if (indexInfo.type == 3u) { return readUint8(indexInfo.bufferId, primitiveId*3u); };
-    return primitiveId*3u;
+    if (indexInfo.type == 1u) { return (indexInfo.first + readUint32(indexInfo.bufferId, primitiveId*3u*4u)); };
+    if (indexInfo.type == 2u) { return (indexInfo.first + readUint16(indexInfo.bufferId, primitiveId*3u*2u)); };
+    if (indexInfo.type == 3u) { return (indexInfo.first + readUint8(indexInfo.bufferId, primitiveId*3u)); };
+    return (indexInfo.first + primitiveId*3u);
 };
 
 // 
