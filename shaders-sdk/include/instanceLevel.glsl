@@ -23,6 +23,9 @@ struct InstanceInfo
 layout (binding = 0, set = INSTANCE_LEVEL_MAP) buffer InstanceBuffer { InstanceInfo instances[]; };
 
 // 
+//#define bindingInfo bindings[bindingId]
+
+// 
 struct Attributes 
 {
     uint32_t texcoords;
@@ -53,7 +56,7 @@ struct IndexInfo
 struct PrimitiveInfo 
 {
     uint32_t count;
-    uint32_t reserved;
+    uint32_t materials;
 };
 
 // 
@@ -121,6 +124,14 @@ mat3x4 readVertices(inout VertexInfo vertexInfo, in uvec3 indices)
         readVertex(vertexInfo, indices.y),
         readVertex(vertexInfo, indices.z)
     );
+};
+
+// read material ID from buffer by primitiveId
+uint readMaterial(inout PrimitiveInfo primitiveInfo, in uint primitiveId)
+{
+    uint bindingId = primitiveInfo.materials;
+    uint offset = bindingInfo.stride * primitiveId + bindingInfo.offset;
+    return readUint32(bindingInfo.bufferId, offset);
 };
 
 // 

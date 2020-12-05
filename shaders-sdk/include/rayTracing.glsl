@@ -43,7 +43,7 @@ IntersectionInfo traceRays(in RayData rays, in float maxT) {
 
     if (rayQueryGetIntersectionTypeEXT(rayQuery, true) != gl_RayQueryCommittedIntersectionNoneEXT) {
         vec2 attribs = rayQueryGetIntersectionBarycentricsEXT(rayQuery, true);
-        result.barycentric = vec3(attribs, 1.f - attribs.x - attribs.y);
+        result.barycentric = vec3(1.f - attribs.x - attribs.y, attribs);
         result.hitT = rayQueryGetIntersectionTEXT(rayQuery, true);
         result.instanceId = rayQueryGetIntersectionInstanceIdEXT(rayQuery, true);
         result.geometryId = rayQueryGetIntersectionGeometryIndexEXT(rayQuery, true);

@@ -34,12 +34,6 @@ layout(push_constant) uniform pushConstants {
     uint reserved1;
 } pushed;
 
-//
-layout(binding = 0, set = 3) uniform Constants {
-    mat4x4 perspective;
-    mat3x4 lookAt;
-} constants;
-
 // 
 void main() 
 {

@@ -21,8 +21,26 @@ layout (local_size_x = 32, local_size_y = 24, local_size_z = 1) in;
 void main() 
 {
     uvec2 launchId = gl_GlobalInvocationID.xy;
+    ivec2 frameSize = imageSize(imageBuffers[0]);
+
+    // 
+    vec2 screenPos = (vec2(launchId)/vec2(frameSize))*2.f-1.f;
+    vec4  farPosition = vec4(divW(vec4(screenPos, 0.9999f, 1.f) * constants.perspectiveInverse) * constants.lookAtInverse, 1.f);
+    vec4 nearPosition = vec4(divW(vec4(screenPos, 0.0001f, 1.f) * constants.perspectiveInverse) * constants.lookAtInverse, 1.f);
+    vec4 direction = vec4(normalize(farPosition.xyz - nearPosition.xyz), 0.f);
+
+    // 
+    RayData rays;
+    rays.origin = nearPosition;
+    rays.direction = direction;
+    rays.launchId = u16vec2(launchId);
+
+    //
+    IntersectionInfo results = rasterization(rays, 10000.f);
+    //IntersectionInfo results = traceRays(rays, 10000.f); // it working, but needs for second passes
 
     // how from rasterization 
-    vec4 barycentric = imageLoad(imageBuffers[0], ivec2(launchId));
-    imageStore(imageBuffers[2], ivec2(launchId), vec4(barycentric.xyz, 1.f));
+    vec4 coloring = vec4(results.barycentric.xyz, 1.f);
+    if (results.hitT >= 10000.f) { coloring.xyz = vec3(0.1f); };
+    imageStore(imageBuffers[2], ivec2(launchId), vec4(coloring.xyz, 1.f));
 };

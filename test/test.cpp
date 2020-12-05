@@ -25,7 +25,9 @@ const uint32_t SCR_WIDTH = 640u, SCR_HEIGHT = 360u;
 struct Constants
 {
     glm::mat4x4 perspective = glm::mat4x4(1.f);
+    glm::mat4x4 perspectiveInverse = glm::mat4x4(1.f);
     glm::mat3x4 lookAt = glm::mat3x4(1.f);
+    glm::mat3x4 lookAtInverse = glm::mat3x4(1.f);
 };
 
 // 
@@ -290,9 +292,12 @@ int main() {
 
 
     // set perspective
-    constants.perspective = glm::transpose(glm::perspective(60.f/180*glm::pi<float>(), viewport.width/viewport.height, 0.001f, 10000.f));
-    constants.lookAt = glm::mat3x4(glm::transpose(glm::lookAt(glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.f, 1.f, 0.f))));
-
+    auto persp = glm::perspective(60.f / 180 * glm::pi<float>(), viewport.width / viewport.height, 0.001f, 10000.f);
+    auto lkat = glm::lookAt(glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.f, 1.f, 0.f));
+    constants.perspective = glm::transpose(persp);
+    constants.perspectiveInverse = glm::transpose(glm::inverse(persp));
+    constants.lookAt = glm::mat3x4(glm::transpose(lkat));
+    constants.lookAtInverse = glm::mat3x4(glm::transpose(glm::inverse(lkat)));
 
     // 
     int64_t currSemaphore = -1;

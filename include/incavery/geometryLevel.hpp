@@ -40,7 +40,7 @@ namespace icv {
     struct PrimitiveInfo 
     {
         uint32_t count = 3u;
-        uint32_t reserved = 0u;
+        uint32_t materials = 0u; // binding
     };
 
     // 

@@ -9,6 +9,7 @@
 #define MATERIAL_MAP 3
 #endif
 
+// 
 struct Material
 {
     vec4 baseColorFactor; // KHR
@@ -21,7 +22,25 @@ struct Material
     vec4 modifiedNormal; // normal mapped normal
 };
 
-Material readMaterial(inout AttributeInterpolated attributes) 
+//
+struct MaterialSource
+{
+    // factors
+    vec4 baseColorFactor;
+    float metallicFactor; // KHR
+    float roughnessFactor; // KHR
+    float transmissionFactor; // KHR
+    float adobeIor; // Adobe
+
+    // textures
+    int baseColorTexture;
+    int metallicRoughnessTexture;
+    int transmissionTexture;
+    int normalTexture;
+};
+
+// 
+Material handleMaterial(in uint materialId, inout AttributeInterpolated attributes) 
 {
     Material material;
     
