@@ -26,7 +26,9 @@ layout ( early_fragment_tests ) in;
 layout (location = 0) in vec4 transformed;
 layout (location = 1) in vec4 original;
 layout (location = 2) in vec4 barycentric;
-layout (location = 3) flat in uvec4 indices;
+layout (location = 3) flat in uint primitiveId;
+layout (location = 4) flat in uint vertexIndex;
+//layout (location = 3) flat in uvec4 indices;
 
 // 
 layout(push_constant) uniform pushConstants {
@@ -47,5 +49,5 @@ void main()
 
     // finalize fragment results
     fBarycentrics = barycentric;
-    fIndices = indices;
+    fIndices = uvec4(pushed.instanceId, pushed.geometryId, primitiveId, 0u);//indices;
 };

@@ -19,12 +19,14 @@ layout (triangle_strip, max_vertices = 3) out;
 
 //
 layout (location = 0) in vec4 position[3];
+layout (location = 1) in flat uint indices[3];
 
 // 
 layout (location = 0) out vec4 transformed;
 layout (location = 1) out vec4 original;
 layout (location = 2) out vec4 barycentric;
-layout (location = 3) flat out uvec4 indices;
+layout (location = 3) flat out uint primitiveId;
+layout (location = 4) flat out uint vertexIndex;
 
 // 
 layout(push_constant) uniform pushConstants {
@@ -47,12 +49,13 @@ void main()
     };
 
     // finalize results
-    indices = uvec4(pushed.instanceId, pushed.geometryId, gl_PrimitiveIDIn, 0u);
+    primitiveId = gl_PrimitiveIDIn;
     for (int i=0;i<3;i++) 
     {
         original = position[i];
         transformed = vec4(vec4(position[i] * geometryInfo.transform, 1.f) * instanceInfo.transform, 1.f);
         barycentric = vec4(bary[i], 1.f);
+        vertexIndex = indices[i];
 
         // TODO: perspective projection
         gl_Position = vec4(transformed * constants.lookAt, 1.f) * constants.perspective;
