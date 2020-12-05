@@ -398,6 +398,7 @@ namespace icv {
                 pipelineInfo.viewportState.pScissors = &reinterpret_cast<::VkRect2D&>(framebuffer.scissor);
                 pipelineInfo.colorBlendAttachmentStates = {};
                 pipelineInfo.dynamicStates = { VK_DYNAMIC_STATE_SCISSOR, VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_VERTEX_INPUT_BINDING_STRIDE_EXT };
+                pipelineInfo.depthStencilState = vkh::VkPipelineDepthStencilStateCreateInfo{ .depthTestEnable = true, .depthWriteEnable = true };
             };
 
             //
