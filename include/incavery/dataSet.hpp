@@ -45,8 +45,8 @@ namespace icv {
             this->device = device;
 
             // 
-            auto _cpuCache = createBuffer(VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, sizeof(T) * info->count, sizeof(T), VMA_MEMORY_USAGE_CPU_TO_GPU);
-            auto _deviceBuffer = createBuffer(VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VkBufferUsageFlags(info->usage), sizeof(T) * info->count, sizeof(T), VMA_MEMORY_USAGE_GPU_ONLY);
+            auto _cpuCache = createBuffer(BufferCreateInfo{.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, .size = sizeof(T) * info->count, .stride = sizeof(T), .memoryUsage = VMA_MEMORY_USAGE_CPU_TO_GPU});
+            auto _deviceBuffer = createBuffer(BufferCreateInfo{.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VkBufferUsageFlags(info->usage), .size = sizeof(T) * info->count, .stride = sizeof(T), .memoryUsage = VMA_MEMORY_USAGE_GPU_ONLY});
 
             // 
             this->cpuCache = vkt::Vector<T>(_cpuCache.getAllocation(), _cpuCache.offset(), _cpuCache.range(), _cpuCache.stride());

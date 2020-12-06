@@ -23,6 +23,24 @@ namespace icv {
     };
 
     //
+    struct BufferCreateInfo
+    {
+        FLAGS(VkBufferUsage) usage;
+        VkDeviceSize size = 16ull;
+        VkDeviceSize stride = sizeof(uint8_t);
+        VmaMemoryUsage memoryUsage = VMA_MEMORY_USAGE_GPU_ONLY;
+    };
+
+    //
+    struct ImageCreateInfo
+    {
+        FLAGS(VkImageUsage) usage;
+        VkFormat format = VK_FORMAT_R32G32B32A32_SFLOAT;
+        vkh::VkExtent3D extent = {};
+        bool isDepth = false;
+    };
+
+    //
     class DeviceBased {
         protected: 
         vkt::uni_ptr<vkf::Device> device = {};
@@ -36,28 +54,28 @@ namespace icv {
         };
 
         // 
-        virtual vkt::VectorBase createBuffer(FLAGS(VkBufferUsage) usage, VkDeviceSize size = 16ull, VkDeviceSize stride = sizeof(uint8_t), VmaMemoryUsage memoryUsage = VMA_MEMORY_USAGE_GPU_ONLY) 
+        virtual vkt::VectorBase createBuffer(vkt::uni_arg<BufferCreateInfo> info) 
         {   // 
             auto bufferCreateInfo = vkh::VkBufferCreateInfo{
-                .size = size,
-                .usage = (memoryUsage == VMA_MEMORY_USAGE_GPU_ONLY ? VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT : 0u) | VkBufferUsageFlags(usage)
+                .size = info->size,
+                .usage = (info->memoryUsage == VMA_MEMORY_USAGE_GPU_ONLY ? VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT : 0u) | VkBufferUsageFlags(info->usage)
             };
             auto vmaCreateInfo = vkt::VmaMemoryInfo{
-                .memUsage = memoryUsage,
+                .memUsage = info->memoryUsage,
                 .instanceDispatch = device->instance->dispatch,
                 .deviceDispatch = device->dispatch
             };
             auto allocation = std::make_shared<vkt::VmaBufferAllocation>(device->allocator, bufferCreateInfo, vmaCreateInfo);
-            return vkt::VectorBase(allocation, 0ull, size, sizeof(uint8_t));
+            return vkt::VectorBase(allocation, 0ull, info->size, sizeof(uint8_t));
         };
 
         //
-        virtual vkt::ImageRegion createImage2D(FLAGS(VkImageUsage) usage, VkFormat format = VK_FORMAT_R32G32B32A32_SFLOAT, vkh::VkExtent3D size = {}, bool isDepth = false)
+        virtual vkt::ImageRegion createImage2D(vkt::uni_arg<ImageCreateInfo> info)
         {   // 
             vkh::VkImageCreateInfo imageCreateInfo = {};
             imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
-            imageCreateInfo.format = format;
-            imageCreateInfo.extent = vkh::VkExtent3D{ size.width, size.height, 1u };
+            imageCreateInfo.format = info->format;
+            imageCreateInfo.extent = vkh::VkExtent3D{ info->extent.width, info->extent.height, 1u };
             imageCreateInfo.mipLevels = 1u;
             imageCreateInfo.arrayLayers = 1u;
             imageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -73,18 +91,18 @@ namespace icv {
             };
 
             //
-            auto aspectFlags = isDepth ? (VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT) : (VK_IMAGE_ASPECT_COLOR_BIT);
+            auto aspectFlags = info->isDepth ? (VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT) : (VK_IMAGE_ASPECT_COLOR_BIT);
 
             // 
             vkh::VkImageViewCreateInfo imageViewCreateInfo = {};
             imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-            imageViewCreateInfo.format = format;
+            imageViewCreateInfo.format = info->format;
             imageViewCreateInfo.components = vkh::VkComponentMapping{};
             imageViewCreateInfo.subresourceRange = vkh::VkImageSubresourceRange{ .aspectMask = VkImageAspectFlags(aspectFlags), .baseMipLevel = 0u, .levelCount = 1u, .baseArrayLayer = 0u, .layerCount = 1u };
 
             // 
             auto allocation = std::make_shared<vkt::VmaImageAllocation>(device->allocator, imageCreateInfo, vmaCreateInfo);
-            return vkt::ImageRegion(allocation, imageViewCreateInfo, isDepth?VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:VK_IMAGE_LAYOUT_GENERAL);
+            return vkt::ImageRegion(allocation, imageViewCreateInfo, info->isDepth?VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:VK_IMAGE_LAYOUT_GENERAL);
         };
 
         // 
