@@ -13,12 +13,12 @@ struct BindingInfo
 {
     uint32_t format;
     uint32_t bufferId;
-    uint32_t offset;
     uint32_t stride;
+    uint32_t offset; // used for attributes (same buffer)
 };
 
-layout (binding = 0, set = GEOMETRY_REGISTRY_MAP) buffer AccelerationStructure { uint8_t data[]; } buffers[];
-layout (binding = 1, set = GEOMETRY_REGISTRY_MAP) buffer BindingsBuffer { BindingInfo bindings[]; };
+layout (binding = 0, set = GEOMETRY_REGISTRY_MAP, scalar) buffer AccelerationStructure { uint8_t data[]; } buffers[];
+layout (binding = 1, set = GEOMETRY_REGISTRY_MAP, scalar) buffer BindingsBuffer { BindingInfo bindings[]; };
 
 #define bindingInfo bindings[bindingId]
 

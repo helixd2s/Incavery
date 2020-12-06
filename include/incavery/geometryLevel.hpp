@@ -21,7 +21,6 @@ namespace icv {
     struct VertexInfo 
     {
         uint32_t buffer = 0u;
-        uint32_t offset = 0u;
         uint32_t stride = 16u;
     };
 
@@ -37,7 +36,8 @@ namespace icv {
     //
     struct PrimitiveInfo 
     {
-        uint32_t count = 3u;
+        uint32_t offset = 0u;
+        uint32_t count = 1u;
         uint32_t materials = 0u; // binding
     };
 
@@ -160,7 +160,7 @@ namespace icv {
             {   // 
                 buildInfo.ranges[i].firstVertex = info.geometries[i].index.first;
                 buildInfo.ranges[i].primitiveCount = info.geometries[i].primitive.count;
-                buildInfo.ranges[i].primitiveOffset = info.geometries[i].vertex.offset;
+                buildInfo.ranges[i].primitiveOffset = info.geometries[i].primitive.offset;
                 buildInfo.ranges[i].transformOffset = sizeof(GeometryInfo) * i;
             };
 
@@ -181,7 +181,7 @@ namespace icv {
                     // fill ranges
                     buildInfo.ranges[i].firstVertex = info.geometries[i].index.first;
                     buildInfo.ranges[i].primitiveCount = info.geometries[i].primitive.count;
-                    buildInfo.ranges[i].primitiveOffset = info.geometries[i].vertex.offset;
+                    buildInfo.ranges[i].primitiveOffset = info.geometries[i].primitive.offset;
                     buildInfo.ranges[i].transformOffset = sizeof(GeometryInfo) * i;
 
                     // fill build info

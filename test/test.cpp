@@ -218,7 +218,6 @@ int main() {
     geometryLevel->pushGeometry(icv::GeometryInfo{
         .vertex = {
             .buffer = 1u,
-            .offset = 0u,
             .stride = sizeof(glm::vec4)
         },
         .index = {
@@ -235,14 +234,12 @@ int main() {
     geometryRegistry->pushBufferWithBinding(indicesBuffer, icv::BindingInfo{
         .format = 0u,
         .buffer = 0u,
-        .offset = 0u,
         .stride = 2u
     });
 
     geometryRegistry->pushBufferWithBinding(verticesBuffer, icv::BindingInfo{
         .format = 0u,
         .buffer = 1u,
-        .offset = 0u,
         .stride = sizeof(glm::vec4)
     });
 

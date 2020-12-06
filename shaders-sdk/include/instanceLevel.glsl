@@ -20,7 +20,7 @@ struct InstanceInfo
 };
 
 //
-layout (binding = 0, set = INSTANCE_LEVEL_MAP) buffer InstanceBuffer { InstanceInfo instances[]; };
+layout (binding = 0, set = INSTANCE_LEVEL_MAP, scalar) buffer InstanceBuffer { InstanceInfo instances[]; };
 
 // 
 //#define bindingInfo bindings[bindingId]
@@ -38,7 +38,6 @@ struct Attributes
 struct VertexInfo 
 {
     uint32_t bufferId;
-    uint32_t offset;
     uint32_t stride;
 };
 
@@ -54,6 +53,7 @@ struct IndexInfo
 //
 struct PrimitiveInfo 
 {
+    uint32_t offset;
     uint32_t count;
     uint32_t materials;
 };
@@ -73,7 +73,7 @@ struct GeometryInfo
 };
 
 // 
-layout (binding = 2, set = INSTANCE_LEVEL_MAP) buffer GeometryBuffer { GeometryInfo geometries[]; } registry[];
+layout (binding = 2, set = INSTANCE_LEVEL_MAP, scalar) buffer GeometryBuffer { GeometryInfo geometries[]; } registry[];
 
 //
 struct AttributeMap 
@@ -108,10 +108,10 @@ uvec3 readIndices(inout IndexInfo indexInfo, in uint primitiveId)
     return uvec3(readIndex(indexInfo, primitiveId), readIndex(indexInfo, primitiveId+1u), readIndex(indexInfo, primitiveId+2u));
 };
 
-//
+// TODO: support for "primitiveOffset"
 vec4 readVertex(inout VertexInfo vertexInfo, in uint index) 
 {
-    uint offset = vertexInfo.stride * index + vertexInfo.offset;
+    uint offset = vertexInfo.stride * index;
     return vec4(readFloat4(vertexInfo.bufferId, offset).xyz, 1.f);
 };
 

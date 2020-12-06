@@ -11,8 +11,8 @@ namespace icv {
     {
         uint32_t format = 0u; // reserved
         uint32_t buffer = 0u;
-        uint32_t offset = 0u;
         uint32_t stride = 16u;
+        uint32_t offset = 0u; // used for attributes (same buffer)
     };
 
     // 

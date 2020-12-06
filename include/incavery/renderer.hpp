@@ -524,7 +524,7 @@ namespace icv {
                 auto& indexBuffer = geometryRegistryInfo.buffers[geometryInfo.index.buffer];
                 auto& vertexBuffer = geometryRegistryInfo.buffers[geometryInfo.vertex.buffer];
                 std::vector<VkBuffer> buffers = { vertexBuffer.buffer };
-                std::vector<VkDeviceSize> offsets = { vertexBuffer.offset + geometryInfo.vertex.offset };
+                std::vector<VkDeviceSize> offsets = { vertexBuffer.offset };
                 std::vector<VkDeviceSize> ranges = { vertexBuffer.range };
                 std::vector<VkDeviceSize> strides = { geometryInfo.vertex.stride };
 
