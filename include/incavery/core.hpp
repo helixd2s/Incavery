@@ -27,7 +27,14 @@ namespace icv {
         protected: 
         vkt::uni_ptr<vkf::Device> device = {};
         vkh::VkAccelerationStructureDeviceAddressInfoKHR deviceAddressInfo = {};
+        vkh::VkBufferDeviceAddressInfo bufferAddressInfo = {};
         
+        //
+        virtual VkDeviceAddress bufferDeviceAddress(vkh::VkDescriptorBufferInfo buffer) 
+        {
+            return (device->dispatch->GetBufferDeviceAddress(bufferAddressInfo = buffer.buffer) + buffer.offset);
+        };
+
         // 
         virtual vkt::VectorBase createBuffer(FLAGS(VkBufferUsage) usage, VkDeviceSize size = 16ull, VkDeviceSize stride = sizeof(uint8_t), VmaMemoryUsage memoryUsage = VMA_MEMORY_USAGE_GPU_ONLY) 
         {   // 

@@ -19,7 +19,8 @@ namespace icv {
     struct GeometryRegistryInfo 
     {
         std::vector<BindingInfo> bindings = {};
-        std::vector<vkt::VectorBase> buffers = {};
+        std::vector<vkh::VkDescriptorBufferInfo> buffers = {};
+        //std::vector<vkt::VectorBase> buffers = {};
 
         uint32_t maxBindingCount = 128u;
         
@@ -89,10 +90,7 @@ namespace icv {
                 .descriptorCount = uint32_t(this->info.buffers.size()),
                 .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER
             });
-            for (uint32_t i=0;i<this->info.buffers.size();i++) 
-            {
-                handle[i] = this->info.buffers[i];
-            };
+            memcpy(&handle, this->info.buffers.data(), this->info.buffers.size() * sizeof(vkh::VkDescriptorBufferInfo));
             descriptorSetHelper.pushDescription<vkh::VkDescriptorBufferInfo>(vkh::VkDescriptorUpdateTemplateEntry{
                 .dstBinding = 1u,
                 .descriptorCount = 1u,
@@ -118,7 +116,7 @@ namespace icv {
         };
 
         //
-        virtual uintptr_t pushBuffer(vkt::VectorBase buffer) 
+        virtual uintptr_t pushBuffer(vkh::VkDescriptorBufferInfo buffer) 
         {   
             uintptr_t index = this->info.buffers.size();
             this->info.buffers.push_back(buffer);
@@ -134,7 +132,7 @@ namespace icv {
         };
 
         //
-        virtual uintptr_t pushBufferWithBinding(vkt::VectorBase buffer, vkt::uni_arg<BindingInfo> binding) 
+        virtual uintptr_t pushBufferWithBinding(vkh::VkDescriptorBufferInfo buffer, vkt::uni_arg<BindingInfo> binding) 
         {   
             binding->buffer = pushBuffer(buffer);
             pushBinding(binding);
@@ -142,7 +140,7 @@ namespace icv {
         };
 
         // 
-        virtual void setBufferWithBinding(uintptr_t index, vkt::VectorBase buffer, vkt::uni_arg<BindingInfo> binding)
+        virtual void setBufferWithBinding(uintptr_t index, vkh::VkDescriptorBufferInfo buffer, vkt::uni_arg<BindingInfo> binding)
         {
             //binding->buffer = index; // prefer same index
 

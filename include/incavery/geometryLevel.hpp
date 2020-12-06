@@ -189,11 +189,11 @@ namespace icv {
                     buildInfo.builds[i].geometry = vkh::VkAccelerationStructureGeometryTrianglesDataKHR
                     {
                         .vertexFormat = info.geometries[i].useHalf ? VK_FORMAT_R16G16B16_SFLOAT : VK_FORMAT_R32G32B32_SFLOAT,
-                        .vertexData = ( info.registry->getInfo().buffers[info.geometries[i].vertex.buffer] ).deviceAddress(),
+                        .vertexData = bufferDeviceAddress( info.registry->getInfo().buffers[info.geometries[i].vertex.buffer] ),
                         .vertexStride = info.geometries[i].vertex.stride,
                         .maxVertex = info.geometries[i].index.max,
                         .indexType = getIndexType(info.geometries[i].index.type),
-                        .indexData = ( info.registry->getInfo().buffers[info.geometries[i].index.buffer] ).deviceAddress(),
+                        .indexData = bufferDeviceAddress( info.registry->getInfo().buffers[info.geometries[i].index.buffer] ),
                         .transformData = geometries->getDeviceBuffer().deviceAddress()
                     };
 

@@ -523,9 +523,9 @@ namespace icv {
                 // 
                 auto& indexBuffer = geometryRegistryInfo.buffers[geometryInfo.index.buffer];
                 auto& vertexBuffer = geometryRegistryInfo.buffers[geometryInfo.vertex.buffer];
-                std::vector<VkBuffer> buffers = { vertexBuffer };
-                std::vector<VkDeviceSize> offsets = { vertexBuffer.offset() + geometryInfo.vertex.offset };
-                std::vector<VkDeviceSize> ranges = { vertexBuffer.range() };
+                std::vector<VkBuffer> buffers = { vertexBuffer.buffer };
+                std::vector<VkDeviceSize> offsets = { vertexBuffer.offset + geometryInfo.vertex.offset };
+                std::vector<VkDeviceSize> ranges = { vertexBuffer.range };
                 std::vector<VkDeviceSize> strides = { geometryInfo.vertex.stride };
 
                 // 
@@ -537,7 +537,7 @@ namespace icv {
                     device->dispatch->CmdDraw(commandBuffer, geometryInfo.primitive.count*3u, 1u, geometryInfo.index.first, 0u);
                 } else {
                     
-                    device->dispatch->CmdBindIndexBuffer(commandBuffer, indexBuffer, indexBuffer.offset(), getIndexType(geometryInfo.index.type));
+                    device->dispatch->CmdBindIndexBuffer(commandBuffer, indexBuffer.buffer, indexBuffer.offset, getIndexType(geometryInfo.index.type));
                     device->dispatch->CmdDrawIndexed(commandBuffer, geometryInfo.primitive.count*3u, 1u, 0u, geometryInfo.index.first, 0u);
                 };
             };
