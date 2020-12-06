@@ -221,9 +221,9 @@ int main() {
             .stride = sizeof(glm::vec4)
         },
         .index = {
+            .max = 3u,
             .buffer = 0u,
-            .type = 2u,
-            .max = 3u
+            .type = 2u
         },
         .primitive = {
             .count = 1u

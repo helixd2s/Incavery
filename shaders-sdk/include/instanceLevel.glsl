@@ -44,10 +44,10 @@ struct VertexInfo
 // 
 struct IndexInfo 
 {
+    int32_t first;
+    uint32_t max;
     uint32_t bufferId;
     uint32_t type; // 0 = none, 1 = uint32_t, 2 = uint16_t, 3 = uint8_t
-    uint32_t first;
-    uint32_t max;
 };
 
 //
