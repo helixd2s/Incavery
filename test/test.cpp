@@ -19,7 +19,7 @@ void error(int errnum, const char* errmsg)
 };
 
 // 
-const uint32_t SCR_WIDTH = 640u, SCR_HEIGHT = 360u;
+const uint32_t SCR_WIDTH = 1280u, SCR_HEIGHT = 720u;
 
 //
 struct Constants
@@ -41,7 +41,7 @@ int main() {
     };
 
     // 
-    uint32_t canvasWidth = SCR_WIDTH, canvasHeight = SCR_HEIGHT; // For 3840x2160 Resolutions
+    uint32_t canvasWidth = SCR_WIDTH, canvasHeight = SCR_HEIGHT;
     glfwDefaultWindowHints();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
@@ -81,8 +81,10 @@ int main() {
     allocInfo.deviceDispatch = device->dispatch;
 
     // 
-    auto renderArea = vkh::VkRect2D{ vkh::VkOffset2D{0, 0}, vkh::VkExtent2D{ uint32_t(canvasWidth / 1.f * xscale), uint32_t(canvasHeight / 1.f * yscale) } };
+    auto renderArea = vkh::VkRect2D{ vkh::VkOffset2D{0, 0}, vkh::VkExtent2D{ uint32_t(canvasWidth * xscale), uint32_t(canvasHeight * yscale) } };
+    auto downscaled = vkh::VkExtent2D{ uint32_t(canvasWidth * 1.f), uint32_t(canvasHeight * 1.f) };
     auto viewport = vkh::VkViewport{ 0.0f, 0.0f, static_cast<float>(renderArea.extent.width), static_cast<float>(renderArea.extent.height), 0.f, 1.f };
+    
 
 
     //
@@ -254,7 +256,7 @@ int main() {
     // create renderer
     renderer->createRenderPass();
     renderer->createPipelineLayout({ constantsLayout });
-    renderer->createFramebuffer(vkh::VkExtent3D{ renderArea.extent.width, renderArea.extent.height, 1u }).transfer(queue);
+    renderer->createFramebuffer(vkh::VkExtent3D{ downscaled.width, downscaled.height, 1u }).transfer(queue);
     renderer->createPipeline(icv::PipelineCreateInfo{});
     renderer->makeDescriptorSets();
 

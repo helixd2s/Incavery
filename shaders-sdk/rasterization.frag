@@ -26,8 +26,9 @@ layout ( early_fragment_tests ) in;
 layout (location = 0) in vec4 transformed;
 layout (location = 1) in vec4 original;
 layout (location = 2) in vec4 barycentric;
-layout (location = 3) flat in uint primitiveId;
-layout (location = 4) flat in uint vertexIndex;
+layout (location = 3) in vec4 normals;
+layout (location = 4) flat in uint primitiveId;
+layout (location = 5) flat in uint vertexIndex;
 //layout (location = 3) flat in uvec4 indices;
 
 // 
@@ -48,6 +49,8 @@ void main()
     // 
 
     // finalize fragment results
+    gl_FragDepth = gl_FragCoord.z;
     fBarycentrics = barycentric;
     fIndices = uvec4(pushed.instanceId, pushed.geometryId, primitiveId, 0u);//indices;
+    fSRAA = vec4(normals.xyz, gl_FragCoord.z);
 };

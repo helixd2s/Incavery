@@ -17,6 +17,7 @@ layout (binding = 0, set = FRAMEBUFFER_MAP, rgba32f) uniform image2D imageBuffer
 #ifdef FRAGMENT
 layout (location = 0) out vec4 fBarycentrics;
 layout (location = 1) out vec4 fIndices;
+layout (location = 2) out vec4 fSRAA;
 #endif
 
 // non-RTX version of intersection (only first pass)

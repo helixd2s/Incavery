@@ -42,5 +42,5 @@ void main()
     // how from rasterization 
     vec4 coloring = vec4(results.barycentric.xyz, 1.f);
     if (results.hitT >= 10000.f) { coloring.xyz = vec3(0.1f); };
-    imageStore(imageBuffers[2], ivec2(launchId), vec4(coloring.xyz, 1.f));
+    imageStore(imageBuffers[3], ivec2(launchId), vec4(coloring.xyz, 1.f));
 };
