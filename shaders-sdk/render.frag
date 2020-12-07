@@ -23,8 +23,8 @@ float bilateral(in vec4 cnd, in vec4 tnd) {
 //
 void calculateWeights(in ivec2 coord, inout float weights[9]) {
     for (int i=0;i<9;i++) { weights[i] = 0.f; };
-    for (int cx=coord.x;cx<(coord.x+2);cx++) {
-        for (int cy=coord.y;cy<(coord.y+2);cy++) {
+    for (int cx=coord.x-1;cx<(coord.x+2);cx++) {
+        for (int cy=coord.y-1;cy<(coord.y+2);cy++) {
             vec4 cnd = imageLoad(imageBuffers[2], ivec2(cx,cy));
 
             float sum = 0.f;
@@ -57,7 +57,7 @@ vec4 getAntiAliased(in ivec2 coord) {
     vec3 result = vec3(0.f.xxx);
     for (int i=-1;i<2;i++) {
         for (int j=-1;j<2;j++) {
-            result += weights[(i+1)+(j+1)*3] * 0.25f * imageLoad(imageBuffers[3], coord+ivec2(i,j)).xyz;
+            result += weights[(i+1)+(j+1)*3] * (1.f/9.f) * imageLoad(imageBuffers[3], coord+ivec2(i,j)).xyz;
         };
     };
     return vec4(result, imageLoad(imageBuffers[3], coord).w);
