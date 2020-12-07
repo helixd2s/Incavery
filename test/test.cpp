@@ -82,7 +82,7 @@ int main() {
 
     // 
     auto renderArea = vkh::VkRect2D{ vkh::VkOffset2D{0, 0}, vkh::VkExtent2D{ uint32_t(canvasWidth * xscale), uint32_t(canvasHeight * yscale) } };
-    auto downscaled = vkh::VkExtent2D{ uint32_t(canvasWidth * 1.f), uint32_t(canvasHeight * 1.f) };
+    auto downscaled = vkh::VkExtent2D{ uint32_t(canvasWidth * 2.f), uint32_t(canvasHeight * 2.f) };
     auto viewport = vkh::VkViewport{ 0.0f, 0.0f, static_cast<float>(renderArea.extent.width), static_cast<float>(renderArea.extent.height), 0.f, 1.f };
     
 
