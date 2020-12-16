@@ -152,19 +152,19 @@ namespace icv {
                     .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
                     .descriptorCount = 1u,
                     .stageFlags = pipusage
-                }, vkh::VkDescriptorBindingFlags{ .ePartiallyBound = 1, .eVariableDescriptorCount = 1 });
+                }, vkh::VkDescriptorBindingFlags{ .ePartiallyBound = 1 });
                 descriptorSetLayoutHelper.pushBinding(vkh::VkDescriptorSetLayoutBinding{
                     .binding = 1u,
                     .descriptorType = VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR,
                     .descriptorCount = 1u,
                     .stageFlags = pipusage
-                }, vkh::VkDescriptorBindingFlags{ .ePartiallyBound = 1, .eVariableDescriptorCount = 1 });
+                }, vkh::VkDescriptorBindingFlags{ .ePartiallyBound = 1 });
                 descriptorSetLayoutHelper.pushBinding(vkh::VkDescriptorSetLayoutBinding{
                     .binding = 2u,
                     .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
                     .descriptorCount = 256u,
                     .stageFlags = pipusage
-                }, vkh::VkDescriptorBindingFlags{ .ePartiallyBound = 1, .eVariableDescriptorCount = 1 });
+                }, vkh::VkDescriptorBindingFlags{ .ePartiallyBound = 1 });
                 vkh::handleVk(device->dispatch->CreateDescriptorSetLayout(descriptorSetLayoutHelper.format(), nullptr, &layouts.instanceLevel));
             };
 
@@ -186,13 +186,13 @@ namespace icv {
                     .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
                     .descriptorCount = 256u,
                     .stageFlags = pipusage
-                }, vkh::VkDescriptorBindingFlags{ .ePartiallyBound = 1, .eVariableDescriptorCount = 1 });
+                }, vkh::VkDescriptorBindingFlags{ .ePartiallyBound = 1 });
                 descriptorSetLayoutHelper.pushBinding(vkh::VkDescriptorSetLayoutBinding{
                     .binding = 1u,
                     .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
                     .descriptorCount = 1u,
                     .stageFlags = pipusage
-                }, vkh::VkDescriptorBindingFlags{ .ePartiallyBound = 1, .eVariableDescriptorCount = 1 });
+                }, vkh::VkDescriptorBindingFlags{ .ePartiallyBound = 1 });
                 vkh::handleVk(device->dispatch->CreateDescriptorSetLayout(descriptorSetLayoutHelper.format(), nullptr, &layouts.geometryRegistry));
             };
 
@@ -214,7 +214,7 @@ namespace icv {
                     .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
                     .descriptorCount = FBO_COUNT,
                     .stageFlags = pipusage
-                }, vkh::VkDescriptorBindingFlags{ .ePartiallyBound = 1, .eVariableDescriptorCount = 1 });
+                }, vkh::VkDescriptorBindingFlags{ .ePartiallyBound = 1 });
                 vkh::handleVk(device->dispatch->CreateDescriptorSetLayout(descriptorSetLayoutHelper.format(), nullptr, &layouts.framebuffer));
             };
 
@@ -344,21 +344,49 @@ namespace icv {
         virtual FramebufferInfo& createFramebuffer(vkh::VkExtent3D size = {}, vkt::uni_ptr<vkf::Queue> queue = {})
         {   //
             std::vector<VkImageView> views = {};
+            std::vector<VkFramebufferAttachmentImageInfo> attachments = {};
 
             for (uint32_t i=0;i<FBO_COUNT;i++) 
             {   // 
                 framebuffer.images.push_back(createImage2D(ImageCreateInfo{.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT|VK_IMAGE_USAGE_STORAGE_BIT|VK_IMAGE_USAGE_SAMPLED_BIT|VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, .format = VK_FORMAT_R32G32B32A32_SFLOAT, .extent = size, .isDepth = false}));
                 views.push_back(framebuffer.images.back());
+                attachments.push_back(VkFramebufferAttachmentImageInfo{
+                    .sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_ATTACHMENT_IMAGE_INFO,
+                    .pNext = nullptr, 
+                    .usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+                    .width = size.width,
+                    .height = size.height,
+                    .layerCount = 1u,
+                    .viewFormatCount = 1u,
+                    .pViewFormats = &framebuffer.images.back().getInfo().format
+                });
             };
 
             {   // 
                 framebuffer.depthImage = createImage2D(ImageCreateInfo{.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT|VK_IMAGE_USAGE_TRANSFER_SRC_BIT|VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, .format = VK_FORMAT_D32_SFLOAT_S8_UINT, .extent = size, .isDepth = true});
                 views.push_back(framebuffer.depthImage);
+                attachments.push_back(VkFramebufferAttachmentImageInfo{
+                    .sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_ATTACHMENT_IMAGE_INFO,
+                    .pNext = nullptr, 
+                    .usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
+                    .width = size.width,
+                    .height = size.height,
+                    .layerCount = 1u,
+                    .viewFormatCount = 1u,
+                    .pViewFormats = &framebuffer.depthImage.getInfo().format
+                });
             };
 
-            {   // TODO: ImageLess Framebuffer Support
+            {   // TODO: NVIDIA doesn't support imageless framebuffer (stub-only)
+                VkFramebufferAttachmentsCreateInfo attachmentInfo = {
+                    .sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_ATTACHMENTS_CREATE_INFO,
+                    .pNext = nullptr,
+                    .attachmentImageInfoCount = uint32_t(attachments.size()),
+                    .pAttachmentImageInfos = attachments.data()
+                };
+
                 if (queue) { framebuffer.transfer(queue); };
-                vkh::handleVk(device->dispatch->CreateFramebuffer(vkh::VkFramebufferCreateInfo{ .flags = {}, .renderPass = renderPass, .attachmentCount = uint32_t(views.size()), .pAttachments = views.data(), .width = size.width, .height = size.height, .layers = 1u }, nullptr, &framebuffer.framebuffer));
+                vkh::handleVk(device->dispatch->CreateFramebuffer(vkh::VkFramebufferCreateInfo{ .pNext = &attachmentInfo, .flags = {}, .renderPass = renderPass, .attachmentCount = uint32_t(views.size()), .pAttachments = views.data(), .width = size.width, .height = size.height, .layers = 1u }, nullptr, &framebuffer.framebuffer));
             };
 
             {   // 
@@ -547,9 +575,15 @@ namespace icv {
 
             {
                 for (auto& image : framebuffer.images) {
+                    image.transfer(commandBuffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
                     device->dispatch->CmdClearColorImage(commandBuffer, image, image.getImageLayout(), vkh::VkClearColorValue{ .float32 = { 0.f,0.f,0.f,0.f } }, 1u, image.getImageSubresourceRange());
+                    image.transfer(commandBuffer, VK_IMAGE_LAYOUT_GENERAL);
                 };
-                device->dispatch->CmdClearDepthStencilImage(commandBuffer, framebuffer.depthImage, framebuffer.depthImage.getImageLayout(), vkh::VkClearDepthStencilValue{ .depth = 1.0f, .stencil = 0 }, 1u, framebuffer.depthImage.getImageSubresourceRange());
+                {
+                    framebuffer.depthImage.transfer(commandBuffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+                    device->dispatch->CmdClearDepthStencilImage(commandBuffer, framebuffer.depthImage, framebuffer.depthImage.getImageLayout(), vkh::VkClearDepthStencilValue{ .depth = 1.0f, .stencil = 0 }, 1u, framebuffer.depthImage.getImageSubresourceRange());
+                    framebuffer.depthImage.transfer(commandBuffer, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+                };
                 vkt::commandBarrier(device->dispatch, commandBuffer);
             };
 
