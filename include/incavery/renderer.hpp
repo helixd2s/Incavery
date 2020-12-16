@@ -211,7 +211,7 @@ namespace icv {
                 vkh::VsDescriptorSetLayoutCreateInfoHelper descriptorSetLayoutHelper(vkh::VkDescriptorSetLayoutCreateInfo{});
                 descriptorSetLayoutHelper.pushBinding(vkh::VkDescriptorSetLayoutBinding{
                     .binding = 0u,
-                    .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+                    .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
                     .descriptorCount = FBO_COUNT,
                     .stageFlags = pipusage
                 }, vkh::VkDescriptorBindingFlags{ .ePartiallyBound = 1 });
@@ -346,9 +346,24 @@ namespace icv {
             std::vector<VkImageView> views = {};
             std::vector<VkFramebufferAttachmentImageInfo> attachments = {};
 
+            // 
+            vkh::VkSamplerCreateInfo samplerCreateInfo = {};
+            samplerCreateInfo.minFilter = VK_FILTER_LINEAR;
+            samplerCreateInfo.magFilter = VK_FILTER_LINEAR;
+            samplerCreateInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+            samplerCreateInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+            samplerCreateInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+            samplerCreateInfo.unnormalizedCoordinates = false;
+            
+            // 
+            VkSampler sampler = VK_NULL_HANDLE;
+            vkt::handle(device->dispatch->CreateSampler(samplerCreateInfo, nullptr, &sampler));
+            
+
             for (uint32_t i=0;i<FBO_COUNT;i++) 
             {   // 
                 framebuffer.images.push_back(createImage2D(ImageCreateInfo{.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT|VK_IMAGE_USAGE_STORAGE_BIT|VK_IMAGE_USAGE_SAMPLED_BIT|VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, .format = VK_FORMAT_R32G32B32A32_SFLOAT, .extent = size, .isDepth = false}));
+                framebuffer.images.back().getDescriptor().sampler = sampler;
                 views.push_back(framebuffer.images.back());
                 attachments.push_back(VkFramebufferAttachmentImageInfo{
                     .sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_ATTACHMENT_IMAGE_INFO,
@@ -393,14 +408,14 @@ namespace icv {
                 framebuffer.scissor = vkh::VkRect2D{ vkh::VkOffset2D{0, 0}, vkh::VkExtent2D{ size.width, size.height } };
                 framebuffer.viewport = vkh::VkViewport{ 0.0f, 0.0f, static_cast<float>(size.width), static_cast<float>(size.height), 0.f, 1.f };
             };
-
+            
             {   // create descriptor set
                 vkh::VsDescriptorSetCreateInfoHelper descriptorSetHelper(layouts.framebuffer, device->descriptorPool);
                 auto handle = descriptorSetHelper.pushDescription<vkh::VkDescriptorImageInfo>(vkh::VkDescriptorUpdateTemplateEntry
                 {
                     .dstBinding = 0u,
                     .descriptorCount = uint32_t(FBO_COUNT),
-                    .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE
+                    .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER
                 });
                 for (uint32_t i=0;i<FBO_COUNT;i++) 
                 {

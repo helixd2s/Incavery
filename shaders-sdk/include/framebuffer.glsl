@@ -12,7 +12,7 @@
 #define FRAMEBUFFER_MAP 0
 #endif
 
-layout (binding = 0, set = FRAMEBUFFER_MAP, rgba32f) uniform image2D imageBuffers[];
+layout (binding = 0, set = FRAMEBUFFER_MAP) uniform sampler2D imageBuffers[];
 
 #ifdef FRAGMENT
 layout (location = 0) out vec4 fBarycentrics;
@@ -22,11 +22,11 @@ layout (location = 2) out vec4 fSRAA;
 
 // non-RTX version of intersection (only first pass)
 IntersectionInfo rasterization(in RayData rays, in float maxT) {
-    uvec4 indices = floatBitsToUint(imageLoad(imageBuffers[1], ivec2(rays.launchId)));
+    uvec4 indices = floatBitsToUint(texelFetch(imageBuffers[1], ivec2(rays.launchId), 0));
 
     // 
     IntersectionInfo result;
-    result.barycentric = imageLoad(imageBuffers[0], ivec2(rays.launchId)).xyz;
+    result.barycentric = texelFetch(imageBuffers[0], ivec2(rays.launchId), 0).xyz;
     result.instanceId = indices.x;
     result.geometryId = indices.y;
     result.primitiveId = indices.z;
