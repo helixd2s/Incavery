@@ -449,7 +449,7 @@ namespace icv {
                 {
                     .location = 0u, 
                     .binding = 0u,
-                    .format = VK_FORMAT_R32G32B32A32_SFLOAT,
+                    .format = VK_FORMAT_R32G32B32A32_UINT,
                     .offset = 0u // infeasible with dynamic state bindings
                 });
                 pipelineInfo.vertexInputBindingDescriptions.push_back(vkh::VkVertexInputBindingDescription

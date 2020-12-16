@@ -11,7 +11,7 @@
 #include "./include/material.glsl"
 
 //
-layout (location = 0) in vec4 vertex; 
+layout (location = 0) in uvec4 vertex; // it may to be float16
 layout (location = 0) out vec4 position;
 layout (location = 1) out flat uint indices;
 
@@ -19,6 +19,6 @@ layout (location = 1) out flat uint indices;
 void main() 
 {
     indices = gl_VertexIndex;
-    position = vec4(vertex.xyz, 1.f);
+    position = vec4(uintBitsToFloat(vertex.xyz), 1.f); // TODO: fp16 support
     gl_Position = position;
 };
