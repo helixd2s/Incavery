@@ -341,13 +341,13 @@ namespace icv {
         };
 
         // 
-        virtual FramebufferInfo& createFramebuffer(vkh::VkExtent3D size = {})
+        virtual FramebufferInfo& createFramebuffer(vkh::VkExtent3D size = {}, vkt::uni_ptr<vkf::Queue> queue = {})
         {   //
             std::vector<VkImageView> views = {};
 
             for (uint32_t i=0;i<FBO_COUNT;i++) 
             {   // 
-                framebuffer.images.push_back(createImage2D(ImageCreateInfo{.usage = VK_IMAGE_USAGE_STORAGE_BIT|VK_IMAGE_USAGE_SAMPLED_BIT|VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, .format = VK_FORMAT_R32G32B32A32_SFLOAT, .extent = size, .isDepth = false}));
+                framebuffer.images.push_back(createImage2D(ImageCreateInfo{.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT|VK_IMAGE_USAGE_STORAGE_BIT|VK_IMAGE_USAGE_SAMPLED_BIT|VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, .format = VK_FORMAT_R32G32B32A32_SFLOAT, .extent = size, .isDepth = false}));
                 views.push_back(framebuffer.images.back());
             };
 
@@ -356,7 +356,8 @@ namespace icv {
                 views.push_back(framebuffer.depthImage);
             };
 
-            {   // 
+            {   // TODO: ImageLess Framebuffer Support
+                if (queue) { framebuffer.transfer(queue); };
                 vkh::handleVk(device->dispatch->CreateFramebuffer(vkh::VkFramebufferCreateInfo{ .flags = {}, .renderPass = renderPass, .attachmentCount = uint32_t(views.size()), .pAttachments = views.data(), .width = size.width, .height = size.height, .layers = 1u }, nullptr, &framebuffer.framebuffer));
             };
 

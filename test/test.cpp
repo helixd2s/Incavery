@@ -256,7 +256,7 @@ int main() {
     // create renderer
     renderer->createRenderPass();
     renderer->createPipelineLayout({ constantsLayout });
-    renderer->createFramebuffer(vkh::VkExtent3D{ downscaled.width, downscaled.height, 1u }).transfer(queue);
+    renderer->createFramebuffer(vkh::VkExtent3D{ downscaled.width, downscaled.height, 1u }, queue);
     renderer->createPipeline(icv::PipelineCreateInfo{});
     renderer->makeDescriptorSets();
 
