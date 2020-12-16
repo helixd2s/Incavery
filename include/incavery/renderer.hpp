@@ -63,16 +63,16 @@ namespace icv {
 
     struct PipelineCreateInfo
     {
-        ComputePipelineSource rayTracing = { "./shaders/rayTracing.comp.spv" };
-        GraphicsPipelineSource opaque = {
-            "./shaders/opaque.vert.spv",
-            "./shaders/opaque.geom.spv",
-            "./shaders/opaque.frag.spv"
+        std::optional<ComputePipelineSource> rayTracing = ComputePipelineSource{ std::string("./shaders/rayTracing.comp.spv") };
+        std::optional<GraphicsPipelineSource> opaque = GraphicsPipelineSource{
+            std::string("./shaders/opaque.vert.spv"),
+            std::string("./shaders/opaque.geom.spv"),
+            std::string("./shaders/opaque.frag.spv")
         };
-        GraphicsPipelineSource translucent = {
-            "./shaders/translucent.vert.spv",
-            "./shaders/translucent.geom.spv",
-            "./shaders/translucent.frag.spv"
+        std::optional<GraphicsPipelineSource> translucent = GraphicsPipelineSource{
+            std::string("./shaders/translucent.vert.spv"),
+            std::string("./shaders/translucent.geom.spv"),
+            std::string("./shaders/translucent.frag.spv")
         };
     };
 
@@ -385,9 +385,7 @@ namespace icv {
 
         // 
         virtual PipelineInfo& createPipeline(vkt::uni_arg<PipelineCreateInfo> info = PipelineCreateInfo{}) 
-        {   // 
-            pipeline.rayTracing = vkt::createCompute(device->dispatch, info->rayTracing.path, this->getPipelineLayout(), device->pipelineCache);
-
+        {   
             // 
             vkh::VsGraphicsPipelineCreateInfoConstruction pipelineInfo = {};
             {   // initial state
@@ -426,22 +424,26 @@ namespace icv {
                 });
             };
 
-            {   // opaque rasterization
+            if (info->opaque) {   // opaque rasterization
                 pipelineInfo.stages = {
-                    vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->opaque.vertex), VK_SHADER_STAGE_VERTEX_BIT),
-                    vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->opaque.geometry), VK_SHADER_STAGE_GEOMETRY_BIT),
-                    vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->opaque.fragment), VK_SHADER_STAGE_FRAGMENT_BIT)
+                    vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->opaque->vertex), VK_SHADER_STAGE_VERTEX_BIT),
+                    vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->opaque->geometry), VK_SHADER_STAGE_GEOMETRY_BIT),
+                    vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->opaque->fragment), VK_SHADER_STAGE_FRAGMENT_BIT)
                 };
                 vkh::handleVk(device->dispatch->CreateGraphicsPipelines(device->pipelineCache, 1u, pipelineInfo, nullptr, &pipeline.opaqueRasterization));
             };
 
-            {   // translucent rasterization
+            if (info->translucent) {   // translucent rasterization
                 pipelineInfo.stages = {
-                    vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->translucent.vertex), VK_SHADER_STAGE_VERTEX_BIT),
-                    vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->translucent.geometry), VK_SHADER_STAGE_GEOMETRY_BIT),
-                    vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->translucent.fragment), VK_SHADER_STAGE_FRAGMENT_BIT)
+                    vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->translucent->vertex), VK_SHADER_STAGE_VERTEX_BIT),
+                    vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->translucent->geometry), VK_SHADER_STAGE_GEOMETRY_BIT),
+                    vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->translucent->fragment), VK_SHADER_STAGE_FRAGMENT_BIT)
                 };
                 vkh::handleVk(device->dispatch->CreateGraphicsPipelines(device->pipelineCache, 1u, pipelineInfo, nullptr, &pipeline.translucentRasterization));
+            };
+
+            if (info->rayTracing) {
+                pipeline.rayTracing = vkt::createCompute(device->dispatch, info->rayTracing->path, this->getPipelineLayout(), device->pipelineCache);
             };
 
             return pipeline;
@@ -559,13 +561,13 @@ namespace icv {
                     device->dispatch->CmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.layout, 0u, descriptorSets.size(), descriptorSets.data(), 0u, nullptr);
                 };
 
-                {   // draw opaque
-                    device->dispatch->CmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.opaqueRasterization);
+                if (pipeline.opaqueRasterization || pipeline.translucentRasterization) {   // draw opaque
+                    device->dispatch->CmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.opaqueRasterization ? pipeline.opaqueRasterization : pipeline.translucentRasterization);
                     for (auto& item : opaque) { drawItem(item); };
                     vkt::commandBarrier(device->dispatch, commandBuffer);
 
                     // draw translucent
-                    device->dispatch->CmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.translucentRasterization);
+                    device->dispatch->CmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.translucentRasterization ? pipeline.translucentRasterization : pipeline.opaqueRasterization);
                     for (auto& item : translucent) { drawItem(item); };
                     vkt::commandBarrier(device->dispatch, commandBuffer);
                 };
@@ -573,7 +575,7 @@ namespace icv {
                 device->dispatch->CmdEndRenderPass(commandBuffer);
             };
 
-            {   // compute ray tracing
+            if (pipeline.rayTracing) {   // compute ray tracing
                 device->dispatch->CmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline.rayTracing);
                 device->dispatch->CmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline.layout, 0u, descriptorSets.size(), descriptorSets.data(), 0u, nullptr);
                 device->dispatch->CmdDispatch(commandBuffer, framebuffer.scissor.extent.width/LOCAL_GROUP_X, framebuffer.scissor.extent.height/LOCAL_GROUP_Y, 1u);
