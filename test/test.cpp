@@ -19,7 +19,7 @@ void error(int errnum, const char* errmsg)
 };
 
 // 
-const uint32_t SCR_WIDTH = 1280u, SCR_HEIGHT = 720u;
+const uint32_t SCR_WIDTH = 640u, SCR_HEIGHT = 360u;
 
 //
 struct Constants

@@ -66,6 +66,6 @@ vec4 getAntiAliased(in ivec2 coord) {
 // show ray tracing results
 void main(){
     ivec2 coord = ivec2(vcoord * imageSize(imageBuffers[3]).xy);
-    vec3 color = getAntiAliased(coord).xyz;//imageLoad(imageBuffers[3], coord).xyz;
+    vec3 color = imageLoad(imageBuffers[3], coord).xyz;
     fragColor = vec4(color, 1.f);
 };
