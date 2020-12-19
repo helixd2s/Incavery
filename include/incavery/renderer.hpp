@@ -7,6 +7,9 @@
 #include "./instanceLevel.hpp"
 #include "./framebuffer.hpp"
 
+//
+#include "./materialSet.hpp"
+
 // 
 namespace icv {
 

@@ -10,7 +10,7 @@
 #endif
 
 // 
-struct Material
+struct MaterialInfo
 {
     vec4 baseColorFactor; // KHR
     float metallicFactor; // KHR

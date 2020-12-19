@@ -218,7 +218,7 @@ int main() {
 
     //
     vkt::uni_ptr<icv::Framebuffer> framebuffer = std::make_shared<icv::Framebuffer>(device, icv::FramebufferInfo{
-        .size = vkh::VkExtent3D{ downscaled.width, downscaled.height, 1u },
+        .size = { downscaled.width, downscaled.height, 1u },
         .layout = renderer->getFramebufferLayout(),
         .renderPass = renderer->createRenderPass()
     });

@@ -46,9 +46,8 @@ namespace icv {
     class Framebuffer: public DeviceBased
     {
         protected: // 
-        FramebufferStateInfo framebuffer = {};
         FramebufferInfo info = {};
-        vkt::uni_ptr<vkf::Device> device = {};
+        FramebufferStateInfo framebuffer = {};
 
         // 
         virtual void constructor(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<FramebufferInfo> info = FramebufferInfo{}) 

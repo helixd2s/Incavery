@@ -2,54 +2,60 @@
 
 // 
 #include "./core.hpp"
+#include "./dataSet.hpp"
 
 // 
 namespace icv {
 
-    // 
-    struct BindingInfo 
+    //
+    struct MaterialSource
     {
-        uint32_t format = 0u; // reserved
-        uint32_t buffer = 0u;
-        uint32_t stride = 16u;
-        uint32_t offset = 0u; // used for attributes (same buffer)
+        // factors
+        glm::vec4 baseColorFactor;
+        float metallicFactor = 0.f; // KHR
+        float roughnessFactor = 0.f; // KHR
+        float transmissionFactor = 0.f; // KHR
+        float adobeIor = 1.f; // Adobe
+
+        // textures
+        int baseColorTexture = -1;
+        int metallicRoughnessTexture = -1;
+        int transmissionTexture = -1;
+        int normalTexture = -1;
     };
 
-    // 
-    struct GeometryRegistryInfo 
-    {
-        std::vector<BindingInfo> bindings = {};
-        std::vector<vkh::VkDescriptorBufferInfo> buffers = {};
-        //std::vector<vkt::VectorBase> buffers = {};
+    //
+    struct MaterialSetInfo {
+        std::vector<MaterialSource> materials = {};
+        std::vector<vkh::VkDescriptorImageInfo> textures = {};
 
-        uint32_t maxBindingCount = 128u;
-        
+        uint32_t maxMaterialCount = 128u;
     };
 
-    // 
-    class GeometryRegistry: public DeviceBased {
+    //
+    class MaterialSet : public DeviceBased 
+    {
         protected: 
-        GeometryRegistryInfo info = {};
-
-        // 
-        vkt::uni_ptr<DataSet<BindingInfo>> bindings = {};
+        MaterialSetInfo info = {};
+        vkt::uni_ptr<DataSet<MaterialSource>> materials = {};
         VkDescriptorSet set = VK_NULL_HANDLE;
         bool created = false;
 
         // 
-        virtual void constructor(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<GeometryRegistryInfo> info = GeometryRegistryInfo{}) 
+        virtual void constructor(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<MaterialSetInfo> info = MaterialSetInfo{}) 
         {
             this->info = info;
             this->device = device;
-            this->bindings = std::make_shared<DataSet<BindingInfo>>(device, DataSetInfo{
-                .count = info->maxBindingCount,
+            this->materials = std::make_shared<DataSet<MaterialSource>>(device, DataSetInfo{
+                .count = info->maxMaterialCount,
                 .usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT
             });
         };
-        
+
+        // 
         public:
-        GeometryRegistry() {};
-        GeometryRegistry(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<GeometryRegistryInfo> info = GeometryRegistryInfo{}) { this->constructor(device, info); };
+        MaterialSet() {};
+        MaterialSet(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<MaterialSetInfo> info = MaterialSetInfo{}) { this->constructor(device, info); };
 
         //
         static VkDescriptorSetLayout& createDescriptorSetLayout(vkt::uni_ptr<vkf::Device> device, VkDescriptorSetLayout& descriptorSetLayout) {
@@ -62,7 +68,7 @@ namespace icv {
                 vkh::VsDescriptorSetLayoutCreateInfoHelper descriptorSetLayoutHelper(vkh::VkDescriptorSetLayoutCreateInfo{});
                 descriptorSetLayoutHelper.pushBinding(vkh::VkDescriptorSetLayoutBinding{
                     .binding = 0u,
-                    .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+                    .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
                     .descriptorCount = 256u,
                     .stageFlags = pipusage
                 }, vkh::VkDescriptorBindingFlags{ .ePartiallyBound = 1 });
@@ -89,40 +95,40 @@ namespace icv {
         };
 
         //
-        virtual const GeometryRegistryInfo& getInfo() const {
+        virtual const MaterialSetInfo& getInfo() const {
             return info;
         };
 
         //
-        virtual GeometryRegistryInfo& getInfo() {
+        virtual MaterialSetInfo& getInfo() {
             return info;
         };
 
         //
-        virtual const vkt::Vector<BindingInfo>& getBuffer() const {
-            return bindings->getDeviceBuffer();
+        virtual const vkt::Vector<MaterialSource>& getBuffer() const {
+            return materials->getDeviceBuffer();
         };
 
         //
-        virtual vkt::Vector<BindingInfo>& getBuffer() {
-            return bindings->getDeviceBuffer();
+        virtual vkt::Vector<MaterialSource>& getBuffer() {
+            return materials->getDeviceBuffer();
         };
 
         // 
         virtual VkDescriptorSet& makeDescriptorSet(vkt::uni_arg<DescriptorInfo> info = DescriptorInfo{}) 
         {
             vkh::VsDescriptorSetCreateInfoHelper descriptorSetHelper(info->layout, device->descriptorPool);
-            auto handle = descriptorSetHelper.pushDescription<vkh::VkDescriptorBufferInfo>(vkh::VkDescriptorUpdateTemplateEntry{
+            auto handle = descriptorSetHelper.pushDescription<vkh::VkDescriptorImageInfo>(vkh::VkDescriptorUpdateTemplateEntry{
                 .dstBinding = 0u,
-                .descriptorCount = uint32_t(this->info.buffers.size()),
-                .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER
+                .descriptorCount = uint32_t(this->info.textures.size()),
+                .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER
             });
-            memcpy(&handle, this->info.buffers.data(), this->info.buffers.size() * sizeof(vkh::VkDescriptorBufferInfo));
+            memcpy(&handle, this->info.textures.data(), this->info.textures.size() * sizeof(vkh::VkDescriptorImageInfo));
             descriptorSetHelper.pushDescription<vkh::VkDescriptorBufferInfo>(vkh::VkDescriptorUpdateTemplateEntry{
                 .dstBinding = 1u,
                 .descriptorCount = 1u,
                 .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER
-            }) = bindings->getDeviceBuffer();
+            }) = materials->getDeviceBuffer();
             vkh::AllocateDescriptorSetWithUpdate(device->dispatch, descriptorSetHelper, set, created);
             return set;
         };
@@ -130,11 +136,11 @@ namespace icv {
         //
         virtual void copyCommand(VkCommandBuffer commandBuffer)
         {   // 
-            bindings->copyFromVector(info.bindings);
-            bindings->cmdCopyFromCpu(commandBuffer);
+            materials->copyFromVector(info.materials);
+            materials->cmdCopyFromCpu(commandBuffer);
         };
 
-        // 
+        //
         virtual void flush(vkt::uni_ptr<vkf::Queue> queue = {}) 
         {   // 
             queue->submitOnce([&,this](VkCommandBuffer commandBuffer){
@@ -143,40 +149,21 @@ namespace icv {
         };
 
         //
-        virtual uintptr_t pushBuffer(vkh::VkDescriptorBufferInfo buffer) 
+        virtual uintptr_t pushTexture(vkh::VkDescriptorImageInfo texture) 
         {   
-            uintptr_t index = this->info.buffers.size();
-            this->info.buffers.push_back(buffer);
+            uintptr_t index = this->info.textures.size();
+            this->info.textures.push_back(texture);
             return index;
         };
 
         //
-        virtual uintptr_t pushBinding(vkt::uni_arg<BindingInfo> binding) 
+        virtual uintptr_t pushMaterial(vkt::uni_arg<MaterialSource> material) 
         {   
-            uintptr_t index = this->info.bindings.size();
-            this->info.bindings.push_back(binding);
+            uintptr_t index = this->info.materials.size();
+            this->info.materials.push_back(material);
             return index;
         };
 
-        //
-        virtual uintptr_t pushBufferWithBinding(vkh::VkDescriptorBufferInfo buffer, vkt::uni_arg<BindingInfo> binding) 
-        {   
-            binding->buffer = pushBuffer(buffer);
-            pushBinding(binding);
-            return binding->buffer;
-        };
-
-        // TODO: separate set buffer or binding
-        virtual void setBufferWithBinding(uintptr_t index, vkh::VkDescriptorBufferInfo buffer, vkt::uni_arg<BindingInfo> binding)
-        {
-            //binding->buffer = index; // prefer same index
-
-            if (this->info.buffers.size() <= (binding->buffer)) { this->info.buffers.resize((binding->buffer)+1u); };
-            if (this->info.bindings.size() <= index) { this->info.bindings.resize(index+1u); };
-
-            this->info.buffers[binding->buffer] = buffer;
-            this->info.bindings[index] = binding;
-        };
     };
 
 };
