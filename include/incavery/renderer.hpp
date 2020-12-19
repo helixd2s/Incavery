@@ -5,6 +5,7 @@
 #include "./geometryRegistry.hpp"
 #include "./geometryLevel.hpp"
 #include "./instanceLevel.hpp"
+#include "./framebuffer.hpp"
 
 // 
 namespace icv {
@@ -13,32 +14,7 @@ namespace icv {
     {
         vkt::uni_ptr<GeometryRegistry> geometryRegistry = {};
         vkt::uni_ptr<InstanceLevel> instanceLevel = {};
-    };
-
-    struct FramebufferInfo
-    {
-        std::vector<vkt::ImageRegion> images = {};
-        vkt::ImageRegion depthImage = {};
-
-        //
-        VkFramebuffer framebuffer = VK_NULL_HANDLE;
-        VkDescriptorSet set = VK_NULL_HANDLE;
-        bool created = false;
-
-        // planned multiple viewports
-        vkh::VkViewport viewport = {};
-        vkh::VkRect2D scissor = {};
-
-        //
-        FramebufferInfo& transfer(vkt::uni_ptr<vkf::Queue> queue) {
-            queue->submitOnce([&](VkCommandBuffer commandBuffer){
-                for (auto& image : this->images) {
-                    image.transfer(commandBuffer);
-                };
-                depthImage.transfer(commandBuffer);
-            });
-            return *this;
-        };
+        vkt::uni_ptr<Framebuffer> framebuffer = {};
     };
 
     struct PipelineInfo
@@ -48,7 +24,7 @@ namespace icv {
         VkPipeline opaqueRasterization = VK_NULL_HANDLE;
         VkPipeline translucentRasterization = VK_NULL_HANDLE;
     };
-    
+
     struct GraphicsPipelineSource 
     {
         std::string vertex = "";
@@ -102,7 +78,6 @@ namespace icv {
     {
         protected: 
         RendererInfo info = {};
-        FramebufferInfo framebuffer = {};
         PipelineInfo pipeline = {};
         DescriptorLayouts layouts = {};
 
@@ -111,19 +86,22 @@ namespace icv {
         std::vector<VkDescriptorSet> descriptorSets = {};
 
         // 
-        const uint32_t FBO_COUNT = 4u;
-
-        // 
         virtual void constructor(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<RendererInfo> info = RendererInfo{}) 
         {
             this->info = info;
             this->device = device;
-
         };
 
         public:
         Renderer() {};
         Renderer(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<RendererInfo> info = RendererInfo{}) { this->constructor(device, info); };
+
+        //
+        virtual void setFramebuffer(vkt::uni_ptr<Framebuffer> framebuffer) 
+        {
+            this->info.framebuffer = framebuffer;
+        };
+
 
         // 
         virtual std::vector<VkDescriptorSet>& editDescriptorSets() 
@@ -140,85 +118,19 @@ namespace icv {
         //
         virtual VkDescriptorSetLayout& getInstanceLevelLayout() 
         {   //
-            auto pipusage = vkh::VkShaderStageFlags{ .eVertex = 1, .eGeometry = 1, .eFragment = 1, .eCompute = 1, .eRaygen = 1, .eAnyHit = 1, .eClosestHit = 1, .eMiss = 1 };
-            auto indexedf = vkh::VkDescriptorBindingFlags{ .eUpdateAfterBind = 1, .eUpdateUnusedWhilePending = 1, .ePartiallyBound = 1 };
-            auto dflags = vkh::VkDescriptorSetLayoutCreateFlags{ .eUpdateAfterBindPool = 1 };
-
-            if (!layouts.instanceLevel) 
-            {   // create descriptor set layout
-                vkh::VsDescriptorSetLayoutCreateInfoHelper descriptorSetLayoutHelper(vkh::VkDescriptorSetLayoutCreateInfo{});
-                descriptorSetLayoutHelper.pushBinding(vkh::VkDescriptorSetLayoutBinding{
-                    .binding = 0u,
-                    .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-                    .descriptorCount = 1u,
-                    .stageFlags = pipusage
-                }, vkh::VkDescriptorBindingFlags{ .ePartiallyBound = 1 });
-                descriptorSetLayoutHelper.pushBinding(vkh::VkDescriptorSetLayoutBinding{
-                    .binding = 1u,
-                    .descriptorType = VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR,
-                    .descriptorCount = 1u,
-                    .stageFlags = pipusage
-                }, vkh::VkDescriptorBindingFlags{ .ePartiallyBound = 1 });
-                descriptorSetLayoutHelper.pushBinding(vkh::VkDescriptorSetLayoutBinding{
-                    .binding = 2u,
-                    .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-                    .descriptorCount = 256u,
-                    .stageFlags = pipusage
-                }, vkh::VkDescriptorBindingFlags{ .ePartiallyBound = 1 });
-                vkh::handleVk(device->dispatch->CreateDescriptorSetLayout(descriptorSetLayoutHelper.format(), nullptr, &layouts.instanceLevel));
-            };
-
-            return layouts.instanceLevel;
+            return InstanceLevel::createDescriptorSetLayout(device, layouts.instanceLevel);
         };
 
         //
         virtual VkDescriptorSetLayout& getGeometryRegistryLayout() 
         {   //
-            auto pipusage = vkh::VkShaderStageFlags{ .eVertex = 1, .eGeometry = 1, .eFragment = 1, .eCompute = 1, .eRaygen = 1, .eAnyHit = 1, .eClosestHit = 1, .eMiss = 1 };
-            auto indexedf = vkh::VkDescriptorBindingFlags{ .eUpdateAfterBind = 1, .eUpdateUnusedWhilePending = 1, .ePartiallyBound = 1 };
-            auto dflags = vkh::VkDescriptorSetLayoutCreateFlags{ .eUpdateAfterBindPool = 1 };
-
-            if (!layouts.geometryRegistry) 
-            {   // create descriptor set layout
-                vkh::VsDescriptorSetLayoutCreateInfoHelper descriptorSetLayoutHelper(vkh::VkDescriptorSetLayoutCreateInfo{});
-                descriptorSetLayoutHelper.pushBinding(vkh::VkDescriptorSetLayoutBinding{
-                    .binding = 0u,
-                    .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-                    .descriptorCount = 256u,
-                    .stageFlags = pipusage
-                }, vkh::VkDescriptorBindingFlags{ .ePartiallyBound = 1 });
-                descriptorSetLayoutHelper.pushBinding(vkh::VkDescriptorSetLayoutBinding{
-                    .binding = 1u,
-                    .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-                    .descriptorCount = 1u,
-                    .stageFlags = pipusage
-                }, vkh::VkDescriptorBindingFlags{ .ePartiallyBound = 1 });
-                vkh::handleVk(device->dispatch->CreateDescriptorSetLayout(descriptorSetLayoutHelper.format(), nullptr, &layouts.geometryRegistry));
-            };
-
-            return layouts.geometryRegistry;
+            return GeometryRegistry::createDescriptorSetLayout(device, layouts.geometryRegistry);
         };
 
         //
         virtual VkDescriptorSetLayout& getFramebufferLayout() 
         {   //
-            auto pipusage = vkh::VkShaderStageFlags{ .eVertex = 1, .eGeometry = 1, .eFragment = 1, .eCompute = 1, .eRaygen = 1, .eAnyHit = 1, .eClosestHit = 1, .eMiss = 1 };
-            auto indexedf = vkh::VkDescriptorBindingFlags{ .eUpdateAfterBind = 1, .eUpdateUnusedWhilePending = 1, .ePartiallyBound = 1 };
-            auto dflags = vkh::VkDescriptorSetLayoutCreateFlags{ .eUpdateAfterBindPool = 1 };
-
-            if (!layouts.framebuffer) 
-            {   // create descriptor set layout
-                vkh::VsDescriptorSetLayoutCreateInfoHelper descriptorSetLayoutHelper(vkh::VkDescriptorSetLayoutCreateInfo{});
-                descriptorSetLayoutHelper.pushBinding(vkh::VkDescriptorSetLayoutBinding{
-                    .binding = 0u,
-                    .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-                    .descriptorCount = FBO_COUNT,
-                    .stageFlags = pipusage
-                }, vkh::VkDescriptorBindingFlags{ .ePartiallyBound = 1 });
-                vkh::handleVk(device->dispatch->CreateDescriptorSetLayout(descriptorSetLayoutHelper.format(), nullptr, &layouts.framebuffer));
-            };
-
-            return layouts.framebuffer;
+            return Framebuffer::createDescriptorSetLayout(device, layouts.framebuffer);
         };
 
 
@@ -238,6 +150,26 @@ namespace icv {
         virtual const VkDescriptorSetLayout& getFramebufferLayout() const 
         {   // 
             return layouts.framebuffer;
+        };
+
+        // 
+        virtual VkRenderPass& createRenderPass() 
+        {   // 
+            return Framebuffer::createRenderPass(device, renderPass);
+        };
+
+        //
+        virtual VkRenderPass& getRenderPass() 
+        {   // 
+            if (!renderPass) { this->createRenderPass(); };
+            return renderPass;
+        };
+
+        //
+        virtual VkPipelineLayout& getPipelineLayout() 
+        {   // 
+            if (!pipeline.layout) { this->createPipelineLayout(); };
+            return pipeline.layout;
         };
 
 
@@ -260,176 +192,10 @@ namespace icv {
         };
 
         // 
-        virtual VkRenderPass& createRenderPass() 
-        {   // 
-            auto renderPassHelper = vkh::VsRenderPassCreateInfoHelper();
-
-            for (uint32_t i=0;i<FBO_COUNT;i++) 
-            {
-                renderPassHelper.addColorAttachment(vkh::VkAttachmentDescription
-                {
-                    .format = VK_FORMAT_R32G32B32A32_SFLOAT,
-                    .loadOp = VK_ATTACHMENT_LOAD_OP_LOAD,
-                    .storeOp = VK_ATTACHMENT_STORE_OP_STORE,
-                    .stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
-                    .stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
-                    .initialLayout = VK_IMAGE_LAYOUT_GENERAL,
-                    .finalLayout = VK_IMAGE_LAYOUT_GENERAL
-                });
-            };
-
-            renderPassHelper.setDepthStencilAttachment(vkh::VkAttachmentDescription
-            {
-                .format = VK_FORMAT_D32_SFLOAT_S8_UINT,
-                .loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
-                .storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
-                .stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
-                .stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
-                .initialLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
-                .finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
-            });
-
-            auto dp0 = vkh::VkSubpassDependency
-            {
-                .srcSubpass = VK_SUBPASS_EXTERNAL,
-                .dstSubpass = 0u,
-            };
-
-            auto dp1 = vkh::VkSubpassDependency
-            {
-                .srcSubpass = 0u,
-                .dstSubpass = VK_SUBPASS_EXTERNAL,
-            };
-
-            {   // 
-                auto srcStageMask = vkh::VkPipelineStageFlags{ .eColorAttachmentOutput = 1, .eTransfer = 1, .eBottomOfPipe = 1, };   ASSIGN(dp0, srcStageMask);
-                auto dstStageMask = vkh::VkPipelineStageFlags{ .eColorAttachmentOutput = 1, };                                       ASSIGN(dp0, dstStageMask);
-                auto srcAccessMask = vkh::VkAccessFlags{ .eColorAttachmentWrite = 1 };                                               ASSIGN(dp0, srcAccessMask);
-                auto dstAccessMask = vkh::VkAccessFlags{ .eColorAttachmentRead = 1, .eColorAttachmentWrite = 1 };                    ASSIGN(dp0, dstAccessMask);
-                auto dependencyFlags = vkh::VkDependencyFlags{ .eByRegion = 1 };                                                     ASSIGN(dp0, dependencyFlags);
-            };
-
-            {   // 
-                auto srcStageMask = vkh::VkPipelineStageFlags{ .eColorAttachmentOutput = 1 };                                         ASSIGN(dp1, srcStageMask);
-                auto dstStageMask = vkh::VkPipelineStageFlags{ .eTopOfPipe = 1, .eColorAttachmentOutput = 1, .eTransfer = 1 };        ASSIGN(dp1, dstStageMask);
-                auto srcAccessMask = vkh::VkAccessFlags{ .eColorAttachmentRead = 1, .eColorAttachmentWrite = 1 };                     ASSIGN(dp1, srcAccessMask);
-                auto dstAccessMask = vkh::VkAccessFlags{ .eColorAttachmentRead = 1, .eColorAttachmentWrite = 1 };                     ASSIGN(dp1, dstAccessMask);
-                auto dependencyFlags = vkh::VkDependencyFlags{ .eByRegion = 1 };                                                      ASSIGN(dp1, dependencyFlags);
-            };
-
-            // 
-            renderPassHelper.addSubpassDependency(dp0);
-            renderPassHelper.addSubpassDependency(dp1);
-
-            // 
-            vkh::handleVk(device->dispatch->CreateRenderPass(renderPassHelper, nullptr, &renderPass));
-            return renderPass;
-        };
-
-        //
-        virtual VkRenderPass& getRenderPass() 
-        {   // 
-            if (!renderPass) { this->createRenderPass(); };
-            return renderPass;
-        };
-
-        //
-        virtual VkPipelineLayout& getPipelineLayout() 
-        {   // 
-            if (!pipeline.layout) { this->createPipelineLayout(); };
-            return pipeline.layout;
-        };
-
-        // 
-        virtual FramebufferInfo& createFramebuffer(vkh::VkExtent3D size = {}, vkt::uni_ptr<vkf::Queue> queue = {})
-        {   //
-            std::vector<VkImageView> views = {};
-            std::vector<VkFramebufferAttachmentImageInfo> attachments = {};
-
-            // 
-            vkh::VkSamplerCreateInfo samplerCreateInfo = {};
-            samplerCreateInfo.minFilter = VK_FILTER_LINEAR;
-            samplerCreateInfo.magFilter = VK_FILTER_LINEAR;
-            samplerCreateInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-            samplerCreateInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-            samplerCreateInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-            samplerCreateInfo.unnormalizedCoordinates = false;
-            
-            // 
-            VkSampler sampler = VK_NULL_HANDLE;
-            vkt::handle(device->dispatch->CreateSampler(samplerCreateInfo, nullptr, &sampler));
-            
-
-            for (uint32_t i=0;i<FBO_COUNT;i++) 
-            {   // 
-                framebuffer.images.push_back(createImage2D(ImageCreateInfo{.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT|VK_IMAGE_USAGE_STORAGE_BIT|VK_IMAGE_USAGE_SAMPLED_BIT|VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, .format = VK_FORMAT_R32G32B32A32_SFLOAT, .extent = size, .isDepth = false}));
-                framebuffer.images.back().getDescriptor().sampler = sampler;
-                views.push_back(framebuffer.images.back());
-                attachments.push_back(VkFramebufferAttachmentImageInfo{
-                    .sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_ATTACHMENT_IMAGE_INFO,
-                    .pNext = nullptr, 
-                    .usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
-                    .width = size.width,
-                    .height = size.height,
-                    .layerCount = 1u,
-                    .viewFormatCount = 1u,
-                    .pViewFormats = &framebuffer.images.back().getInfo().format
-                });
-            };
-
-            {   // 
-                framebuffer.depthImage = createImage2D(ImageCreateInfo{.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT|VK_IMAGE_USAGE_TRANSFER_SRC_BIT|VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, .format = VK_FORMAT_D32_SFLOAT_S8_UINT, .extent = size, .isDepth = true});
-                views.push_back(framebuffer.depthImage);
-                attachments.push_back(VkFramebufferAttachmentImageInfo{
-                    .sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_ATTACHMENT_IMAGE_INFO,
-                    .pNext = nullptr, 
-                    .usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
-                    .width = size.width,
-                    .height = size.height,
-                    .layerCount = 1u,
-                    .viewFormatCount = 1u,
-                    .pViewFormats = &framebuffer.depthImage.getInfo().format
-                });
-            };
-
-            {   // TODO: NVIDIA doesn't support imageless framebuffer (stub-only)
-                VkFramebufferAttachmentsCreateInfo attachmentInfo = {
-                    .sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_ATTACHMENTS_CREATE_INFO,
-                    .pNext = nullptr,
-                    .attachmentImageInfoCount = uint32_t(attachments.size()),
-                    .pAttachmentImageInfos = attachments.data()
-                };
-
-                if (queue) { framebuffer.transfer(queue); };
-                vkh::handleVk(device->dispatch->CreateFramebuffer(vkh::VkFramebufferCreateInfo{ .pNext = &attachmentInfo, .flags = {}, .renderPass = renderPass, .attachmentCount = uint32_t(views.size()), .pAttachments = views.data(), .width = size.width, .height = size.height, .layers = 1u }, nullptr, &framebuffer.framebuffer));
-            };
-
-            {   // 
-                framebuffer.scissor = vkh::VkRect2D{ vkh::VkOffset2D{0, 0}, vkh::VkExtent2D{ size.width, size.height } };
-                framebuffer.viewport = vkh::VkViewport{ 0.0f, 0.0f, static_cast<float>(size.width), static_cast<float>(size.height), 0.f, 1.f };
-            };
-            
-            {   // create descriptor set
-                vkh::VsDescriptorSetCreateInfoHelper descriptorSetHelper(layouts.framebuffer, device->descriptorPool);
-                auto handle = descriptorSetHelper.pushDescription<vkh::VkDescriptorImageInfo>(vkh::VkDescriptorUpdateTemplateEntry
-                {
-                    .dstBinding = 0u,
-                    .descriptorCount = uint32_t(FBO_COUNT),
-                    .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER
-                });
-                for (uint32_t i=0;i<FBO_COUNT;i++) 
-                {
-                    handle[i] = framebuffer.images[i];
-                };
-                vkh::AllocateDescriptorSetWithUpdate(device->dispatch, descriptorSetHelper, framebuffer.set, framebuffer.created);
-            };
-
-            return framebuffer;
-        };
-
-        // 
         virtual PipelineInfo& createPipeline(vkt::uni_arg<PipelineCreateInfo> info = PipelineCreateInfo{}) 
         {   
+            auto& framebuffer = this->info.framebuffer->getState();
+
             // 
             vkh::VsGraphicsPipelineCreateInfoConstruction pipelineInfo = {};
             {   // initial state
@@ -461,7 +227,7 @@ namespace icv {
             }
 
             // blend states
-            for (uint32_t i=0;i<FBO_COUNT;i++) 
+            for (uint32_t i=0;i<Framebuffer::FBO_COUNT;i++) 
             {   // TODO: full blending support
                 pipelineInfo.colorBlendAttachmentStates.push_back(vkh::VkPipelineColorBlendAttachmentState{
                     .blendEnable = false
@@ -496,9 +262,8 @@ namespace icv {
         //
         virtual std::vector<VkDescriptorSet>& makeDescriptorSets()
         {   //
-            
             if (this->descriptorSets.size() < 3u) { this->descriptorSets.resize(3u); };
-            this->descriptorSets[0u] = this->framebuffer.set;
+            this->descriptorSets[0u] = this->info.framebuffer->getState().set;
             this->descriptorSets[1u] = this->info.geometryRegistry->makeDescriptorSet( DescriptorInfo{ .layout = layouts.geometryRegistry, .pipelineLayout = pipeline.layout } );
             this->descriptorSets[2u] = this->info.instanceLevel->makeDescriptorSet( DescriptorInfo{ .layout = layouts.instanceLevel, .pipelineLayout = pipeline.layout } );
             return this->descriptorSets;
@@ -520,7 +285,7 @@ namespace icv {
 
             // 
             const uint32_t LOCAL_GROUP_X = 32u, LOCAL_GROUP_Y = 24u;
-            
+
             // draw items
             std::vector<DrawInfo> opaque = {};
             std::vector<DrawInfo> translucent = {};
@@ -552,7 +317,7 @@ namespace icv {
 
             // TODO: use with framebuffer as native
             std::vector<vkh::VkClearValue> clearValues = {};
-            for (uint32_t i=0;i<FBO_COUNT;i++) {
+            for (uint32_t i=0;i<Framebuffer::FBO_COUNT;i++) {
                 clearValues.push_back(vkh::VkClearColorValue{});
                 clearValues.back().color.float32 = glm::vec4(0.f, 0.f, 0.f, 0.f);
             };
@@ -588,6 +353,7 @@ namespace icv {
                 };
             };
 
+            auto& framebuffer = info.framebuffer->getState();
             {
                 for (auto& image : framebuffer.images) {
                     image.transfer(commandBuffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);

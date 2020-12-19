@@ -52,6 +52,33 @@ namespace icv {
         GeometryRegistry(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<GeometryRegistryInfo> info = GeometryRegistryInfo{}) { this->constructor(device, info); };
 
         //
+        static VkDescriptorSetLayout& createDescriptorSetLayout(vkt::uni_ptr<vkf::Device> device, VkDescriptorSetLayout& descriptorSetLayout) {
+            auto pipusage = vkh::VkShaderStageFlags{ .eVertex = 1, .eGeometry = 1, .eFragment = 1, .eCompute = 1, .eRaygen = 1, .eAnyHit = 1, .eClosestHit = 1, .eMiss = 1 };
+            auto indexedf = vkh::VkDescriptorBindingFlags{ .eUpdateAfterBind = 1, .eUpdateUnusedWhilePending = 1, .ePartiallyBound = 1 };
+            auto dflags = vkh::VkDescriptorSetLayoutCreateFlags{ .eUpdateAfterBindPool = 1 };
+
+            if (!descriptorSetLayout) 
+            {   // create descriptor set layout
+                vkh::VsDescriptorSetLayoutCreateInfoHelper descriptorSetLayoutHelper(vkh::VkDescriptorSetLayoutCreateInfo{});
+                descriptorSetLayoutHelper.pushBinding(vkh::VkDescriptorSetLayoutBinding{
+                    .binding = 0u,
+                    .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+                    .descriptorCount = 256u,
+                    .stageFlags = pipusage
+                }, vkh::VkDescriptorBindingFlags{ .ePartiallyBound = 1 });
+                descriptorSetLayoutHelper.pushBinding(vkh::VkDescriptorSetLayoutBinding{
+                    .binding = 1u,
+                    .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+                    .descriptorCount = 1u,
+                    .stageFlags = pipusage
+                }, vkh::VkDescriptorBindingFlags{ .ePartiallyBound = 1 });
+                vkh::handleVk(device->dispatch->CreateDescriptorSetLayout(descriptorSetLayoutHelper.format(), nullptr, &descriptorSetLayout));
+            };
+
+            return descriptorSetLayout;
+        };
+
+        //
         virtual const VkDescriptorSet& getDescriptorSet() const {
             return set;
         };

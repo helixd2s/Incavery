@@ -217,6 +217,13 @@ int main() {
     });
 
     //
+    vkt::uni_ptr<icv::Framebuffer> framebuffer = std::make_shared<icv::Framebuffer>(device, icv::FramebufferInfo{
+        .size = vkh::VkExtent3D{ downscaled.width, downscaled.height, 1u },
+        .layout = renderer->getFramebufferLayout(),
+        .renderPass = renderer->createRenderPass()
+    });
+
+    //
     geometryLevel->pushGeometry(icv::GeometryInfo{
         .vertex = {
             .buffer = 1u,
@@ -254,9 +261,9 @@ int main() {
     });
 
     // create renderer
-    renderer->createRenderPass();
+    framebuffer->createFramebuffer(queue);
+    renderer->setFramebuffer(framebuffer);
     renderer->createPipelineLayout({ constantsLayout });
-    renderer->createFramebuffer(vkh::VkExtent3D{ downscaled.width, downscaled.height, 1u }, queue);
     renderer->createPipeline(icv::PipelineCreateInfo{});
     renderer->makeDescriptorSets();
 
