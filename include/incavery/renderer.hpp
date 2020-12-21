@@ -15,9 +15,10 @@ namespace icv {
 
     struct RendererInfo
     {
+        vkt::uni_ptr<Framebuffer> framebuffer = {};
         vkt::uni_ptr<GeometryRegistry> geometryRegistry = {};
         vkt::uni_ptr<InstanceLevel> instanceLevel = {};
-        vkt::uni_ptr<Framebuffer> framebuffer = {};
+        vkt::uni_ptr<MaterialSet> materialSet = {};
     };
 
     struct PipelineInfo
@@ -75,6 +76,7 @@ namespace icv {
         VkDescriptorSetLayout framebuffer = VK_NULL_HANDLE;
         VkDescriptorSetLayout geometryRegistry = VK_NULL_HANDLE;
         VkDescriptorSetLayout instanceLevel = VK_NULL_HANDLE;
+        VkDescriptorSetLayout materialSet = VK_NULL_HANDLE;
     };
 
     class Renderer: public DeviceBased
@@ -105,6 +107,12 @@ namespace icv {
             this->info.framebuffer = framebuffer;
         };
 
+        //
+        virtual void setMaterialSet(vkt::uni_ptr<MaterialSet> materialSet) 
+        {
+            this->info.materialSet = materialSet;
+        };
+
 
         // 
         virtual std::vector<VkDescriptorSet>& editDescriptorSets() 
@@ -116,6 +124,12 @@ namespace icv {
         virtual const std::vector<VkDescriptorSet>& editDescriptorSets() const
         {
             return descriptorSets;
+        };
+
+        //
+        virtual VkDescriptorSetLayout& getMaterialSetLayout() 
+        {   //
+            return MaterialSet::createDescriptorSetLayout(device, layouts.materialSet);
         };
 
         //
@@ -136,6 +150,12 @@ namespace icv {
             return Framebuffer::createDescriptorSetLayout(device, layouts.framebuffer);
         };
 
+
+        //
+        virtual const VkDescriptorSetLayout& getMaterialSetLayout() const 
+        {   // 
+            return layouts.materialSet;
+        };
 
         //
         virtual const VkDescriptorSetLayout& getInstanceLevelLayout() const 
@@ -184,6 +204,7 @@ namespace icv {
             auto dflags = vkh::VkDescriptorSetLayoutCreateFlags{ .eUpdateAfterBindPool = 1 };
 
             // 
+            layouts.insert(layouts.begin(), this->getMaterialSetLayout());
             layouts.insert(layouts.begin(), this->getInstanceLevelLayout()); // 3th
             layouts.insert(layouts.begin(), this->getGeometryRegistryLayout()); // secondly
             layouts.insert(layouts.begin(), this->getFramebufferLayout()); // firstly
@@ -227,7 +248,7 @@ namespace icv {
                     .stride = 16u, // can be changed
                     .inputRate = VK_VERTEX_INPUT_RATE_VERTEX 
                 });
-            }
+            };
 
             // blend states
             for (uint32_t i=0;i<Framebuffer::FBO_COUNT;i++) 
@@ -265,10 +286,11 @@ namespace icv {
         //
         virtual std::vector<VkDescriptorSet>& makeDescriptorSets()
         {   //
-            if (this->descriptorSets.size() < 3u) { this->descriptorSets.resize(3u); };
+            if (this->descriptorSets.size() < 4u) { this->descriptorSets.resize(3u); };
             this->descriptorSets[0u] = this->info.framebuffer->getState().set;
             this->descriptorSets[1u] = this->info.geometryRegistry->makeDescriptorSet( DescriptorInfo{ .layout = layouts.geometryRegistry, .pipelineLayout = pipeline.layout } );
             this->descriptorSets[2u] = this->info.instanceLevel->makeDescriptorSet( DescriptorInfo{ .layout = layouts.instanceLevel, .pipelineLayout = pipeline.layout } );
+            this->descriptorSets[3u] = this->info.materialSet->makeDescriptorSet( DescriptorInfo{ .layout = layouts.materialSet, .pipelineLayout = pipeline.layout } );
             return this->descriptorSets;
         };
 

@@ -164,6 +164,12 @@ namespace icv {
             return index;
         };
 
+        //
+        void setMaterial(uintptr_t index, vkt::uni_arg<MaterialSource> material) {
+            if (info.materials.size() <= index) { info.materials.resize(index+1u); };
+            info.materials[index] = material;
+        };
+
     };
 
 };

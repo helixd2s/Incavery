@@ -191,7 +191,10 @@ int main() {
     vkh::AllocateDescriptorSetWithUpdate(device->dispatch, descriptorSetHelper, constantsSet, created);
 
 
-
+    // TODO: needs flush data
+    vkt::uni_ptr<icv::MaterialSet> materialSet = std::make_shared<icv::MaterialSet>(device, icv::MaterialSetInfo{
+        .maxMaterialCount = 8u
+    });
 
     //
     vkt::uni_ptr<icv::GeometryRegistry> geometryRegistry = std::make_shared<icv::GeometryRegistry>(device, icv::GeometryRegistryInfo{
@@ -213,7 +216,8 @@ int main() {
     // 
     vkt::uni_ptr<icv::Renderer> renderer = std::make_shared<icv::Renderer>(device, icv::RendererInfo{
         .geometryRegistry = geometryRegistry, 
-        .instanceLevel = instanceLevel
+        .instanceLevel = instanceLevel,
+        .materialSet = materialSet
     });
 
     //
@@ -251,9 +255,6 @@ int main() {
         .buffer = 1u,
         .stride = sizeof(glm::vec4)
     });
-
-    //
-    //geometryLevel
 
     //
     instanceLevel->pushInstance(icv::InstanceInfo{
@@ -378,6 +379,8 @@ int main() {
             vkt::commandBarrier(device->dispatch, commandBuffer);
 
             // 
+            //materialSet->copyCommand(commandBuffer); // no materials currently
+            geometryRegistry->copyCommand(commandBuffer);
             geometryLevel->buildCommand(commandBuffer);
             instanceLevel->buildCommand(commandBuffer);
             renderer->createRenderingCommand(commandBuffer);
