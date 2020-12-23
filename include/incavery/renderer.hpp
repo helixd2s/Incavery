@@ -286,7 +286,7 @@ namespace icv {
         //
         virtual std::vector<VkDescriptorSet>& makeDescriptorSets()
         {   //
-            if (this->descriptorSets.size() < 4u) { this->descriptorSets.resize(3u); };
+            if (this->descriptorSets.size() < 4u) { this->descriptorSets.resize(4u); };
             this->descriptorSets[0u] = this->info.framebuffer->getState().set;
             this->descriptorSets[1u] = this->info.geometryRegistry->makeDescriptorSet( DescriptorInfo{ .layout = layouts.geometryRegistry, .pipelineLayout = pipeline.layout } );
             this->descriptorSets[2u] = this->info.instanceLevel->makeDescriptorSet( DescriptorInfo{ .layout = layouts.instanceLevel, .pipelineLayout = pipeline.layout } );

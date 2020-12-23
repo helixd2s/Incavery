@@ -158,6 +158,48 @@ int main() {
 
 
 
+
+
+    vkt::ImageRegion image = {};
+    {
+        // 
+        vkh::VkImageCreateInfo imageCreateInfo = {};
+        imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
+        imageCreateInfo.format = VK_FORMAT_R32G32B32A32_SFLOAT;
+        imageCreateInfo.extent = vkh::VkExtent3D{ downscaled.width, downscaled.height, 1 };
+        imageCreateInfo.mipLevels = 1u;
+        imageCreateInfo.arrayLayers = 1u;
+        imageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+        imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL; // TODO: Linear
+        imageCreateInfo.usage = VK_IMAGE_USAGE_STORAGE_BIT;
+        imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+
+        // 
+        auto vmaCreateInfo = vkt::VmaMemoryInfo{
+            .memUsage = VMA_MEMORY_USAGE_GPU_ONLY,
+            .instanceDispatch = instance->dispatch,
+            .deviceDispatch = device->dispatch
+        };
+
+        // 
+        vkh::VkImageViewCreateInfo imageViewCreateInfo = {};
+        imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+        imageViewCreateInfo.format = VK_FORMAT_R32G32B32A32_SFLOAT;
+        imageViewCreateInfo.components = vkh::VkComponentMapping{};
+        imageViewCreateInfo.subresourceRange = vkh::VkImageSubresourceRange{ .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT, .baseMipLevel = 0u, .levelCount = 1u, .baseArrayLayer = 0u, .layerCount = 1u };
+
+        // 
+        auto allocation = std::make_shared<vkt::VmaImageAllocation>(device->allocator, imageCreateInfo, vmaCreateInfo);
+        image = vkt::ImageRegion(allocation, imageViewCreateInfo);
+
+        // transfer image
+        queue->submitOnce([&](VkCommandBuffer cmd) {
+            image.transfer(cmd);
+        });
+    };
+
+
+
     //
     auto pipusage = vkh::VkShaderStageFlags{ .eVertex = 1, .eGeometry = 1, .eFragment = 1, .eCompute = 1, .eRaygen = 1, .eAnyHit = 1, .eClosestHit = 1, .eMiss = 1 };
     auto indexedf = vkh::VkDescriptorBindingFlags{ .eUpdateAfterBind = 1, .eUpdateUnusedWhilePending = 1, .ePartiallyBound = 1 };
@@ -175,6 +217,12 @@ int main() {
         .descriptorCount = 1u, // TODO: fix descriptor counting
         .stageFlags = pipusage
     }, vkh::VkDescriptorBindingFlags{});
+    descriptorSetLayoutHelper.pushBinding(vkh::VkDescriptorSetLayoutBinding{
+        .binding = 1u,
+        .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+        .descriptorCount = 1u, // TODO: fix descriptor counting
+        .stageFlags = pipusage
+    }, vkh::VkDescriptorBindingFlags{});
     vkh::handleVk(device->dispatch->CreateDescriptorSetLayout(descriptorSetLayoutHelper.format(), nullptr, &constantsLayout));
 
 
@@ -186,6 +234,11 @@ int main() {
         .descriptorCount = 1u,
         .descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER
     }) = constantsBuffer;
+    descriptorSetHelper.pushDescription<vkh::VkDescriptorImageInfo>(vkh::VkDescriptorUpdateTemplateEntry{
+        .dstBinding = 1u,
+        .descriptorCount = 1u,
+        .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE
+    }) = image;
 
     bool created = false;
     vkh::AllocateDescriptorSetWithUpdate(device->dispatch, descriptorSetHelper, constantsSet, created);

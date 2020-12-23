@@ -12,6 +12,7 @@
 #include "./include/instanceLevel.glsl"
 #include "./include/material.glsl"
 #include "./include/rayTracing.glsl"
+#include "./include/external.glsl"
 
 // 
 layout (local_size_x = 32, local_size_y = 24, local_size_z = 1) in;
@@ -36,11 +37,11 @@ void main()
     rays.launchId = u16vec2(launchId);
 
     //
-    IntersectionInfo results = rasterization(rays, 10000.f);
-    //IntersectionInfo results = traceRays(rays, 10000.f); // it working, but needs for second passes
+    //IntersectionInfo results = rasterization(rays, 10000.f);
+    IntersectionInfo results = traceRays(rays, 10000.f); // it working, but needs for second passes
 
     // how from rasterization 
-    //vec4 coloring = vec4(results.barycentric.xyz, 1.f);
-    //if (results.hitT >= 10000.f) { coloring.xyz = vec3(0.1f); };
-    //imageStore(imageBuffers[3], ivec2(launchId), vec4(coloring.xyz, 1.f));
+    vec4 coloring = vec4(results.barycentric.xyz, 1.f);
+    if (results.hitT >= 10000.f) { coloring.xyz = vec3(0.1f); };
+    imageStore(fOutput[0], ivec2(launchId), vec4(coloring.xyz, 1.f));
 };

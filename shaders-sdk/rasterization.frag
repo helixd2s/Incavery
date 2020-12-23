@@ -15,6 +15,7 @@
 #include "./include/geometryRegistry.glsl"
 #include "./include/instanceLevel.glsl"
 #include "./include/material.glsl"
+#include "./include/external.glsl"
 //#include "./include/rayTracing.glsl"
 
 //

@@ -9,6 +9,7 @@
 #include "./include/geometryRegistry.glsl"
 #include "./include/instanceLevel.glsl"
 #include "./include/material.glsl"
+#include "./include/external.glsl"
 
 //
 layout (location = 0) in uvec4 vertex; // it may to be float16

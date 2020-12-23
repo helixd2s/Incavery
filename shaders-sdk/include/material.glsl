@@ -40,9 +40,9 @@ struct MaterialSource
 };
 
 // 
-Material handleMaterial(in uint materialId, inout AttributeInterpolated attributes) 
+MaterialSource handleMaterial(in uint materialId, inout AttributeInterpolated attributes) 
 {
-    Material material;
+    MaterialSource material;
     
     return material;
 };

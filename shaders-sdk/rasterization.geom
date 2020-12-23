@@ -9,6 +9,7 @@
 #include "./include/geometryRegistry.glsl"
 #include "./include/instanceLevel.glsl"
 #include "./include/material.glsl"
+#include "./include/external.glsl"
 
 // 
 const float3 bary[3] = { float3(1.f,0.f,0.f), float3(0.f,1.f,0.f), float3(0.f,0.f,1.f) };

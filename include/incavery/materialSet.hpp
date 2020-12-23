@@ -118,12 +118,14 @@ namespace icv {
         virtual VkDescriptorSet& makeDescriptorSet(vkt::uni_arg<DescriptorInfo> info = DescriptorInfo{}) 
         {
             vkh::VsDescriptorSetCreateInfoHelper descriptorSetHelper(info->layout, device->descriptorPool);
-            auto handle = descriptorSetHelper.pushDescription<vkh::VkDescriptorImageInfo>(vkh::VkDescriptorUpdateTemplateEntry{
-                .dstBinding = 0u,
-                .descriptorCount = uint32_t(this->info.textures.size()),
-                .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER
-            });
-            memcpy(&handle, this->info.textures.data(), this->info.textures.size() * sizeof(vkh::VkDescriptorImageInfo));
+            if (this->info.textures.size() > 0) {
+                auto handle = descriptorSetHelper.pushDescription<vkh::VkDescriptorImageInfo>(vkh::VkDescriptorUpdateTemplateEntry{
+                    .dstBinding = 0u,
+                    .descriptorCount = uint32_t(this->info.textures.size()),
+                    .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER
+                    });
+                memcpy(&handle, this->info.textures.data(), this->info.textures.size() * sizeof(vkh::VkDescriptorImageInfo));
+            };
             descriptorSetHelper.pushDescription<vkh::VkDescriptorBufferInfo>(vkh::VkDescriptorUpdateTemplateEntry{
                 .dstBinding = 1u,
                 .descriptorCount = 1u,
