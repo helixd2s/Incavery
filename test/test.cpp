@@ -371,7 +371,7 @@ int main() {
         });
 
         // upload image
-        queue->uploadIntoImage(texture, pixeles, vkh::VkOffset3D{0u,0u,0u}, imageCreateInfo.extent);
+        queue->uploadIntoImage(texture, pixeles, vkh::VkOffset3D{0u,0u,0u}, imageCreateInfo.extent, texture.subresourceLayers());
 
         // transfer image
         queue->submitOnce([&](VkCommandBuffer cmd) {
