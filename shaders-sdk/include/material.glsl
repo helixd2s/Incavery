@@ -47,4 +47,8 @@ MaterialSource handleMaterial(in uint materialId, inout AttributeInterpolated at
     return material;
 };
 
+// 
+layout (binding = 0, set = MATERIAL_MAP) uniform sampler2D textures[];
+layout (binding = 1, set = MATERIAL_MAP, scalar) buffer MaterialBuffer { MaterialSource materials[]; };
+
 #endif

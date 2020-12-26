@@ -12,6 +12,9 @@
 #include <incavery/instanceLevel.hpp>
 #include <incavery/renderer.hpp>
 
+//
+#include <FreeImage.h>
+
 // 
 void error(int errnum, const char* errmsg)
 {
@@ -313,6 +316,96 @@ int main() {
     instanceLevel->pushInstance(icv::InstanceInfo{
         .instanceCustomIndex = uint32_t(instanceLevel->pushGeometryLevel(geometryLevel))
     });
+
+
+    // 
+    FREE_IMAGE_FORMAT formato = FreeImage_GetFileType("sample.png", 0);
+    if (formato == FIF_UNKNOWN) { /* go angry here */ }
+    FIBITMAP* imagen = FreeImage_Load(formato, "sample.png");
+    if (!imagen) { /* go very angry here */ }
+    FIBITMAP* temp = FreeImage_ConvertTo32Bits(imagen);
+    if (!imagen) { /* go mad here */ }
+    FreeImage_Unload(imagen);
+    imagen = temp;
+
+    // 
+    vkt::ImageRegion texture = {};
+    {
+        int width = FreeImage_GetWidth(imagen);
+        int height = FreeImage_GetHeight(imagen);
+        char* pixeles = (char*)FreeImage_GetBits(imagen);
+
+        // 
+        vkh::VkImageCreateInfo imageCreateInfo = {};
+        imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
+        imageCreateInfo.format = VK_FORMAT_B8G8R8A8_UNORM;
+        imageCreateInfo.extent = vkh::VkExtent3D{ uint32_t(width), uint32_t(height), 1 };
+        imageCreateInfo.mipLevels = 1u;
+        imageCreateInfo.arrayLayers = 1u;
+        imageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+        imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL; // TODO: Linear
+        imageCreateInfo.usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+        imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+
+        // 
+        auto vmaCreateInfo = vkt::VmaMemoryInfo{
+            .memUsage = VMA_MEMORY_USAGE_GPU_ONLY,
+            .instanceDispatch = instance->dispatch,
+            .deviceDispatch = device->dispatch
+        };
+
+        // 
+        vkh::VkImageViewCreateInfo imageViewCreateInfo = {};
+        imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+        imageViewCreateInfo.format = VK_FORMAT_B8G8R8A8_UNORM;
+        imageViewCreateInfo.components = vkh::VkComponentMapping{};
+        imageViewCreateInfo.subresourceRange = vkh::VkImageSubresourceRange{ .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT, .baseMipLevel = 0u, .levelCount = 1u, .baseArrayLayer = 0u, .layerCount = 1u };
+
+        // 
+        auto allocation = std::make_shared<vkt::VmaImageAllocation>(device->allocator, imageCreateInfo, vmaCreateInfo);
+        texture = vkt::ImageRegion(allocation, imageViewCreateInfo);
+
+        // transfer image
+        queue->submitOnce([&](VkCommandBuffer cmd) {
+            texture.transfer(cmd, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+        });
+
+        // upload image
+        queue->uploadIntoImage(texture, pixeles, vkh::VkOffset3D{0u,0u,0u}, imageCreateInfo.extent);
+
+        // transfer image
+        queue->submitOnce([&](VkCommandBuffer cmd) {
+            texture.transfer(cmd, VK_IMAGE_LAYOUT_GENERAL);
+        });
+    };
+
+    // 
+    VkSampler sampler = VK_NULL_HANDLE;
+    {   // 
+        vkh::VkSamplerCreateInfo samplerCreateInfo = {};
+        samplerCreateInfo.minFilter = VK_FILTER_LINEAR;
+        samplerCreateInfo.magFilter = VK_FILTER_LINEAR;
+        samplerCreateInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+        samplerCreateInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+        samplerCreateInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+        samplerCreateInfo.unnormalizedCoordinates = false;
+
+        // 
+        vkt::handle(device->dispatch->CreateSampler(samplerCreateInfo, nullptr, &sampler));
+    };
+
+    //
+    vkh::VkDescriptorImageInfo& textureDescriptor = texture.getDescriptor();
+    textureDescriptor.sampler = sampler;
+
+
+    // 
+    materialSet->pushTexture(textureDescriptor);
+    materialSet->pushMaterial(icv::MaterialSource{
+        .baseColorFactor = {1.f,1.f,1.f,1.f},
+        .baseColorTexture = 0
+    });
+
 
     // create renderer
     framebuffer->createFramebuffer(queue);
