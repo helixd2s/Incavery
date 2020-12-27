@@ -72,7 +72,7 @@ namespace icv {
                     .descriptorCount = 1u,
                     .stageFlags = pipusage
                 }, vkh::VkDescriptorBindingFlags{ .ePartiallyBound = 1 });
-                vkh::handleVk(device->dispatch->CreateDescriptorSetLayout(descriptorSetLayoutHelper.format(), nullptr, &descriptorSetLayout));
+                vkt::handleVk(device->dispatch->CreateDescriptorSetLayout(descriptorSetLayoutHelper.format(), nullptr, &descriptorSetLayout));
             };
 
             return descriptorSetLayout;
@@ -123,7 +123,7 @@ namespace icv {
                 .descriptorCount = 1u,
                 .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER
             }) = bindings->getDeviceBuffer();
-            vkh::AllocateDescriptorSetWithUpdate(device->dispatch, descriptorSetHelper, set, created);
+            vkt::AllocateDescriptorSetWithUpdate(device->dispatch, descriptorSetHelper, set, created);
             return set;
         };
 

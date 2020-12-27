@@ -136,7 +136,7 @@ namespace icv {
             renderPassHelper.addSubpassDependency(dp1);
 
             // 
-            vkh::handleVk(device->dispatch->CreateRenderPass(renderPassHelper, nullptr, &renderPass));
+            vkt::handleVk(device->dispatch->CreateRenderPass(renderPassHelper, nullptr, &renderPass));
             return renderPass;
         };
 
@@ -155,7 +155,7 @@ namespace icv {
                     .descriptorCount = FBO_COUNT,
                     .stageFlags = pipusage
                 }, vkh::VkDescriptorBindingFlags{ .ePartiallyBound = 1 });
-                vkh::handleVk(device->dispatch->CreateDescriptorSetLayout(descriptorSetLayoutHelper.format(), nullptr, &descriptorSetLayout));
+                vkt::handleVk(device->dispatch->CreateDescriptorSetLayout(descriptorSetLayoutHelper.format(), nullptr, &descriptorSetLayout));
             };
 
             return descriptorSetLayout;
@@ -222,7 +222,7 @@ namespace icv {
                 };
 
                 if (queue) { framebuffer.transfer(queue); };
-                vkh::handleVk(device->dispatch->CreateFramebuffer(vkh::VkFramebufferCreateInfo{ .pNext = &attachmentInfo, .flags = {}, .renderPass = info.renderPass, .attachmentCount = uint32_t(views.size()), .pAttachments = views.data(), .width = info.size.width, .height = info.size.height, .layers = 1u }, nullptr, &framebuffer.framebuffer));
+                vkt::handleVk(device->dispatch->CreateFramebuffer(vkh::VkFramebufferCreateInfo{ .pNext = &attachmentInfo, .flags = {}, .renderPass = info.renderPass, .attachmentCount = uint32_t(views.size()), .pAttachments = views.data(), .width = info.size.width, .height = info.size.height, .layers = 1u }, nullptr, &framebuffer.framebuffer));
             };
 
             {   // 
@@ -242,7 +242,7 @@ namespace icv {
                 {
                     handle[i] = framebuffer.images[i];
                 };
-                vkh::AllocateDescriptorSetWithUpdate(device->dispatch, descriptorSetHelper, framebuffer.set, framebuffer.created);
+                vkt::AllocateDescriptorSetWithUpdate(device->dispatch, descriptorSetHelper, framebuffer.set, framebuffer.created);
             };
 
             return framebuffer;

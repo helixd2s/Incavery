@@ -211,7 +211,7 @@ namespace icv {
 
             // 
             std::vector<vkh::VkPushConstantRange> rtRanges = { vkh::VkPushConstantRange{.stageFlags = pipusage, .offset = 0u, .size = 16u } };
-            vkh::handleVk(device->dispatch->CreatePipelineLayout(vkh::VkPipelineLayoutCreateInfo{  }.setSetLayouts(layouts).setPushConstantRanges(rtRanges), nullptr, &pipeline.layout));
+            vkt::handleVk(device->dispatch->CreatePipelineLayout(vkh::VkPipelineLayoutCreateInfo{  }.setSetLayouts(layouts).setPushConstantRanges(rtRanges), nullptr, &pipeline.layout));
             return pipeline.layout;
         };
 
@@ -264,7 +264,7 @@ namespace icv {
                     vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->opaque->geometry), VK_SHADER_STAGE_GEOMETRY_BIT),
                     vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->opaque->fragment), VK_SHADER_STAGE_FRAGMENT_BIT)
                 };
-                vkh::handleVk(device->dispatch->CreateGraphicsPipelines(device->pipelineCache, 1u, pipelineInfo, nullptr, &pipeline.opaqueRasterization));
+                vkt::handleVk(device->dispatch->CreateGraphicsPipelines(device->pipelineCache, 1u, pipelineInfo, nullptr, &pipeline.opaqueRasterization));
             };
 
             if (info->translucent) {   // translucent rasterization
@@ -273,7 +273,7 @@ namespace icv {
                     vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->translucent->geometry), VK_SHADER_STAGE_GEOMETRY_BIT),
                     vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->translucent->fragment), VK_SHADER_STAGE_FRAGMENT_BIT)
                 };
-                vkh::handleVk(device->dispatch->CreateGraphicsPipelines(device->pipelineCache, 1u, pipelineInfo, nullptr, &pipeline.translucentRasterization));
+                vkt::handleVk(device->dispatch->CreateGraphicsPipelines(device->pipelineCache, 1u, pipelineInfo, nullptr, &pipeline.translucentRasterization));
             };
 
             if (info->rayTracing) {

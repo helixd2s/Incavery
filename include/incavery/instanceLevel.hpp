@@ -123,7 +123,7 @@ namespace icv {
                     .descriptorCount = 256u,
                     .stageFlags = pipusage
                 }, vkh::VkDescriptorBindingFlags{ .ePartiallyBound = 1 });
-                vkh::handleVk(device->dispatch->CreateDescriptorSetLayout(descriptorSetLayoutHelper.format(), nullptr, &descriptorSetLayout));
+                vkt::handleVk(device->dispatch->CreateDescriptorSetLayout(descriptorSetLayoutHelper.format(), nullptr, &descriptorSetLayout));
             };
             return descriptorSetLayout;
         };
@@ -161,7 +161,7 @@ namespace icv {
                 handle[i] = this->info.geometries[i]->getBuffer();
             };
 
-            vkh::AllocateDescriptorSetWithUpdate(device->dispatch, descriptorSetHelper, set, created);
+            vkt::AllocateDescriptorSetWithUpdate(device->dispatch, descriptorSetHelper, set, created);
             return set;
         };
 
