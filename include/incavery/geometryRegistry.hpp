@@ -99,12 +99,12 @@ namespace icv {
         };
 
         //
-        virtual const vkt::Vector<BindingInfo>& getBuffer() const {
+        virtual const vkf::Vector<BindingInfo>& getBuffer() const {
             return bindings->getDeviceBuffer();
         };
 
         //
-        virtual vkt::Vector<BindingInfo>& getBuffer() {
+        virtual vkf::Vector<BindingInfo>& getBuffer() {
             return bindings->getDeviceBuffer();
         };
 

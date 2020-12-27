@@ -77,7 +77,7 @@ int main() {
     std::vector<vkf::Framebuffer>& framebuffers = manager->createSwapchainFramebuffer(queue);
 
     // 
-    auto allocInfo = vkt::MemoryAllocationInfo{};
+    auto allocInfo = vkf::MemoryAllocationInfo{};
     allocInfo.device = *device;
     allocInfo.memoryProperties = device->memoryProperties;
     allocInfo.instanceDispatch = instance->dispatch;
@@ -104,9 +104,9 @@ int main() {
     std::vector<uint32_t> instanceCounts = { 1u };
 
     //
-    vkt::Vector<uint16_t> indicesBuffer = {};
-    vkt::Vector<glm::vec4> verticesBuffer = {};
-    vkt::Vector<Constants> constantsBuffer = {};
+    vkf::Vector<uint16_t> indicesBuffer = {};
+    vkf::Vector<glm::vec4> verticesBuffer = {};
+    vkf::Vector<Constants> constantsBuffer = {};
 
     {   // vertices
         auto size = vertices.size() * sizeof(glm::vec4);
@@ -114,13 +114,13 @@ int main() {
             .size = size,
             .usage = VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT | VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT
         };
-        auto vmaCreateInfo = vkt::VmaMemoryInfo{
+        auto vmaCreateInfo = vkf::VmaMemoryInfo{
             .memUsage = VMA_MEMORY_USAGE_GPU_ONLY,
             .instanceDispatch = instance->dispatch,
             .deviceDispatch = device->dispatch
         };
-        auto allocation = std::make_shared<vkt::VmaBufferAllocation>(device->allocator, bufferCreateInfo, vmaCreateInfo);
-        verticesBuffer = vkt::Vector<glm::vec4>(allocation, 0ull, size, sizeof(glm::vec4));
+        auto allocation = std::make_shared<vkf::VmaBufferAllocation>(device->allocator, bufferCreateInfo, vmaCreateInfo);
+        verticesBuffer = vkf::Vector<glm::vec4>(allocation, 0ull, size, sizeof(glm::vec4));
         //memcpy(verticesBuffer.map(), vertices.data(), size);
         queue->uploadIntoBuffer(verticesBuffer, vertices.data(), size); // use internal cache for upload buffer
     };
@@ -131,13 +131,13 @@ int main() {
             .size = size,
             .usage = VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT | VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR | VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT
         };
-        auto vmaCreateInfo = vkt::VmaMemoryInfo{
+        auto vmaCreateInfo = vkf::VmaMemoryInfo{
             .memUsage = VMA_MEMORY_USAGE_GPU_ONLY,
             .instanceDispatch = instance->dispatch,
             .deviceDispatch = device->dispatch
         };
-        auto allocation = std::make_shared<vkt::VmaBufferAllocation>(device->allocator, bufferCreateInfo, vmaCreateInfo);
-        indicesBuffer = vkt::Vector<uint16_t>(allocation, 0ull, size, sizeof(uint16_t));
+        auto allocation = std::make_shared<vkf::VmaBufferAllocation>(device->allocator, bufferCreateInfo, vmaCreateInfo);
+        indicesBuffer = vkf::Vector<uint16_t>(allocation, 0ull, size, sizeof(uint16_t));
         //memcpy(indicesBuffer.map(), indices.data(), size);
         queue->uploadIntoBuffer(indicesBuffer, indices.data(), size); // use internal cache for upload buffer
     };
@@ -148,13 +148,13 @@ int main() {
             .size = size,
             .usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT
         };
-        auto vmaCreateInfo = vkt::VmaMemoryInfo{
+        auto vmaCreateInfo = vkf::VmaMemoryInfo{
             .memUsage = VMA_MEMORY_USAGE_CPU_TO_GPU,
             .instanceDispatch = instance->dispatch,
             .deviceDispatch = device->dispatch
         };
-        auto allocation = std::make_shared<vkt::VmaBufferAllocation>(device->allocator, bufferCreateInfo, vmaCreateInfo);
-        constantsBuffer = vkt::Vector<Constants>(allocation, 0ull, size, sizeof(Constants));
+        auto allocation = std::make_shared<vkf::VmaBufferAllocation>(device->allocator, bufferCreateInfo, vmaCreateInfo);
+        constantsBuffer = vkf::Vector<Constants>(allocation, 0ull, size, sizeof(Constants));
         memcpy(constantsBuffer.map(), &constants, size);
         //queue->uploadIntoBuffer(constantsBuffer, &constants, size); // use internal cache for upload buffer
     };
@@ -163,7 +163,7 @@ int main() {
 
 
 
-    vkt::ImageRegion image = {};
+    vkf::ImageRegion image = {};
     {
         // 
         vkh::VkImageCreateInfo imageCreateInfo = {};
@@ -178,7 +178,7 @@ int main() {
         imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 
         // 
-        auto vmaCreateInfo = vkt::VmaMemoryInfo{
+        auto vmaCreateInfo = vkf::VmaMemoryInfo{
             .memUsage = VMA_MEMORY_USAGE_GPU_ONLY,
             .instanceDispatch = instance->dispatch,
             .deviceDispatch = device->dispatch
@@ -192,8 +192,8 @@ int main() {
         imageViewCreateInfo.subresourceRange = vkh::VkImageSubresourceRange{ .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT, .baseMipLevel = 0u, .levelCount = 1u, .baseArrayLayer = 0u, .layerCount = 1u };
 
         // 
-        auto allocation = std::make_shared<vkt::VmaImageAllocation>(device->allocator, imageCreateInfo, vmaCreateInfo);
-        image = vkt::ImageRegion(allocation, imageViewCreateInfo);
+        auto allocation = std::make_shared<vkf::VmaImageAllocation>(device->allocator, imageCreateInfo, vmaCreateInfo);
+        image = vkf::ImageRegion(allocation, imageViewCreateInfo);
 
         // transfer image
         queue->submitOnce([&](VkCommandBuffer cmd) {
@@ -329,7 +329,7 @@ int main() {
     imagen = temp;
 
     // 
-    vkt::ImageRegion texture = {};
+    vkf::ImageRegion texture = {};
     {
         int width = FreeImage_GetWidth(imagen);
         int height = FreeImage_GetHeight(imagen);
@@ -348,7 +348,7 @@ int main() {
         imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 
         // 
-        auto vmaCreateInfo = vkt::VmaMemoryInfo{
+        auto vmaCreateInfo = vkf::VmaMemoryInfo{
             .memUsage = VMA_MEMORY_USAGE_GPU_ONLY,
             .instanceDispatch = instance->dispatch,
             .deviceDispatch = device->dispatch
@@ -362,8 +362,8 @@ int main() {
         imageViewCreateInfo.subresourceRange = vkh::VkImageSubresourceRange{ .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT, .baseMipLevel = 0u, .levelCount = 1u, .baseArrayLayer = 0u, .layerCount = 1u };
 
         // 
-        auto allocation = std::make_shared<vkt::VmaImageAllocation>(device->allocator, imageCreateInfo, vmaCreateInfo);
-        texture = vkt::ImageRegion(allocation, imageViewCreateInfo);
+        auto allocation = std::make_shared<vkf::VmaImageAllocation>(device->allocator, imageCreateInfo, vmaCreateInfo);
+        texture = vkf::ImageRegion(allocation, imageViewCreateInfo);
 
         // transfer image
         queue->submitOnce([&](VkCommandBuffer cmd) {

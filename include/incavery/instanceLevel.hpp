@@ -37,8 +37,8 @@ namespace icv {
 
         // 
         VkAccelerationStructureKHR acceleration = VK_NULL_HANDLE;
-        vkt::VectorBase accStorage = {};
-        vkt::VectorBase accScratch = {};
+        vkf::VectorBase accStorage = {};
+        vkf::VectorBase accScratch = {};
 
         //
         virtual void constructor(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<InstanceLevelInfo> info = InstanceLevelInfo{}) 
@@ -76,12 +76,12 @@ namespace icv {
         };
 
         //
-        virtual const vkt::Vector<InstanceInfo>& getBuffer() const {
+        virtual const vkf::Vector<InstanceInfo>& getBuffer() const {
             return instances->getDeviceBuffer();
         };
 
         //
-        virtual vkt::Vector<InstanceInfo>& getBuffer() {
+        virtual vkf::Vector<InstanceInfo>& getBuffer() {
             return instances->getDeviceBuffer();
         };
 

@@ -11,8 +11,8 @@ namespace icv {
 
     struct FramebufferStateInfo
     {
-        std::vector<vkt::ImageRegion> images = {};
-        vkt::ImageRegion depthImage = {};
+        std::vector<vkf::ImageRegion> images = {};
+        vkf::ImageRegion depthImage = {};
 
         //
         VkFramebuffer framebuffer = VK_NULL_HANDLE;
@@ -194,7 +194,7 @@ namespace icv {
                     .height = info.size.height,
                     .layerCount = 1u,
                     .viewFormatCount = 1u,
-                    .pViewFormats = &framebuffer.images.back().getInfo().format
+                    .pViewFormats = &framebuffer.images.back().getCreateInfo().format
                 });
             };
 
@@ -209,7 +209,7 @@ namespace icv {
                     .height = info.size.height,
                     .layerCount = 1u,
                     .viewFormatCount = 1u,
-                    .pViewFormats = &framebuffer.depthImage.getInfo().format
+                    .pViewFormats = &framebuffer.depthImage.getCreateInfo().format
                 });
             };
 

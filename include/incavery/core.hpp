@@ -54,23 +54,23 @@ namespace icv {
         };
 
         // 
-        virtual vkt::VectorBase createBuffer(vkt::uni_arg<BufferCreateInfo> info) 
+        virtual vkf::VectorBase createBuffer(vkt::uni_arg<BufferCreateInfo> info) 
         {   // 
             auto bufferCreateInfo = vkh::VkBufferCreateInfo{
                 .size = info->size,
                 .usage = (info->memoryUsage == VMA_MEMORY_USAGE_GPU_ONLY ? VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT : 0u) | VkBufferUsageFlags(info->usage)
             };
-            auto vmaCreateInfo = vkt::VmaMemoryInfo{
+            auto vmaCreateInfo = vkf::VmaMemoryInfo{
                 .memUsage = info->memoryUsage,
                 .instanceDispatch = device->instance->dispatch,
                 .deviceDispatch = device->dispatch
             };
-            auto allocation = std::make_shared<vkt::VmaBufferAllocation>(device->allocator, bufferCreateInfo, vmaCreateInfo);
-            return vkt::VectorBase(allocation, 0ull, info->size, sizeof(uint8_t));
+            auto allocation = std::make_shared<vkf::VmaBufferAllocation>(device->allocator, bufferCreateInfo, vmaCreateInfo);
+            return vkf::VectorBase(allocation, 0ull, info->size, sizeof(uint8_t));
         };
 
         //
-        virtual vkt::ImageRegion createImage2D(vkt::uni_arg<ImageCreateInfo> info)
+        virtual vkf::ImageRegion createImage2D(vkt::uni_arg<ImageCreateInfo> info)
         {   // 
             vkh::VkImageCreateInfo imageCreateInfo = {};
             imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
@@ -84,7 +84,7 @@ namespace icv {
             imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 
             // 
-            auto vmaCreateInfo = vkt::VmaMemoryInfo{
+            auto vmaCreateInfo = vkf::VmaMemoryInfo{
                 .memUsage = VMA_MEMORY_USAGE_GPU_ONLY,
                 .instanceDispatch = device->instance->dispatch,
                 .deviceDispatch = device->dispatch
@@ -101,8 +101,8 @@ namespace icv {
             imageViewCreateInfo.subresourceRange = vkh::VkImageSubresourceRange{ .aspectMask = VkImageAspectFlags(aspectFlags), .baseMipLevel = 0u, .levelCount = 1u, .baseArrayLayer = 0u, .layerCount = 1u };
 
             // 
-            auto allocation = std::make_shared<vkt::VmaImageAllocation>(device->allocator, imageCreateInfo, vmaCreateInfo);
-            return vkt::ImageRegion(allocation, imageViewCreateInfo, info->isDepth?VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:VK_IMAGE_LAYOUT_GENERAL);
+            auto allocation = std::make_shared<vkf::VmaImageAllocation>(device->allocator, imageCreateInfo, vmaCreateInfo);
+            return vkf::ImageRegion(allocation, imageViewCreateInfo, info->isDepth?VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:VK_IMAGE_LAYOUT_GENERAL);
         };
 
         // 

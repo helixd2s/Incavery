@@ -87,8 +87,8 @@ namespace icv {
 
         // 
         VkAccelerationStructureKHR acceleration = VK_NULL_HANDLE;
-        vkt::VectorBase accStorage = {};
-        vkt::VectorBase accScratch = {};
+        vkf::VectorBase accStorage = {};
+        vkf::VectorBase accScratch = {};
 
         //
         virtual void constructor(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<GeometryLevelInfo> info = GeometryLevelInfo{}) 
@@ -126,12 +126,12 @@ namespace icv {
         };
 
         //
-        virtual const vkt::Vector<GeometryInfo>& getBuffer() const {
+        virtual const vkf::Vector<GeometryInfo>& getBuffer() const {
             return geometries->getDeviceBuffer();
         };
 
         //
-        virtual vkt::Vector<GeometryInfo>& getBuffer() {
+        virtual vkf::Vector<GeometryInfo>& getBuffer() {
             return geometries->getDeviceBuffer();
         };
 

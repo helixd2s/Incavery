@@ -105,12 +105,12 @@ namespace icv {
         };
 
         //
-        virtual const vkt::Vector<MaterialSource>& getBuffer() const {
+        virtual const vkf::Vector<MaterialSource>& getBuffer() const {
             return materials->getDeviceBuffer();
         };
 
         //
-        virtual vkt::Vector<MaterialSource>& getBuffer() {
+        virtual vkf::Vector<MaterialSource>& getBuffer() {
             return materials->getDeviceBuffer();
         };
 

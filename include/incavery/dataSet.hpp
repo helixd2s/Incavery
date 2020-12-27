@@ -35,8 +35,8 @@ namespace icv {
     class DataSet: public DataSetBase 
     {
         protected:
-        vkt::Vector<T> cpuCache = {};
-        vkt::Vector<T> deviceBuffer = {};
+        vkf::Vector<T> cpuCache = {};
+        vkf::Vector<T> deviceBuffer = {};
         
 
         // 
@@ -49,8 +49,8 @@ namespace icv {
             auto _deviceBuffer = createBuffer(BufferCreateInfo{.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VkBufferUsageFlags(info->usage), .size = sizeof(T) * info->count, .stride = sizeof(T), .memoryUsage = VMA_MEMORY_USAGE_GPU_ONLY});
 
             // 
-            this->cpuCache = vkt::Vector<T>(_cpuCache.getAllocation(), _cpuCache.offset(), _cpuCache.range(), _cpuCache.stride());
-            this->deviceBuffer = vkt::Vector<T>(_deviceBuffer.getAllocation(), _deviceBuffer.offset(), _deviceBuffer.range(), _deviceBuffer.stride());
+            this->cpuCache = vkf::Vector<T>(_cpuCache.getAllocation(), _cpuCache.offset(), _cpuCache.range(), _cpuCache.stride());
+            this->deviceBuffer = vkf::Vector<T>(_deviceBuffer.getAllocation(), _deviceBuffer.offset(), _deviceBuffer.range(), _deviceBuffer.stride());
         };
         
         public:
@@ -58,32 +58,32 @@ namespace icv {
         DataSet(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<DataSetInfo> info = DataSetInfo{}) { this->constructor(device, info); };
 
         //
-        operator vkt::Vector<T>&() {
+        operator vkf::Vector<T>&() {
             return deviceBuffer;
         };
 
         //
-        operator const vkt::Vector<T>&() const {
+        operator const vkf::Vector<T>&() const {
             return deviceBuffer;
         };
 
         //
-        vkt::Vector<T>& getCpuCache() {
+        vkf::Vector<T>& getCpuCache() {
             return cpuCache;
         };
 
         //
-        const vkt::Vector<T>& getCpuCache() const {
+        const vkf::Vector<T>& getCpuCache() const {
             return cpuCache;
         };
 
         //
-        vkt::Vector<T>& getDeviceBuffer() {
+        vkf::Vector<T>& getDeviceBuffer() {
             return deviceBuffer;
         };
 
         //
-        const vkt::Vector<T>& getDeviceBuffer() const {
+        const vkf::Vector<T>& getDeviceBuffer() const {
             return deviceBuffer;
         };
 
