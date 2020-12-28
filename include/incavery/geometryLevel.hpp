@@ -65,7 +65,7 @@ namespace icv {
     // 
     struct GeometryLevelInfo 
     {
-        vkt::uni_ptr<GeometryRegistry> registry = {};
+        vkh::uni_ptr<GeometryRegistry> registry = {};
         std::vector<GeometryInfo> geometries = {};
 
         uint32_t maxGeometryCount = 128u;
@@ -81,7 +81,7 @@ namespace icv {
         BuildInfo buildInfo = {};
 
         // 
-        vkt::uni_ptr<DataSet<GeometryInfo>> geometries = {};
+        vkh::uni_ptr<DataSet<GeometryInfo>> geometries = {};
         VkDescriptorSet set = VK_NULL_HANDLE;
         bool created = false;
 
@@ -91,7 +91,7 @@ namespace icv {
         vkf::VectorBase accScratch = {};
 
         //
-        virtual void constructor(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<GeometryLevelInfo> info = GeometryLevelInfo{}) 
+        virtual void constructor(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<GeometryLevelInfo> info = GeometryLevelInfo{}) 
         {
             this->info = info;
             this->device = device;
@@ -103,7 +103,7 @@ namespace icv {
 
         public: 
         GeometryLevel() {};
-        GeometryLevel(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<GeometryLevelInfo> info = GeometryLevelInfo{}) { this->constructor(device, info); };
+        GeometryLevel(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<GeometryLevelInfo> info = GeometryLevelInfo{}) { this->constructor(device, info); };
 
         //
         virtual const VkDescriptorSet& getDescriptorSet() const {
@@ -241,20 +241,20 @@ namespace icv {
         };
 
         //
-        uintptr_t pushGeometry(vkt::uni_arg<GeometryInfo> geometryInfo) {
+        uintptr_t pushGeometry(vkh::uni_arg<GeometryInfo> geometryInfo) {
             uintptr_t last = info.geometries.size();
             info.geometries.push_back(geometryInfo);
             return last;
         };
 
         //
-        void setGeometry(uintptr_t index, vkt::uni_arg<GeometryInfo> geometryInfo) {
+        void setGeometry(uintptr_t index, vkh::uni_arg<GeometryInfo> geometryInfo) {
             if (info.geometries.size() <= index) { info.geometries.resize(index+1u); };
             info.geometries[index] = geometryInfo;
         };
 
         // 
-        virtual void flush(vkt::uni_ptr<vkf::Queue> queue = {}) 
+        virtual void flush(vkh::uni_ptr<vkf::Queue> queue = {}) 
         {   // 
             queue->submitOnce([&,this](VkCommandBuffer commandBuffer) 
             {   // 

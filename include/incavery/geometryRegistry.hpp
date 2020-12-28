@@ -32,12 +32,12 @@ namespace icv {
         GeometryRegistryInfo info = {};
 
         // 
-        vkt::uni_ptr<DataSet<BindingInfo>> bindings = {};
+        vkh::uni_ptr<DataSet<BindingInfo>> bindings = {};
         VkDescriptorSet set = VK_NULL_HANDLE;
         bool created = false;
 
         // 
-        virtual void constructor(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<GeometryRegistryInfo> info = GeometryRegistryInfo{}) 
+        virtual void constructor(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<GeometryRegistryInfo> info = GeometryRegistryInfo{}) 
         {
             this->info = info;
             this->device = device;
@@ -49,10 +49,10 @@ namespace icv {
         
         public:
         GeometryRegistry() {};
-        GeometryRegistry(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<GeometryRegistryInfo> info = GeometryRegistryInfo{}) { this->constructor(device, info); };
+        GeometryRegistry(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<GeometryRegistryInfo> info = GeometryRegistryInfo{}) { this->constructor(device, info); };
 
         //
-        static VkDescriptorSetLayout& createDescriptorSetLayout(vkt::uni_ptr<vkf::Device> device, VkDescriptorSetLayout& descriptorSetLayout) {
+        static VkDescriptorSetLayout& createDescriptorSetLayout(vkh::uni_ptr<vkf::Device> device, VkDescriptorSetLayout& descriptorSetLayout) {
             auto pipusage = vkh::VkShaderStageFlags{ .eVertex = 1, .eGeometry = 1, .eFragment = 1, .eCompute = 1, .eRaygen = 1, .eAnyHit = 1, .eClosestHit = 1, .eMiss = 1 };
             auto indexedf = vkh::VkDescriptorBindingFlags{ .eUpdateAfterBind = 1, .eUpdateUnusedWhilePending = 1, .ePartiallyBound = 1 };
             auto dflags = vkh::VkDescriptorSetLayoutCreateFlags{ .eUpdateAfterBindPool = 1 };
@@ -109,7 +109,7 @@ namespace icv {
         };
 
         // 
-        virtual VkDescriptorSet& makeDescriptorSet(vkt::uni_arg<DescriptorInfo> info = DescriptorInfo{}) 
+        virtual VkDescriptorSet& makeDescriptorSet(vkh::uni_arg<DescriptorInfo> info = DescriptorInfo{}) 
         {
             vkh::VsDescriptorSetCreateInfoHelper descriptorSetHelper(info->layout, device->descriptorPool);
             auto handle = descriptorSetHelper.pushDescription<vkh::VkDescriptorBufferInfo>(vkh::VkDescriptorUpdateTemplateEntry{
@@ -135,7 +135,7 @@ namespace icv {
         };
 
         // 
-        virtual void flush(vkt::uni_ptr<vkf::Queue> queue = {}) 
+        virtual void flush(vkh::uni_ptr<vkf::Queue> queue = {}) 
         {   // 
             queue->submitOnce([&,this](VkCommandBuffer commandBuffer){
                 this->copyCommand(commandBuffer);
@@ -151,7 +151,7 @@ namespace icv {
         };
 
         //
-        virtual uintptr_t pushBinding(vkt::uni_arg<BindingInfo> binding) 
+        virtual uintptr_t pushBinding(vkh::uni_arg<BindingInfo> binding) 
         {   
             uintptr_t index = this->info.bindings.size();
             this->info.bindings.push_back(binding);
@@ -159,7 +159,7 @@ namespace icv {
         };
 
         //
-        virtual uintptr_t pushBufferWithBinding(vkh::VkDescriptorBufferInfo buffer, vkt::uni_arg<BindingInfo> binding) 
+        virtual uintptr_t pushBufferWithBinding(vkh::VkDescriptorBufferInfo buffer, vkh::uni_arg<BindingInfo> binding) 
         {   
             binding->buffer = pushBuffer(buffer);
             pushBinding(binding);
@@ -167,7 +167,7 @@ namespace icv {
         };
 
         // TODO: separate set buffer or binding
-        virtual void setBufferWithBinding(uintptr_t index, vkh::VkDescriptorBufferInfo buffer, vkt::uni_arg<BindingInfo> binding)
+        virtual void setBufferWithBinding(uintptr_t index, vkh::VkDescriptorBufferInfo buffer, vkh::uni_arg<BindingInfo> binding)
         {
             //binding->buffer = index; // prefer same index
 

@@ -20,7 +20,7 @@ namespace icv {
         protected: 
         DataSetInfo info = {};
 
-        virtual void constructor(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<DataSetInfo> info = DataSetInfo{}) {
+        virtual void constructor(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<DataSetInfo> info = DataSetInfo{}) {
             this->info = info;
             this->device = device;
 
@@ -28,7 +28,7 @@ namespace icv {
 
         public:
         DataSetBase() {};
-        DataSetBase(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<DataSetInfo> info = DataSetInfo{}) { this->constructor(device, info); };
+        DataSetBase(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<DataSetInfo> info = DataSetInfo{}) { this->constructor(device, info); };
     };
 
     template<class T = uint8_t>
@@ -40,7 +40,7 @@ namespace icv {
         
 
         // 
-        virtual void constructor(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<DataSetInfo> info = DataSetInfo{}) {
+        virtual void constructor(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<DataSetInfo> info = DataSetInfo{}) {
             this->info = info;
             this->device = device;
 
@@ -55,7 +55,7 @@ namespace icv {
         
         public:
         DataSet() {};
-        DataSet(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<DataSetInfo> info = DataSetInfo{}) { this->constructor(device, info); };
+        DataSet(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<DataSetInfo> info = DataSetInfo{}) { this->constructor(device, info); };
 
         //
         operator vkf::Vector<T>&() {
@@ -113,7 +113,7 @@ namespace icv {
         };
 
         //
-        virtual void copyFromCpu(vkt::uni_ptr<vkf::Queue> queue) {
+        virtual void copyFromCpu(vkh::uni_ptr<vkf::Queue> queue) {
             queue->submitOnce([&,this](VkCommandBuffer commandBuffer){
                 this->cmdCopyFromCpu(commandBuffer);
             });

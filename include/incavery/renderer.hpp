@@ -15,10 +15,10 @@ namespace icv {
 
     struct RendererInfo
     {
-        vkt::uni_ptr<Framebuffer> framebuffer = {};
-        vkt::uni_ptr<GeometryRegistry> geometryRegistry = {};
-        vkt::uni_ptr<InstanceLevel> instanceLevel = {};
-        vkt::uni_ptr<MaterialSet> materialSet = {};
+        vkh::uni_ptr<Framebuffer> framebuffer = {};
+        vkh::uni_ptr<GeometryRegistry> geometryRegistry = {};
+        vkh::uni_ptr<InstanceLevel> instanceLevel = {};
+        vkh::uni_ptr<MaterialSet> materialSet = {};
     };
 
     struct PipelineInfo
@@ -91,7 +91,7 @@ namespace icv {
         std::vector<VkDescriptorSet> descriptorSets = {};
 
         // 
-        virtual void constructor(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<RendererInfo> info = RendererInfo{}) 
+        virtual void constructor(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<RendererInfo> info = RendererInfo{}) 
         {
             this->info = info;
             this->device = device;
@@ -99,16 +99,16 @@ namespace icv {
 
         public:
         Renderer() {};
-        Renderer(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<RendererInfo> info = RendererInfo{}) { this->constructor(device, info); };
+        Renderer(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<RendererInfo> info = RendererInfo{}) { this->constructor(device, info); };
 
         //
-        virtual void setFramebuffer(vkt::uni_ptr<Framebuffer> framebuffer) 
+        virtual void setFramebuffer(vkh::uni_ptr<Framebuffer> framebuffer) 
         {
             this->info.framebuffer = framebuffer;
         };
 
         //
-        virtual void setMaterialSet(vkt::uni_ptr<MaterialSet> materialSet) 
+        virtual void setMaterialSet(vkh::uni_ptr<MaterialSet> materialSet) 
         {
             this->info.materialSet = materialSet;
         };
@@ -216,7 +216,7 @@ namespace icv {
         };
 
         // 
-        virtual PipelineInfo& createPipeline(vkt::uni_arg<PipelineCreateInfo> info = PipelineCreateInfo{}) 
+        virtual PipelineInfo& createPipeline(vkh::uni_arg<PipelineCreateInfo> info = PipelineCreateInfo{}) 
         {   
             auto& framebuffer = this->info.framebuffer->getState();
 

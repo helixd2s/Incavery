@@ -57,10 +57,10 @@ int main() {
 
     // 
     std::string title = "TestApp";
-    vkt::uni_ptr<vkf::Instance> instance = std::make_shared<vkf::Instance>();
-    vkt::uni_ptr<vkf::Device> device = std::make_shared<vkf::Device>(instance);
-    vkt::uni_ptr<vkf::Queue> queue = std::make_shared<vkf::Queue>(device);
-    vkt::uni_ptr<vkf::SwapChain> manager = std::make_shared<vkf::SwapChain>(device);
+    vkh::uni_ptr<vkf::Instance> instance = std::make_shared<vkf::Instance>();
+    vkh::uni_ptr<vkf::Device> device = std::make_shared<vkf::Device>(instance);
+    vkh::uni_ptr<vkf::Queue> queue = std::make_shared<vkf::Queue>(device);
+    vkh::uni_ptr<vkf::SwapChain> manager = std::make_shared<vkf::SwapChain>(device);
 
     // 
     instance->create();
@@ -248,36 +248,36 @@ int main() {
 
 
     // TODO: needs flush data
-    vkt::uni_ptr<icv::MaterialSet> materialSet = std::make_shared<icv::MaterialSet>(device, icv::MaterialSetInfo{
+    vkh::uni_ptr<icv::MaterialSet> materialSet = std::make_shared<icv::MaterialSet>(device, icv::MaterialSetInfo{
         .maxMaterialCount = 8u
     });
 
     //
-    vkt::uni_ptr<icv::GeometryRegistry> geometryRegistry = std::make_shared<icv::GeometryRegistry>(device, icv::GeometryRegistryInfo{
+    vkh::uni_ptr<icv::GeometryRegistry> geometryRegistry = std::make_shared<icv::GeometryRegistry>(device, icv::GeometryRegistryInfo{
         .maxBindingCount = 8u
     });
 
     //
-    vkt::uni_ptr<icv::GeometryLevel> geometryLevel = std::make_shared<icv::GeometryLevel>(device, icv::GeometryLevelInfo{
+    vkh::uni_ptr<icv::GeometryLevel> geometryLevel = std::make_shared<icv::GeometryLevel>(device, icv::GeometryLevelInfo{
         .registry = geometryRegistry,
         .maxGeometryCount = 1u
     });
 
     // 
-    vkt::uni_ptr<icv::InstanceLevel> instanceLevel = std::make_shared<icv::InstanceLevel>(device, icv::InstanceLevelInfo{
+    vkh::uni_ptr<icv::InstanceLevel> instanceLevel = std::make_shared<icv::InstanceLevel>(device, icv::InstanceLevelInfo{
         .registry = geometryRegistry,
         .maxInstanceCount = 1u
     });
 
     // 
-    vkt::uni_ptr<icv::Renderer> renderer = std::make_shared<icv::Renderer>(device, icv::RendererInfo{
+    vkh::uni_ptr<icv::Renderer> renderer = std::make_shared<icv::Renderer>(device, icv::RendererInfo{
         .geometryRegistry = geometryRegistry, 
         .instanceLevel = instanceLevel,
         .materialSet = materialSet
     });
 
     //
-    vkt::uni_ptr<icv::Framebuffer> framebuffer = std::make_shared<icv::Framebuffer>(device, icv::FramebufferInfo{
+    vkh::uni_ptr<icv::Framebuffer> framebuffer = std::make_shared<icv::Framebuffer>(device, icv::FramebufferInfo{
         .size = { downscaled.width, downscaled.height, 1u },
         .layout = renderer->getFramebufferLayout(),
         .renderPass = renderer->createRenderPass()
@@ -391,7 +391,7 @@ int main() {
         samplerCreateInfo.unnormalizedCoordinates = false;
 
         // 
-        vkt::handle(device->dispatch->CreateSampler(samplerCreateInfo, nullptr, &sampler));
+        vkt::handleVk(device->dispatch->CreateSampler(samplerCreateInfo, nullptr, &sampler));
     };
 
     //

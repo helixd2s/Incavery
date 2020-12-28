@@ -14,8 +14,8 @@ namespace icv {
     // 
     struct InstanceLevelInfo 
     {
-        vkt::uni_ptr<GeometryRegistry> registry = {};
-        std::vector<vkt::uni_ptr<GeometryLevel>> geometries = {}; // ONLY for descriptor sets
+        vkh::uni_ptr<GeometryRegistry> registry = {};
+        std::vector<vkh::uni_ptr<GeometryLevel>> geometries = {}; // ONLY for descriptor sets
         std::vector<InstanceInfo> instances = {};
         
         uint32_t maxInstanceCount = 128u;
@@ -31,7 +31,7 @@ namespace icv {
         BuildInfo buildInfo = {};
 
         // 
-        vkt::uni_ptr<DataSet<InstanceInfo>> instances = {};
+        vkh::uni_ptr<DataSet<InstanceInfo>> instances = {};
         VkDescriptorSet set = VK_NULL_HANDLE;
         bool created = false;
 
@@ -41,7 +41,7 @@ namespace icv {
         vkf::VectorBase accScratch = {};
 
         //
-        virtual void constructor(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<InstanceLevelInfo> info = InstanceLevelInfo{}) 
+        virtual void constructor(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<InstanceLevelInfo> info = InstanceLevelInfo{}) 
         {
             this->info = info;
             this->device = device;
@@ -53,7 +53,7 @@ namespace icv {
 
         public: 
         InstanceLevel() {};
-        InstanceLevel(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<InstanceLevelInfo> info = InstanceLevelInfo{}) { this->constructor(device, info); };
+        InstanceLevel(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<InstanceLevelInfo> info = InstanceLevelInfo{}) { this->constructor(device, info); };
 
         //
         virtual const VkDescriptorSet& getDescriptorSet() const {
@@ -98,7 +98,7 @@ namespace icv {
         //};
 
         //
-        static VkDescriptorSetLayout& createDescriptorSetLayout(vkt::uni_ptr<vkf::Device> device, VkDescriptorSetLayout& descriptorSetLayout) {
+        static VkDescriptorSetLayout& createDescriptorSetLayout(vkh::uni_ptr<vkf::Device> device, VkDescriptorSetLayout& descriptorSetLayout) {
             auto pipusage = vkh::VkShaderStageFlags{ .eVertex = 1, .eGeometry = 1, .eFragment = 1, .eCompute = 1, .eRaygen = 1, .eAnyHit = 1, .eClosestHit = 1, .eMiss = 1 };
             auto indexedf = vkh::VkDescriptorBindingFlags{ .eUpdateAfterBind = 1, .eUpdateUnusedWhilePending = 1, .ePartiallyBound = 1 };
             auto dflags = vkh::VkDescriptorSetLayoutCreateFlags{ .eUpdateAfterBindPool = 1 };
@@ -129,7 +129,7 @@ namespace icv {
         };
 
         //
-        virtual VkDescriptorSet& makeDescriptorSet(vkt::uni_arg<DescriptorInfo> info = DescriptorInfo{}) 
+        virtual VkDescriptorSet& makeDescriptorSet(vkh::uni_arg<DescriptorInfo> info = DescriptorInfo{}) 
         {
             if (!acceleration) {
                 this->makeAccelerationStructure();
@@ -235,7 +235,7 @@ namespace icv {
         };
 
         //
-        virtual uintptr_t changeInstance(uintptr_t instanceId, vkt::uni_arg<InstanceInfo> info = InstanceInfo{})
+        virtual uintptr_t changeInstance(uintptr_t instanceId, vkh::uni_arg<InstanceInfo> info = InstanceInfo{})
         {   // add instance into registry
             info->accelerationStructureReference = this->info.geometries[info->instanceCustomIndex]->getDeviceAddress();
             if (this->info.instances.size() <= instanceId) { this->info.instances.resize(instanceId+1u); };
@@ -244,7 +244,7 @@ namespace icv {
         };
 
         //
-        virtual uintptr_t changeGeometryLevel(uintptr_t geometryId, vkt::uni_ptr<GeometryLevel> geometry = {})
+        virtual uintptr_t changeGeometryLevel(uintptr_t geometryId, vkh::uni_ptr<GeometryLevel> geometry = {})
         {   // add geometry to registry
             if (this->info.geometries.size() <= geometryId) { this->info.geometries.resize(geometryId+1u); };
             this->info.geometries[geometryId] = geometry;
@@ -252,7 +252,7 @@ namespace icv {
         };
 
         //
-        virtual uintptr_t pushInstance(vkt::uni_arg<InstanceInfo> info = InstanceInfo{})
+        virtual uintptr_t pushInstance(vkh::uni_arg<InstanceInfo> info = InstanceInfo{})
         {   // add instance into registry
             uintptr_t instanceId = this->info.instances.size();
             info->accelerationStructureReference = this->info.geometries[info->instanceCustomIndex]->getDeviceAddress();
@@ -261,7 +261,7 @@ namespace icv {
         };
 
         //
-        virtual uintptr_t pushGeometryLevel(vkt::uni_ptr<GeometryLevel> geometry = {})
+        virtual uintptr_t pushGeometryLevel(vkh::uni_ptr<GeometryLevel> geometry = {})
         {   // add geometry to registry
             uintptr_t geometryId = this->info.geometries.size();
             this->info.geometries.push_back(geometry);
@@ -269,7 +269,7 @@ namespace icv {
         };
 
         // 
-        virtual void flush(vkt::uni_ptr<vkf::Queue> queue = {}) 
+        virtual void flush(vkh::uni_ptr<vkf::Queue> queue = {}) 
         {   // 
             queue->submitOnce([&,this](VkCommandBuffer commandBuffer) 
             {   // 

@@ -37,12 +37,12 @@ namespace icv {
     {
         protected: 
         MaterialSetInfo info = {};
-        vkt::uni_ptr<DataSet<MaterialSource>> materials = {};
+        vkh::uni_ptr<DataSet<MaterialSource>> materials = {};
         VkDescriptorSet set = VK_NULL_HANDLE;
         bool created = false;
 
         // 
-        virtual void constructor(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<MaterialSetInfo> info = MaterialSetInfo{}) 
+        virtual void constructor(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<MaterialSetInfo> info = MaterialSetInfo{}) 
         {
             this->info = info;
             this->device = device;
@@ -55,10 +55,10 @@ namespace icv {
         // 
         public:
         MaterialSet() {};
-        MaterialSet(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<MaterialSetInfo> info = MaterialSetInfo{}) { this->constructor(device, info); };
+        MaterialSet(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<MaterialSetInfo> info = MaterialSetInfo{}) { this->constructor(device, info); };
 
         //
-        static VkDescriptorSetLayout& createDescriptorSetLayout(vkt::uni_ptr<vkf::Device> device, VkDescriptorSetLayout& descriptorSetLayout) {
+        static VkDescriptorSetLayout& createDescriptorSetLayout(vkh::uni_ptr<vkf::Device> device, VkDescriptorSetLayout& descriptorSetLayout) {
             auto pipusage = vkh::VkShaderStageFlags{ .eVertex = 1, .eGeometry = 1, .eFragment = 1, .eCompute = 1, .eRaygen = 1, .eAnyHit = 1, .eClosestHit = 1, .eMiss = 1 };
             auto indexedf = vkh::VkDescriptorBindingFlags{ .eUpdateAfterBind = 1, .eUpdateUnusedWhilePending = 1, .ePartiallyBound = 1 };
             auto dflags = vkh::VkDescriptorSetLayoutCreateFlags{ .eUpdateAfterBindPool = 1 };
@@ -115,7 +115,7 @@ namespace icv {
         };
 
         // 
-        virtual VkDescriptorSet& makeDescriptorSet(vkt::uni_arg<DescriptorInfo> info = DescriptorInfo{}) 
+        virtual VkDescriptorSet& makeDescriptorSet(vkh::uni_arg<DescriptorInfo> info = DescriptorInfo{}) 
         {
             vkh::VsDescriptorSetCreateInfoHelper descriptorSetHelper(info->layout, device->descriptorPool);
             if (this->info.textures.size() > 0) {
@@ -143,7 +143,7 @@ namespace icv {
         };
 
         //
-        virtual void flush(vkt::uni_ptr<vkf::Queue> queue = {}) 
+        virtual void flush(vkh::uni_ptr<vkf::Queue> queue = {}) 
         {   // 
             queue->submitOnce([&,this](VkCommandBuffer commandBuffer){
                 this->copyCommand(commandBuffer);
@@ -159,7 +159,7 @@ namespace icv {
         };
 
         //
-        virtual uintptr_t pushMaterial(vkt::uni_arg<MaterialSource> material) 
+        virtual uintptr_t pushMaterial(vkh::uni_arg<MaterialSource> material) 
         {   
             uintptr_t index = this->info.materials.size();
             this->info.materials.push_back(material);
@@ -167,7 +167,7 @@ namespace icv {
         };
 
         //
-        void setMaterial(uintptr_t index, vkt::uni_arg<MaterialSource> material) {
+        void setMaterial(uintptr_t index, vkh::uni_arg<MaterialSource> material) {
             if (info.materials.size() <= index) { info.materials.resize(index+1u); };
             info.materials[index] = material;
         };

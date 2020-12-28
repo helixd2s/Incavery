@@ -43,7 +43,7 @@ namespace icv {
     //
     class DeviceBased {
         protected: 
-        vkt::uni_ptr<vkf::Device> device = {};
+        vkh::uni_ptr<vkf::Device> device = {};
         vkh::VkAccelerationStructureDeviceAddressInfoKHR deviceAddressInfo = {};
         vkh::VkBufferDeviceAddressInfo bufferAddressInfo = {};
         
@@ -54,7 +54,7 @@ namespace icv {
         };
 
         // 
-        virtual vkf::VectorBase createBuffer(vkt::uni_arg<BufferCreateInfo> info) 
+        virtual vkf::VectorBase createBuffer(vkh::uni_arg<BufferCreateInfo> info) 
         {   // 
             auto bufferCreateInfo = vkh::VkBufferCreateInfo{
                 .size = info->size,
@@ -70,7 +70,7 @@ namespace icv {
         };
 
         //
-        virtual vkf::ImageRegion createImage2D(vkt::uni_arg<ImageCreateInfo> info)
+        virtual vkf::ImageRegion createImage2D(vkh::uni_arg<ImageCreateInfo> info)
         {   // 
             vkh::VkImageCreateInfo imageCreateInfo = {};
             imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;

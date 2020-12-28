@@ -24,7 +24,7 @@ namespace icv {
         vkh::VkRect2D scissor = {};
 
         //
-        FramebufferStateInfo& transfer(vkt::uni_ptr<vkf::Queue> queue) {
+        FramebufferStateInfo& transfer(vkh::uni_ptr<vkf::Queue> queue) {
             queue->submitOnce([&](VkCommandBuffer commandBuffer){
                 for (auto& image : this->images) {
                     image.transfer(commandBuffer);
@@ -50,7 +50,7 @@ namespace icv {
         FramebufferStateInfo framebuffer = {};
 
         // 
-        virtual void constructor(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<FramebufferInfo> info = FramebufferInfo{}) 
+        virtual void constructor(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<FramebufferInfo> info = FramebufferInfo{}) 
         {
             this->info = info;
             this->device = device;
@@ -59,7 +59,7 @@ namespace icv {
 
         public:
         Framebuffer() {};
-        Framebuffer(vkt::uni_ptr<vkf::Device> device, vkt::uni_arg<FramebufferInfo> info = FramebufferInfo{}) { this->constructor(device, info); };
+        Framebuffer(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<FramebufferInfo> info = FramebufferInfo{}) { this->constructor(device, info); };
 
         //
         static const uint32_t FBO_COUNT = 4u;
@@ -75,7 +75,7 @@ namespace icv {
         };
         
         //
-        static VkRenderPass& createRenderPass(vkt::uni_ptr<vkf::Device> device, VkRenderPass& renderPass) {
+        static VkRenderPass& createRenderPass(vkh::uni_ptr<vkf::Device> device, VkRenderPass& renderPass) {
             auto renderPassHelper = vkh::VsRenderPassCreateInfoHelper();
 
             for (uint32_t i=0;i<FBO_COUNT;i++) 
@@ -141,7 +141,7 @@ namespace icv {
         };
 
         //
-        static VkDescriptorSetLayout& createDescriptorSetLayout(vkt::uni_ptr<vkf::Device> device, VkDescriptorSetLayout& descriptorSetLayout) {
+        static VkDescriptorSetLayout& createDescriptorSetLayout(vkh::uni_ptr<vkf::Device> device, VkDescriptorSetLayout& descriptorSetLayout) {
             auto pipusage = vkh::VkShaderStageFlags{ .eVertex = 1, .eGeometry = 1, .eFragment = 1, .eCompute = 1, .eRaygen = 1, .eAnyHit = 1, .eClosestHit = 1, .eMiss = 1 };
             auto indexedf = vkh::VkDescriptorBindingFlags{ .eUpdateAfterBind = 1, .eUpdateUnusedWhilePending = 1, .ePartiallyBound = 1 };
             auto dflags = vkh::VkDescriptorSetLayoutCreateFlags{ .eUpdateAfterBindPool = 1 };
@@ -162,7 +162,7 @@ namespace icv {
         };
 
         // 
-        virtual FramebufferStateInfo& createFramebuffer(vkt::uni_ptr<vkf::Queue> queue = {})
+        virtual FramebufferStateInfo& createFramebuffer(vkh::uni_ptr<vkf::Queue> queue = {})
         {   //
             std::vector<VkImageView> views = {};
             std::vector<VkFramebufferAttachmentImageInfo> attachments = {};
@@ -178,7 +178,7 @@ namespace icv {
 
             // 
             VkSampler sampler = VK_NULL_HANDLE;
-            vkt::handle(device->dispatch->CreateSampler(samplerCreateInfo, nullptr, &sampler));
+            vkt::handleVk(device->dispatch->CreateSampler(samplerCreateInfo, nullptr, &sampler));
             
             // 
             for (uint32_t i=0;i<FBO_COUNT;i++) 
