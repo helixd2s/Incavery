@@ -24,7 +24,7 @@ layout (binding = 1, set = GEOMETRY_REGISTRY_MAP, scalar) buffer BindingsBuffer 
 
 uint8_t readUint8(in uint bufferId, in uint byteOffset) 
 {
-    return buffers[bufferId].data[byteOffset+0u];
+    return buffers[nonuniformEXT(bufferId)].data[byteOffset+0u];
 };
 
 uint16_t readUint16(in uint bufferId, in uint byteOffset) 

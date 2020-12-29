@@ -11,10 +11,10 @@ namespace icv {
     // 
     struct Attributes 
     {
-        uint32_t texcoords = 0u;
-        uint32_t normals = 0u;
-        uint32_t tangents = 0u;
-        uint32_t colors = 0u;
+        int32_t texcoords = -1;
+        int32_t normals = -1;
+        int32_t tangents = -1;
+        int32_t colors = -1;
     };
 
     // 

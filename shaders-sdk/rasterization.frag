@@ -46,12 +46,23 @@ void main()
     GeometryInfo geometryInfo = readGeometryInfo(pushed.instanceId, pushed.geometryId);
     InstanceInfo instanceInfo = instances[pushed.instanceId];
 
-    // TODO: filter opaque
     // 
+    uvec3 indices = readIndices(geometryInfo.index, primitiveId);
+    AttributeMap attributeMap = readAttributes(geometryInfo.attributes, indices);
+    AttributeInterpolated attributes = interpolateAttributes(attributeMap, barycentric.xyz);
+    MaterialInfo material = handleMaterial(geometryInfo.primitive.materials, attributes);
 
-    // finalize fragment results
-    gl_FragDepth = gl_FragCoord.z;
-    fBarycentrics = barycentric;
-    fIndices = uvec4(pushed.instanceId, pushed.geometryId, primitiveId, 0u);//indices;
-    fSRAA = vec4(normals.xyz, gl_FragCoord.z);
+    // 
+    if (material.baseColorFactor.a < 0.0001f) {
+        gl_FragDepth = 1.f;
+
+        // required extension
+        //discard;
+    } else {
+        // finalize fragment results
+        gl_FragDepth = gl_FragCoord.z;
+        fBarycentrics = barycentric;
+        fIndices = uvec4(pushed.instanceId, pushed.geometryId, primitiveId, 0u);//indices;
+        fSRAA = vec4(normals.xyz, gl_FragCoord.z);
+    };
 };

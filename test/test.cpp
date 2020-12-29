@@ -525,7 +525,7 @@ int main() {
             vkt::commandBarrier(device->dispatch, commandBuffer);
 
             // 
-            //materialSet->copyCommand(commandBuffer); // no materials currently
+            materialSet->copyCommand(commandBuffer);
             geometryRegistry->copyCommand(commandBuffer);
             geometryLevel->buildCommand(commandBuffer);
             instanceLevel->buildCommand(commandBuffer);

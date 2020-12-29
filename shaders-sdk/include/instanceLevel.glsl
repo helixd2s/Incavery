@@ -28,10 +28,10 @@ layout (binding = 0, set = INSTANCE_LEVEL_MAP, scalar) buffer InstanceBuffer { I
 // 
 struct Attributes 
 {
-    uint32_t texcoords;
-    uint32_t normals;
-    uint32_t tangents;
-    uint32_t colors;
+    int32_t texcoords;
+    int32_t normals;
+    int32_t tangents;
+    int32_t colors;
 };
 
 // 
@@ -67,7 +67,7 @@ struct GeometryInfo
 
     VertexInfo vertex;
     IndexInfo index;
-    PrimitiveInfo count;
+    PrimitiveInfo primitive;
 
     Attributes attributes;
 };
@@ -140,14 +140,14 @@ GeometryInfo readGeometryInfo(in uint instanceId, in uint geometryId)
     return registry[customIndex].geometries[geometryId];
 };
 
-//
+// TODO: use normals/texcoords/colors indices
 AttributeMap readAttributes(inout Attributes attributes, in uvec3 indices) 
 {
     AttributeMap map;
-    map.texcoords = readAttribute(attributes.texcoords, indices);
-    map.normals = readAttribute(attributes.normals, indices);
-    map.tangents = readAttribute(attributes.tangents, indices);
-    map.colors = readAttribute(attributes.colors, indices);
+    map.texcoords = attributes.texcoords >= 0 ? readAttribute(attributes.texcoords, indices) : mat3x4(vec4(0.f.xxxx), vec4(0.f.xxxx), vec4(0.f.xxxx));
+    map.normals   = attributes.normals   >= 0 ? readAttribute(attributes.normals  , indices) : mat3x4(vec4(0.f.xxxx), vec4(0.f.xxxx), vec4(0.f.xxxx));
+    map.tangents  = attributes.tangents  >= 0 ? readAttribute(attributes.tangents , indices) : mat3x4(vec4(0.f.xxxx), vec4(0.f.xxxx), vec4(0.f.xxxx));
+    map.colors    = attributes.colors    >= 0 ? readAttribute(attributes.colors   , indices) : mat3x4(vec4(0.f.xxxx), vec4(0.f.xxxx), vec4(0.f.xxxx));
     return map;
 };
 
