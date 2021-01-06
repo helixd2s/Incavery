@@ -39,9 +39,14 @@ void main()
     //
     //IntersectionInfo results = rasterization(rays, 10000.f);
     IntersectionInfo results = traceRays(rays, 10000.f); // it working, but needs for second passes
+    GeometryInfo geometryInfo = readGeometryInfo(results.instanceId, results.geometryId);
+    uvec3 indices = readIndices(geometryInfo.index, results.primitiveId);
+    AttributeMap attributeMap = readAttributes(geometryInfo.attributes, indices);
+    AttributeInterpolated attributes = interpolateAttributes(attributeMap, results.barycentric);
+    MaterialInfo material = handleMaterial(geometryInfo.primitive.materials, attributes);
 
     //
-    vec4 testRasterData = texture(textures[0], results.barycentric.xy, 0);
+    vec4 testRasterData = material.baseColorFactor;
 
     // how from rasterization 
     vec4 coloring = vec4(testRasterData.xyz, 1.f);

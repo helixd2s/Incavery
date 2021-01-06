@@ -100,12 +100,18 @@ int main() {
         glm::vec4(-1.f, -1.f, 1.f, 1.f),
         glm::vec4(0.f,  1.f, 1.f, 1.f)
     };
+    std::vector<glm::vec2> texcoords = {
+        glm::vec2(1.f, 0.f),
+        glm::vec2(0.f, 0.f),
+        glm::vec2(0.5f, 1.f)
+    };
     std::vector<uint32_t> primitiveCounts = { 1u };
     std::vector<uint32_t> instanceCounts = { 1u };
 
     //
     vkf::Vector<uint16_t> indicesBuffer = {};
     vkf::Vector<glm::vec4> verticesBuffer = {};
+    vkf::Vector<glm::vec2> texcoordsBuffer = {};
     vkf::Vector<Constants> constantsBuffer = {};
 
     {   // vertices
@@ -123,6 +129,23 @@ int main() {
         verticesBuffer = vkf::Vector<glm::vec4>(allocation, 0ull, size, sizeof(glm::vec4));
         //memcpy(verticesBuffer.map(), vertices.data(), size);
         queue->uploadIntoBuffer(verticesBuffer, vertices.data(), size); // use internal cache for upload buffer
+    };
+
+    {   // texcoords
+        auto size = texcoords.size() * sizeof(glm::vec2);
+        auto bufferCreateInfo = vkh::VkBufferCreateInfo{
+            .size = size,
+            .usage = VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT
+        };
+        auto vmaCreateInfo = vkf::VmaMemoryInfo{
+            .memUsage = VMA_MEMORY_USAGE_GPU_ONLY,
+            .instanceDispatch = instance->dispatch,
+            .deviceDispatch = device->dispatch
+        };
+        auto allocation = std::make_shared<vkf::VmaBufferAllocation>(device->allocator, bufferCreateInfo, vmaCreateInfo);
+        texcoordsBuffer = vkf::Vector<glm::vec2>(allocation, 0ull, size, sizeof(glm::vec2));
+        //memcpy(verticesBuffer.map(), vertices.data(), size);
+        queue->uploadIntoBuffer(texcoordsBuffer, texcoords.data(), size); // use internal cache for upload buffer
     };
 
     {   // indices
@@ -297,6 +320,9 @@ int main() {
         .primitive = {
             .count = 1u
         },
+        .attributes = {
+            .texcoords = 2u
+        }
     });
 
     // TODO: separate buffer and binding push
@@ -310,6 +336,12 @@ int main() {
         .format = 0u,
         .buffer = 1u,
         .stride = sizeof(glm::vec4)
+    });
+
+    geometryRegistry->pushBufferWithBinding(texcoordsBuffer, icv::BindingInfo{
+        .format = 0u,
+        .buffer = 2u,
+        .stride = sizeof(glm::vec2)
     });
 
     //

@@ -93,19 +93,19 @@ struct AttributeInterpolated
     vec4 colors;
 };
 
-//
-uint readIndex(inout IndexInfo indexInfo, in uint primitiveId) 
+// fixed 06.01.2021
+uint readIndex(inout IndexInfo indexInfo, in uint verticeId) 
 {
-    if (indexInfo.type == 1u) { return (indexInfo.first + readUint32(indexInfo.bufferId, primitiveId*3u*4u)); };
-    if (indexInfo.type == 2u) { return (indexInfo.first + readUint16(indexInfo.bufferId, primitiveId*3u*2u)); };
-    if (indexInfo.type == 3u) { return (indexInfo.first + readUint8(indexInfo.bufferId, primitiveId*3u)); };
-    return (indexInfo.first + primitiveId*3u);
+    if (indexInfo.type == 1u) { return (indexInfo.first + readUint32(indexInfo.bufferId, verticeId*4u)); };
+    if (indexInfo.type == 2u) { return (indexInfo.first + readUint16(indexInfo.bufferId, verticeId*2u)); };
+    if (indexInfo.type == 3u) { return (indexInfo.first + readUint8(indexInfo.bufferId, verticeId)); };
+    return (indexInfo.first + verticeId);
 };
 
-// 
+// fixed 06.01.2021
 uvec3 readIndices(inout IndexInfo indexInfo, in uint primitiveId) 
 {
-    return uvec3(readIndex(indexInfo, primitiveId), readIndex(indexInfo, primitiveId+1u), readIndex(indexInfo, primitiveId+2u));
+    return uvec3(readIndex(indexInfo, primitiveId*3u), readIndex(indexInfo, primitiveId*3u+1u), readIndex(indexInfo, primitiveId*3u+2u));
 };
 
 // TODO: support for "primitiveOffset"
