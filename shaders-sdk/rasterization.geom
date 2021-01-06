@@ -41,22 +41,9 @@ layout(push_constant) uniform pushConstants {
 // 
 void main() 
 {
-    GeometryInfo geometryInfo = readGeometryInfo(pushed.instanceId, pushed.geometryId);
-    InstanceInfo instanceInfo = instances[pushed.instanceId];
-
     // 
-    for (int i=0;i<3;i++) 
-    {
-        
-        
-    };
-
-    // 
-    vec4 objectspace[3];
-    for (int i=0;i<3;i++) 
-    {
-        objectspace[i] = vec4(vec4(position[i] * geometryInfo.transform, 1.f) * instanceInfo.transform, 1.f);
-    };
+    mat3x4 objectspace = mat3x4(position[0], position[1], position[2]);
+    transformVertices(objectspace, pushed.instanceId, pushed.geometryId);
     normals = vec4(normalize(cross(objectspace[1].xyz-objectspace[0].xyz, objectspace[2].xyz-objectspace[0].xyz)), 1.f);
 
     // finalize results

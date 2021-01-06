@@ -30,6 +30,8 @@ vec4 GetTextureLinear(in vec2 txc) {
     const vec2 px = vec2(1.f-ttf.x,ttf.x), py = vec2(1.f-ttf.y,ttf.y);
     const mat2x2 i2 = outerProduct(px,py);
     return txl * vec4(i2[0],i2[1]); // interpolate
-}
+};
+
+
 
 #endif

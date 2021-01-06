@@ -162,4 +162,58 @@ AttributeInterpolated interpolateAttributes(inout AttributeMap map, in vec3 bary
     return interpolated;
 };
 
+//
+AttributeMap surroundNormals(inout AttributeMap map, in mat3x4 vertices)
+{
+    vec3 geometryNormal = normalize(cross(vertices[1].xyz - vertices[0].xyz, vertices[2].xyz - vertices[0].xyz));
+    for (int i=0;i<3;i++) {
+        if (length(map.normals[i].xyz) < 0.0001f) { map.normals[i].xyz = geometryNormal; };
+    };
+    return map;
+};
+
+//
+AttributeInterpolated surroundNormal(inout AttributeInterpolated attributes, in mat3x4 vertices)
+{
+    vec3 geometryNormal = normalize(cross(vertices[1].xyz - vertices[0].xyz, vertices[2].xyz - vertices[0].xyz));
+    if (length(attributes.normals.xyz) < 0.0001f) {
+        attributes.normals.xyz = geometryNormal;
+    };
+    return attributes;
+};
+
+
+//
+AttributeInterpolated transformNormal(inout AttributeInterpolated attributes, in uint instanceId, in uint geometryId)
+{
+    GeometryInfo geometryInfo = readGeometryInfo(instanceId, geometryId);
+    InstanceInfo instanceInfo = instances[instanceId];
+    attributes.normals = vec4(vec4(vec4(attributes.normals.xyz, 0.f) * geometryInfo.transform, 0.f) * instanceInfo.transform, 0.f);
+    return attributes;
+};
+
+//
+AttributeMap transformNormals(inout AttributeMap map, in uint instanceId, in uint geometryId)
+{
+    GeometryInfo geometryInfo = readGeometryInfo(instanceId, geometryId);
+    InstanceInfo instanceInfo = instances[instanceId];
+    for (int i=0;i<3;i++) {
+        //map.normals[i] = vec4(vec4(vec4(map.normals[i].xyz, 0.f) * geometryInfo.transform, 0.f) * instanceInfo.transform, 0.f);
+        map.normals[i] = vec4(vec4(vec4(map.normals[i].xyz, 0.f) * inverse(geometryInfo.transform), 0.f) * inverse(instanceInfo.transform), 0.f);
+    };
+    return map;
+};
+
+//
+mat3x4 transformVertices(inout mat3x4 vertices, in uint instanceId, in uint geometryId) 
+{
+    GeometryInfo geometryInfo = readGeometryInfo(instanceId, geometryId);
+    InstanceInfo instanceInfo = instances[instanceId];
+    for (int i=0;i<3;i++) {
+        vertices[i] = vec4(vec4(vec4(vertices[i].xyz, 1.f) * geometryInfo.transform, 1.f) * instanceInfo.transform, 1.f);
+    };
+    return vertices;
+};
+
+
 #endif
