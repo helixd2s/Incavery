@@ -19,8 +19,8 @@ layout (triangles) in;
 layout (triangle_strip, max_vertices = 3) out;
 
 //
-layout (location = 0) in vec4 position[3];
-layout (location = 1) in flat uint indices[3];
+//layout (location = 0) in vec4 position[3];
+//layout (location = 1) in flat uint indices[3];
 
 // 
 layout (location = 0) out vec4 transformed;
@@ -42,7 +42,11 @@ layout(push_constant) uniform pushConstants {
 void main() 
 {
     // 
-    mat3x4 objectspace = mat3x4(position[0], position[1], position[2]);
+    GeometryInfo geometryInfo = readGeometryInfo(pushed.instanceId, pushed.geometryId);
+    uvec3 indices = readIndices(geometryInfo.index, gl_PrimitiveID);
+    mat3x4 objectspace = readVertices(geometryInfo.vertex, indices);
+
+    // 
     transformVertices(objectspace, pushed.instanceId, pushed.geometryId);
     normals = vec4(normalize(cross(objectspace[1].xyz-objectspace[0].xyz, objectspace[2].xyz-objectspace[0].xyz)), 1.f);
 
@@ -50,7 +54,6 @@ void main()
     primitiveId = gl_PrimitiveIDIn;
     for (int i=0;i<3;i++) 
     {
-        original = position[i];
         transformed = objectspace[i];
         barycentric = vec4(bary[i], 1.f);
         vertexIndex = indices[i];

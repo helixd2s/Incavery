@@ -6,14 +6,22 @@
 // 
 namespace icv {
 
+#pragma pack(push, 4)
+    //
+    struct RawData
+    {
+        uint32_t bufferId = 0u;
+        uint32_t offset = 0u;
+    };
+
     // 
     struct BindingInfo 
     {
         uint32_t format = 0u; // reserved
-        uint32_t buffer = 0u;
         uint32_t stride = 16u;
-        uint32_t offset = 0u; // used for attributes (same buffer)
+        RawData ptr;
     };
+#pragma pack(pop)
 
     // 
     struct GeometryRegistryInfo 
@@ -112,12 +120,14 @@ namespace icv {
         virtual VkDescriptorSet& makeDescriptorSet(vkh::uni_arg<DescriptorInfo> info = DescriptorInfo{}) 
         {
             vkh::VsDescriptorSetCreateInfoHelper descriptorSetHelper(info->layout, device->descriptorPool);
-            auto handle = descriptorSetHelper.pushDescription<vkh::VkDescriptorBufferInfo>(vkh::VkDescriptorUpdateTemplateEntry{
-                .dstBinding = 0u,
-                .descriptorCount = uint32_t(this->info.buffers.size()),
-                .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER
-            });
-            memcpy(&handle, this->info.buffers.data(), this->info.buffers.size() * sizeof(vkh::VkDescriptorBufferInfo));
+            if (this->info.buffers.size() > 0ull) {
+                auto handle = descriptorSetHelper.pushDescription<vkh::VkDescriptorBufferInfo>(vkh::VkDescriptorUpdateTemplateEntry{
+                    .dstBinding = 0u,
+                    .descriptorCount = uint32_t(this->info.buffers.size()),
+                    .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER
+                });
+                memcpy(&handle, this->info.buffers.data(), this->info.buffers.size() * sizeof(vkh::VkDescriptorBufferInfo));
+            };
             descriptorSetHelper.pushDescription<vkh::VkDescriptorBufferInfo>(vkh::VkDescriptorUpdateTemplateEntry{
                 .dstBinding = 1u,
                 .descriptorCount = 1u,
@@ -161,11 +171,13 @@ namespace icv {
         //
         virtual uintptr_t pushBufferWithBinding(vkh::VkDescriptorBufferInfo buffer, vkh::uni_arg<BindingInfo> binding) 
         {   
-            binding->buffer = pushBuffer(buffer);
+            uintptr_t bufferId = pushBuffer(buffer);
+            //if (!binding->ptr) { binding->ptr = bufferDeviceAddress(info.buffers[bufferId]); };
             pushBinding(binding);
-            return binding->buffer;
+            return bufferId;
         };
 
+        /*
         // TODO: separate set buffer or binding
         virtual void setBufferWithBinding(uintptr_t index, vkh::VkDescriptorBufferInfo buffer, vkh::uni_arg<BindingInfo> binding)
         {
@@ -176,7 +188,7 @@ namespace icv {
 
             this->info.buffers[binding->buffer] = buffer;
             this->info.bindings[index] = binding;
-        };
+        };*/
     };
 
 };

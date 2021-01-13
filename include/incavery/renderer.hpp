@@ -234,7 +234,7 @@ namespace icv {
             };
 
             //
-            {   // vertex input for dynamic bindings
+            /*{   // vertex input for dynamic bindings
                 pipelineInfo.vertexInputAttributeDescriptions.push_back(vkh::VkVertexInputAttributeDescription
                 {
                     .location = 0u, 
@@ -248,7 +248,7 @@ namespace icv {
                     .stride = 16u, // can be changed
                     .inputRate = VK_VERTEX_INPUT_RATE_VERTEX 
                 });
-            };
+            };*/
 
             // blend states
             for (uint32_t i=0;i<Framebuffer::FBO_COUNT;i++) 
@@ -356,25 +356,26 @@ namespace icv {
                 auto& geometryLevelInfo = geometryLevel->getInfo();
                 auto& geometryInfo = geometryLevelInfo.geometries[item.constants.geometryId];
 
-                // 
-                auto& indexBuffer = geometryRegistryInfo.buffers[geometryInfo.index.buffer];
-                auto& vertexBuffer = geometryRegistryInfo.buffers[geometryInfo.vertex.buffer];
-                std::vector<VkBuffer> buffers = { vertexBuffer.buffer };
-                std::vector<VkDeviceSize> offsets = { vertexBuffer.offset };
-                std::vector<VkDeviceSize> ranges = { vertexBuffer.range };
-                std::vector<VkDeviceSize> strides = { geometryInfo.vertex.stride };
+                // Needs Vulkan API V3 
+                //auto& indexBuffer = geometryRegistryInfo.buffers[geometryInfo.index.buffer];
+                //auto& vertexBuffer = geometryRegistryInfo.buffers[geometryInfo.vertex.buffer];
+                //std::vector<VkBuffer> buffers = { vertexBuffer.buffer };
+                //std::vector<VkDeviceSize> offsets = { vertexBuffer.offset };
+                //std::vector<VkDeviceSize> ranges = { vertexBuffer.range };
+                //std::vector<VkDeviceSize> strides = { geometryInfo.vertex.stride };
 
                 // 
                 device->dispatch->CmdPushConstants(commandBuffer, pipeline.layout, pipusage, 0u, sizeof(PushConstantInfo), &item.constants);
-                device->dispatch->CmdBindVertexBuffers2EXT(commandBuffer, 0u, buffers.size(), buffers.data(), offsets.data(), ranges.data(), strides.data());
+                //device->dispatch->CmdBindVertexBuffers2EXT(commandBuffer, 0u, buffers.size(), buffers.data(), offsets.data(), ranges.data(), strides.data());
 
                 // rasterize command
                 if (geometryInfo.index.type == 0u) {
-                    device->dispatch->CmdDraw(commandBuffer, geometryInfo.primitive.count*3u, 1u, geometryInfo.index.first, 0u);
+                    //device->dispatch->CmdDraw(commandBuffer, geometryInfo.primitive.count*3u, 1u, geometryInfo.index.first, 0u);
+                    device->dispatch->CmdDraw(commandBuffer, geometryInfo.primitive.count*3u, 1u, 0u, 0u);
                 } else {
-                    
-                    device->dispatch->CmdBindIndexBuffer(commandBuffer, indexBuffer.buffer, indexBuffer.offset, getIndexType(geometryInfo.index.type));
-                    device->dispatch->CmdDrawIndexed(commandBuffer, geometryInfo.primitive.count*3u, 1u, 0u, geometryInfo.index.first, 0u);
+                    device->dispatch->CmdDraw(commandBuffer, geometryInfo.primitive.count*3u, 1u, 0u, 0u);
+                    //device->dispatch->CmdBindIndexBuffer(commandBuffer, indexBuffer.buffer, indexBuffer.offset, getIndexType(geometryInfo.index.type));
+                    //device->dispatch->CmdDrawIndexed(commandBuffer, geometryInfo.primitive.count*3u, 1u, 0u, geometryInfo.index.first, 0u);
                 };
             };
 

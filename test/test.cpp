@@ -309,13 +309,13 @@ int main() {
     //
     geometryLevel->pushGeometry(icv::GeometryInfo{
         .vertex = {
-            .buffer = 1u,
-            .stride = sizeof(glm::vec4)
+            .stride = sizeof(glm::vec4),
+            .ptr = { .bufferId = 1u }
         },
         .index = {
             .max = 3u,
-            .buffer = 0u,
-            .type = 2u
+            .type = 2u,
+            .ptr = { .bufferId = 0u }
         },
         .primitive = {
             .count = 1u
@@ -325,23 +325,28 @@ int main() {
         }
     });
 
-    // TODO: separate buffer and binding push
-    geometryRegistry->pushBufferWithBinding(indicesBuffer, icv::BindingInfo{
+    // push buffers into registry
+    geometryRegistry->pushBuffer(indicesBuffer);
+    geometryRegistry->pushBuffer(verticesBuffer);
+    geometryRegistry->pushBuffer(texcoordsBuffer);
+
+    // separate buffer and binding push
+    geometryRegistry->pushBinding(icv::BindingInfo{
         .format = 0u,
-        .buffer = 0u,
-        .stride = 2u
+        .stride = 2u,
+        .ptr = { .bufferId = 0u }
     });
 
-    geometryRegistry->pushBufferWithBinding(verticesBuffer, icv::BindingInfo{
+    geometryRegistry->pushBinding(icv::BindingInfo{
         .format = 0u,
-        .buffer = 1u,
-        .stride = sizeof(glm::vec4)
+        .stride = sizeof(glm::vec4),
+        .ptr = { .bufferId = 1u }
     });
 
-    geometryRegistry->pushBufferWithBinding(texcoordsBuffer, icv::BindingInfo{
+    geometryRegistry->pushBinding(icv::BindingInfo{
         .format = 0u,
-        .buffer = 2u,
-        .stride = sizeof(glm::vec2)
+        .stride = sizeof(glm::vec2),
+        .ptr = { .bufferId = 2u }
     });
 
     //

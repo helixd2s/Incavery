@@ -37,8 +37,9 @@ struct Attributes
 // 
 struct VertexInfo 
 {
-    uint32_t bufferId;
+    uint32_t format;
     uint32_t stride;
+    RawData ptr;
 };
 
 // 
@@ -46,8 +47,9 @@ struct IndexInfo
 {
     int32_t first;
     uint32_t max;
-    uint32_t bufferId;
     uint32_t type; // 0 = none, 1 = uint32_t, 2 = uint16_t, 3 = uint8_t
+    uint32_t reserved;
+    RawData ptr;
 };
 
 //
@@ -56,6 +58,7 @@ struct PrimitiveInfo
     uint32_t offset;
     uint32_t count;
     uint32_t materials;
+    uint32_t reserved;
 };
 
 // 
@@ -64,6 +67,7 @@ struct GeometryInfo
     mat3x4 transform;
 
     uint32_t flags;
+    uint32_t reserved;
 
     VertexInfo vertex;
     IndexInfo index;
@@ -96,9 +100,9 @@ struct AttributeInterpolated
 // fixed 06.01.2021
 uint readIndex(inout IndexInfo indexInfo, in uint verticeId) 
 {
-    if (indexInfo.type == 1u) { return (indexInfo.first + readUint32(indexInfo.bufferId, verticeId*4u)); };
-    if (indexInfo.type == 2u) { return (indexInfo.first + readUint16(indexInfo.bufferId, verticeId*2u)); };
-    if (indexInfo.type == 3u) { return (indexInfo.first + readUint8(indexInfo.bufferId, verticeId)); };
+    if (indexInfo.type == 1u) { return (indexInfo.first + readUint32(indexInfo.ptr, verticeId*4u)); };
+    if (indexInfo.type == 2u) { return (indexInfo.first + readUint16(indexInfo.ptr, verticeId*2u)); };
+    if (indexInfo.type == 3u) { return (indexInfo.first + readUint8(indexInfo.ptr, verticeId)); };
     return (indexInfo.first + verticeId);
 };
 
@@ -112,7 +116,7 @@ uvec3 readIndices(inout IndexInfo indexInfo, in uint primitiveId)
 vec4 readVertex(inout VertexInfo vertexInfo, in uint index) 
 {
     uint offset = vertexInfo.stride * index;
-    return vec4(readFloat4(vertexInfo.bufferId, offset).xyz, 1.f);
+    return vec4(readFloat4(vertexInfo.ptr, offset).xyz, 1.f);
 };
 
 //
@@ -129,8 +133,8 @@ mat3x4 readVertices(inout VertexInfo vertexInfo, in uvec3 indices)
 uint readMaterial(inout PrimitiveInfo primitiveInfo, in uint primitiveId)
 {
     uint bindingId = primitiveInfo.materials;
-    uint offset = bindingInfo.stride * primitiveId + bindingInfo.offset;
-    return readUint32(bindingInfo.bufferId, offset);
+    uint offset = bindingInfo.stride * primitiveId;
+    return readUint32(bindingInfo.ptr, offset);
 };
 
 // 

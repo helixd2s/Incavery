@@ -8,6 +8,7 @@
 // 
 namespace icv {
 
+#pragma pack(push, 4)
     // 
     struct Attributes 
     {
@@ -20,8 +21,9 @@ namespace icv {
     // 
     struct VertexInfo 
     {
-        uint32_t buffer = 0u;
+        uint32_t format = 0u;
         uint32_t stride = 16u;
+        RawData ptr;
     };
 
     // 
@@ -29,8 +31,9 @@ namespace icv {
     {
         int32_t first = 0;
         uint32_t max = 1u;
-        uint32_t buffer = 0u;
         uint32_t type = 0u; // 0 = none, 1 = uint32_t, 2 = uint16_t, 3 = uint8_t
+        uint32_t reserved = 0u;
+        RawData ptr;
     };
 
     //
@@ -39,7 +42,10 @@ namespace icv {
         uint32_t offset = 0u;
         uint32_t count = 1u;
         uint32_t materials = 0u; // binding
+        uint32_t reserved = 0u;
     };
+
+    
 
     // 
     struct GeometryInfo 
@@ -54,6 +60,7 @@ namespace icv {
             hasTangents: 1,
             hasColors: 1,
             hasTransform: 1;
+        uint32_t reserved = 0u;
 
         VertexInfo vertex = {};
         IndexInfo index = {};
@@ -61,6 +68,8 @@ namespace icv {
 
         Attributes attributes = {};
     };
+#pragma pack(pop)
+
 
     // 
     struct GeometryLevelInfo 
@@ -189,11 +198,11 @@ namespace icv {
                     buildInfo.builds[i].geometry = vkh::VkAccelerationStructureGeometryTrianglesDataKHR
                     {
                         .vertexFormat = info.geometries[i].useHalf ? VK_FORMAT_R16G16B16_SFLOAT : VK_FORMAT_R32G32B32_SFLOAT,
-                        .vertexData = bufferDeviceAddress( info.registry->getInfo().buffers[info.geometries[i].vertex.buffer] ),
+                        .vertexData = /*info.geometries[i].vertex.ptr*/ bufferDeviceAddress(info.registry->getInfo().buffers[info.geometries[i].vertex.ptr.bufferId]) + info.geometries[i].vertex.ptr.offset,
                         .vertexStride = info.geometries[i].vertex.stride,
                         .maxVertex = info.geometries[i].index.max,
                         .indexType = getIndexType(info.geometries[i].index.type),
-                        .indexData = bufferDeviceAddress( info.registry->getInfo().buffers[info.geometries[i].index.buffer] ),
+                        .indexData = bufferDeviceAddress(info.registry->getInfo().buffers[info.geometries[i].index.ptr.bufferId]) + info.geometries[i].index.ptr.offset /*info.geometries[i].index.ptr*/,
                         .transformData = geometries->getDeviceBuffer().deviceAddress()
                     };
 

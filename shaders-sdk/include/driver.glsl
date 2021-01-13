@@ -26,6 +26,7 @@
 #extension GL_EXT_shader_atomic_float                      : require
 #extension GL_KHR_shader_subgroup_arithmetic               : require
 #extension GL_KHR_shader_subgroup_ballot                   : require
+#extension GL_EXT_buffer_reference                         : require
 
 precision highp float;
 precision highp int;
