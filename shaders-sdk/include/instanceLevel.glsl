@@ -48,7 +48,7 @@ struct IndexInfo
     int32_t first;
     uint32_t max;
     uint32_t type; // 0 = none, 1 = uint32_t, 2 = uint16_t, 3 = uint8_t
-    uint32_t reserved;
+    //uint32_t reserved;
     RawData ptr;
 };
 
@@ -58,7 +58,7 @@ struct PrimitiveInfo
     uint32_t offset;
     uint32_t count;
     uint32_t materials;
-    uint32_t reserved;
+    //uint32_t reserved;
 };
 
 // 
@@ -67,7 +67,7 @@ struct GeometryInfo
     mat3x4 transform;
 
     uint32_t flags;
-    uint32_t reserved;
+    //uint32_t reserved;
 
     VertexInfo vertex;
     IndexInfo index;

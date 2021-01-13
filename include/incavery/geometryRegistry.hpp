@@ -6,7 +6,7 @@
 // 
 namespace icv {
 
-#pragma pack(push, 4)
+#pragma pack(push, 8)
     //
     struct RawData
     {

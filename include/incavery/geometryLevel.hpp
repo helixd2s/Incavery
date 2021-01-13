@@ -8,7 +8,7 @@
 // 
 namespace icv {
 
-#pragma pack(push, 4)
+#pragma pack(push, 8)
     // 
     struct Attributes 
     {
@@ -32,7 +32,7 @@ namespace icv {
         int32_t first = 0;
         uint32_t max = 1u;
         uint32_t type = 0u; // 0 = none, 1 = uint32_t, 2 = uint16_t, 3 = uint8_t
-        uint32_t reserved = 0u;
+        //uint32_t reserved = 0u;
         RawData ptr;
     };
 
@@ -42,7 +42,7 @@ namespace icv {
         uint32_t offset = 0u;
         uint32_t count = 1u;
         uint32_t materials = 0u; // binding
-        uint32_t reserved = 0u;
+        //uint32_t reserved = 0u;
     };
 
     
@@ -60,7 +60,7 @@ namespace icv {
             hasTangents: 1,
             hasColors: 1,
             hasTransform: 1;
-        uint32_t reserved = 0u;
+        //uint32_t reserved = 0u;
 
         VertexInfo vertex = {};
         IndexInfo index = {};
