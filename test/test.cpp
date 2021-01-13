@@ -310,12 +310,12 @@ int main() {
     geometryLevel->pushGeometry(icv::GeometryInfo{
         .vertex = {
             .stride = sizeof(glm::vec4),
-            .ptr = { .bufferId = 1u }
+            .ptr = verticesBuffer.deviceAddress() //{ .bufferId = 1u }
         },
         .index = {
             .max = 3u,
             .type = 2u,
-            .ptr = { .bufferId = 0u }
+            .ptr = indicesBuffer.deviceAddress() //{ .bufferId = 0u }
         },
         .primitive = {
             .count = 1u
@@ -334,19 +334,19 @@ int main() {
     geometryRegistry->pushBinding(icv::BindingInfo{
         .format = 0u,
         .stride = 2u,
-        .ptr = { .bufferId = 0u }
+        .ptr = indicesBuffer.deviceAddress() //{ .bufferId = 0u }
     });
 
     geometryRegistry->pushBinding(icv::BindingInfo{
         .format = 0u,
         .stride = sizeof(glm::vec4),
-        .ptr = { .bufferId = 1u }
+        .ptr = verticesBuffer.deviceAddress() //{ .bufferId = 1u }
     });
 
     geometryRegistry->pushBinding(icv::BindingInfo{
         .format = 0u,
         .stride = sizeof(glm::vec2),
-        .ptr = { .bufferId = 2u }
+        .ptr = texcoordsBuffer.deviceAddress() //{ .bufferId = 2u }
     });
 
     //

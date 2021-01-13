@@ -198,11 +198,11 @@ namespace icv {
                     buildInfo.builds[i].geometry = vkh::VkAccelerationStructureGeometryTrianglesDataKHR
                     {
                         .vertexFormat = info.geometries[i].useHalf ? VK_FORMAT_R16G16B16_SFLOAT : VK_FORMAT_R32G32B32_SFLOAT,
-                        .vertexData = /*info.geometries[i].vertex.ptr*/ bufferDeviceAddress(info.registry->getInfo().buffers[info.geometries[i].vertex.ptr.bufferId]) + info.geometries[i].vertex.ptr.offset,
+                        .vertexData = info.geometries[i].vertex.ptr.data /*bufferDeviceAddress(info.registry->getInfo().buffers[info.geometries[i].vertex.ptr.bufferId]) + info.geometries[i].vertex.ptr.offset*/,
                         .vertexStride = info.geometries[i].vertex.stride,
                         .maxVertex = info.geometries[i].index.max,
                         .indexType = getIndexType(info.geometries[i].index.type),
-                        .indexData = bufferDeviceAddress(info.registry->getInfo().buffers[info.geometries[i].index.ptr.bufferId]) + info.geometries[i].index.ptr.offset /*info.geometries[i].index.ptr*/,
+                        .indexData = info.geometries[i].index.ptr.data /*bufferDeviceAddress(info.registry->getInfo().buffers[info.geometries[i].index.ptr.bufferId]) + info.geometries[i].index.ptr.offset*/,
                         .transformData = geometries->getDeviceBuffer().deviceAddress()
                     };
 

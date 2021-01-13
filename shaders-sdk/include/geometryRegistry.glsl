@@ -9,14 +9,14 @@
 #define GEOMETRY_REGISTRY_MAP 1
 #endif
 
-//layout(buffer_reference, std430) buffer RawData {
-//    uint8_t data[];
-//};
-
-struct RawData {
-    uint32_t bufferId;
-    uint32_t offset;
+layout(buffer_reference, std430) buffer RawData {
+    uint8_t data[];
 };
+
+//struct RawData {
+//    uint32_t bufferId;
+//    uint32_t offset;
+//};
 
 struct BindingInfo 
 {
@@ -33,8 +33,8 @@ layout (binding = 1, set = GEOMETRY_REGISTRY_MAP, scalar) buffer BindingsBuffer 
 
 uint8_t readUint8(in RawData ptr, in uint byteOffset) 
 {
-    //return ptr.data[byteOffset+0u];
-    return buffers[nonuniformEXT(ptr.bufferId)].data[byteOffset+ptr.offset];
+    return ptr.data[byteOffset+0u];
+    //return buffers[nonuniformEXT(ptr.bufferId)].data[byteOffset+ptr.offset];
 };
 
 uint16_t readUint16(in RawData ptr, in uint byteOffset) 

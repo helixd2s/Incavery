@@ -10,8 +10,9 @@ namespace icv {
     //
     struct RawData
     {
-        uint32_t bufferId = 0u;
-        uint32_t offset = 0u;
+        //uint32_t bufferId = 0u;
+        //uint32_t offset = 0u;
+        VkDeviceAddress data = 0ull;
     };
 
     // 
@@ -172,7 +173,7 @@ namespace icv {
         virtual uintptr_t pushBufferWithBinding(vkh::VkDescriptorBufferInfo buffer, vkh::uni_arg<BindingInfo> binding) 
         {   
             uintptr_t bufferId = pushBuffer(buffer);
-            //if (!binding->ptr) { binding->ptr = bufferDeviceAddress(info.buffers[bufferId]); };
+            if (!binding->ptr.data) { binding->ptr.data = bufferDeviceAddress(info.buffers[bufferId]); };
             pushBinding(binding);
             return bufferId;
         };
