@@ -46,8 +46,9 @@ struct GeometryInfo
     uint32_t flags;
     uint32_t type; // zero is triangles
 
-    BindingInfo aabbs; // needed for custom geometry types
-    BindingInfo vertex;
+    uint32_t aabbs; // needed for custom geometry types
+    uint32_t vertex;
+    
     IndexInfo index; // suitable for triangles, but can be used by custom geometry if defined usage manually
     PrimitiveInfo primitive;
 

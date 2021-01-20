@@ -54,8 +54,9 @@ namespace icv {
             hasTransform: 1;
         uint32_t type = 0u; // zero is triangle, other are custom and defined by custom shaders (NOT drawn by rasterization due difficults)
 
-        BindingInfo aabbs = {}; // required for custom geometry
-        BindingInfo vertex = {};
+        uint32_t aabbs = 0u; // required for custom geometry
+        uint32_t vertex = 0u;
+
         IndexInfo index = {};
         PrimitiveInfo primitive = {};
 
@@ -188,15 +189,18 @@ namespace icv {
 
                     // fill build info
                     buildInfo.builds[i].geometryType = VK_GEOMETRY_TYPE_TRIANGLES_KHR;
-                    buildInfo.builds[i].geometry = vkh::VkAccelerationStructureGeometryTrianglesDataKHR
-                    {
-                        .vertexFormat = info.geometries[i].useHalf ? VK_FORMAT_R16G16B16_SFLOAT : VK_FORMAT_R32G32B32_SFLOAT,
-                        .vertexData = info.geometries[i].vertex.ptr.data /*bufferDeviceAddress(info.registry->getInfo().buffers[info.geometries[i].vertex.ptr.bufferId]) + info.geometries[i].vertex.ptr.offset*/,
-                        .vertexStride = info.geometries[i].vertex.stride,
-                        .maxVertex = info.geometries[i].index.max,
-                        .indexType = getIndexType(info.geometries[i].index.type),
-                        .indexData = info.geometries[i].index.ptr.data /*bufferDeviceAddress(info.registry->getInfo().buffers[info.geometries[i].index.ptr.bufferId]) + info.geometries[i].index.ptr.offset*/,
-                        .transformData = geometries->getDeviceBuffer().deviceAddress()
+                    if (info.geometries[i].type == 0u) {
+                        auto& vertex = info.registry->getInfo().bindings[info.geometries[i].vertex];
+                        buildInfo.builds[i].geometry = vkh::VkAccelerationStructureGeometryTrianglesDataKHR
+                        {
+                            .vertexFormat = info.geometries[i].useHalf ? VK_FORMAT_R16G16B16_SFLOAT : VK_FORMAT_R32G32B32_SFLOAT,
+                            .vertexData = vertex.ptr.data /*bufferDeviceAddress(info.registry->getInfo().buffers[vertex.ptr.bufferId]) + vertex.ptr.offset*/,
+                            .vertexStride = vertex.stride,
+                            .maxVertex = info.geometries[i].index.max,
+                            .indexType = getIndexType(info.geometries[i].index.type),
+                            .indexData = info.geometries[i].index.ptr.data /*bufferDeviceAddress(info.registry->getInfo().buffers[info.geometries[i].index.ptr.bufferId]) + info.geometries[i].index.ptr.offset*/,
+                            .transformData = geometries->getDeviceBuffer().deviceAddress()
+                        };
                     };
 
                     //

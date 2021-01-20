@@ -47,7 +47,7 @@ void main()
     InstanceInfo instanceInfo = instances[results.instanceId];
 
     // get vertices
-    mat3x4 objectspace = readBindings3x4(geometryInfo.vertex, indices);
+    mat3x4 objectspace = readBindings3x4(bindings[geometryInfo.vertex], indices);
     //for (int i=0;i<3;i++) { objectspace[i] = vec4(vec4(objectspace[i] * geometryInfo.transform, 1.f) * instanceInfo.transform, 1.f); };
 
     //

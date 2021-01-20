@@ -308,10 +308,7 @@ int main() {
 
     //
     geometryLevel->pushGeometry(icv::GeometryInfo{
-        .vertex = {
-            .stride = sizeof(glm::vec4),
-            .ptr = verticesBuffer.deviceAddress() //{ .bufferId = 1u }
-        },
+        .vertex = 0u,
         .index = {
             .max = 3u,
             .type = 2u,
@@ -321,22 +318,15 @@ int main() {
             .count = 1u
         },
         .attributes = {
-            .texcoords = 2u
+            .texcoords = 1u
         }
     });
 
     // push buffers into registry
-    geometryRegistry->pushBuffer(indicesBuffer);
-    geometryRegistry->pushBuffer(verticesBuffer);
-    geometryRegistry->pushBuffer(texcoordsBuffer);
+    //geometryRegistry->pushBuffer(verticesBuffer);
+    //geometryRegistry->pushBuffer(texcoordsBuffer);
 
     // separate buffer and binding push
-    geometryRegistry->pushBinding(icv::BindingInfo{
-        .format = 0u,
-        .stride = 2u,
-        .ptr = indicesBuffer.deviceAddress() //{ .bufferId = 0u }
-    });
-
     geometryRegistry->pushBinding(icv::BindingInfo{
         .format = 0u,
         .stride = sizeof(glm::vec4),
