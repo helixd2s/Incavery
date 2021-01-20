@@ -308,7 +308,11 @@ int main() {
 
     //
     geometryLevel->pushGeometry(icv::GeometryInfo{
-        .vertex = 0u,
+        .vertex = uint32_t(geometryRegistry->pushBinding(icv::BindingInfo{
+            .format = 0u,
+            .stride = sizeof(glm::vec4),
+            .ptr = verticesBuffer.deviceAddress() //{ .bufferId = 1u }
+        })),
         .index = {
             .max = 3u,
             .type = 2u,
@@ -318,26 +322,17 @@ int main() {
             .count = 1u
         },
         .attributes = {
-            .texcoords = 1u
+            .texcoords = int32_t(geometryRegistry->pushBinding(icv::BindingInfo{
+                .format = 0u,
+                .stride = sizeof(glm::vec2),
+                .ptr = texcoordsBuffer.deviceAddress() //{ .bufferId = 2u }
+            }))
         }
     });
 
     // push buffers into registry
     //geometryRegistry->pushBuffer(verticesBuffer);
     //geometryRegistry->pushBuffer(texcoordsBuffer);
-
-    // separate buffer and binding push
-    geometryRegistry->pushBinding(icv::BindingInfo{
-        .format = 0u,
-        .stride = sizeof(glm::vec4),
-        .ptr = verticesBuffer.deviceAddress() //{ .bufferId = 1u }
-    });
-
-    geometryRegistry->pushBinding(icv::BindingInfo{
-        .format = 0u,
-        .stride = sizeof(glm::vec2),
-        .ptr = texcoordsBuffer.deviceAddress() //{ .bufferId = 2u }
-    });
 
     //
     instanceLevel->pushInstance(icv::InstanceInfo{
