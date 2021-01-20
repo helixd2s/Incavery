@@ -48,7 +48,7 @@ void main()
 
     // 
     uvec3 indices = readIndices(geometryInfo.index, primitiveId);
-    AttributeMap attributeMap = readAttributes(geometryInfo.attributes, indices);
+    AttributeMap attributeMap = readAttributes3x4(geometryInfo.attributes, indices);
     AttributeInterpolated attributes = interpolateAttributes(attributeMap, barycentric.xyz);
     MaterialInfo material = handleMaterial(geometryInfo.primitive.materials, attributes);
 

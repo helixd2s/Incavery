@@ -20,7 +20,7 @@ namespace icv {
     {
         uint32_t format = 0u; // reserved
         uint32_t stride = 16u;
-        RawData ptr;
+        RawData ptr = {};
     };
 #pragma pack(pop)
 

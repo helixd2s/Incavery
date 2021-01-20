@@ -44,7 +44,7 @@ void main()
     // 
     GeometryInfo geometryInfo = readGeometryInfo(pushed.instanceId, pushed.geometryId);
     uvec3 indices = readIndices(geometryInfo.index, gl_PrimitiveID);
-    mat3x4 objectspace = readVertices(geometryInfo.vertex, indices);
+    mat3x4 objectspace = readBindings3x4(geometryInfo.vertex, indices);
 
     // 
     transformVertices(objectspace, pushed.instanceId, pushed.geometryId);

@@ -41,13 +41,13 @@ void main()
     IntersectionInfo results = traceRays(rays, 10000.f); // it working, but needs for second passes
     GeometryInfo geometryInfo = readGeometryInfo(results.instanceId, results.geometryId);
     uvec3 indices = readIndices(geometryInfo.index, results.primitiveId);
-    AttributeMap attributeMap = readAttributes(geometryInfo.attributes, indices);
+    AttributeMap attributeMap = readAttributes3x4(geometryInfo.attributes, indices);
     AttributeInterpolated attributes = interpolateAttributes(attributeMap, results.barycentric);
     MaterialInfo material = handleMaterial(geometryInfo.primitive.materials, attributes);
     InstanceInfo instanceInfo = instances[results.instanceId];
 
     // get vertices
-    mat3x4 objectspace = readVertices(geometryInfo.vertex, indices);
+    mat3x4 objectspace = readBindings3x4(geometryInfo.vertex, indices);
     //for (int i=0;i<3;i++) { objectspace[i] = vec4(vec4(objectspace[i] * geometryInfo.transform, 1.f) * instanceInfo.transform, 1.f); };
 
     //

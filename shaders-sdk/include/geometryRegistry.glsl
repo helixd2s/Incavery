@@ -29,7 +29,7 @@ struct BindingInfo
 layout (binding = 0, set = GEOMETRY_REGISTRY_MAP, scalar) buffer AccelerationStructure { uint8_t data[]; } buffers[];
 layout (binding = 1, set = GEOMETRY_REGISTRY_MAP, scalar) buffer BindingsBuffer { BindingInfo bindings[]; };
 
-#define bindingInfo bindings[bindingId]
+//#define bindingInfo bindings[bindingId]
 
 uint8_t readUint8(in RawData ptr, in uint byteOffset) 
 {
@@ -71,19 +71,18 @@ vec4 readFloat4(in RawData ptr, in uint byteOffset)
 };
 
 // read binding as float4
-vec4 readBinding(in uint bindingId, in uint index) 
+vec4 readBinding4(in BindingInfo bindingInfo, in uint index) 
 {
-    //BindingInfo bindingInfo = bindings[bindingId];
     uint offset = bindingInfo.stride * index;
     return readFloat4(bindingInfo.ptr, offset);
 };
 
-mat3x4 readAttribute(in uint bindingId, in uvec3 indices) 
+mat3x4 readBindings3x4(in BindingInfo bindingInfo, in uvec3 indices) 
 {
     return mat3x4(
-        readBinding(bindingId, indices.x),
-        readBinding(bindingId, indices.y),
-        readBinding(bindingId, indices.z)
+        readBinding4(bindingInfo, indices.x),
+        readBinding4(bindingInfo, indices.y),
+        readBinding4(bindingInfo, indices.z)
     );
 };
 

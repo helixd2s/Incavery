@@ -23,7 +23,7 @@ IntersectionInfo traceRays(in RayData rays, in float maxT) {
             uint primitiveId = rayQueryGetIntersectionPrimitiveIndexEXT(rayQuery, false);
             GeometryInfo geometryInfo = readGeometryInfo(instanceId, geometryId);
             uvec3 indices = readIndices(geometryInfo.index, primitiveId);
-            AttributeMap attributeMap = readAttributes(geometryInfo.attributes, indices);
+            AttributeMap attributeMap = readAttributes3x4(geometryInfo.attributes, indices);
             vec2 attribs = rayQueryGetIntersectionBarycentricsEXT(rayQuery, false);
             AttributeInterpolated attributes = interpolateAttributes(attributeMap, vec3(1.f - attribs.x - attribs.y, attribs));
             MaterialInfo material = handleMaterial(geometryInfo.primitive.materials, attributes);

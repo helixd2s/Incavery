@@ -19,21 +19,13 @@ namespace icv {
     };
 
     // 
-    struct VertexInfo 
-    {
-        uint32_t format = 0u;
-        uint32_t stride = 16u;
-        RawData ptr;
-    };
-
-    // 
     struct IndexInfo 
     {
         int32_t first = 0;
         uint32_t max = 1u;
+        uint32_t reserved = 0u;
         uint32_t type = 0u; // 0 = none, 1 = uint32_t, 2 = uint16_t, 3 = uint8_t
-        //uint32_t reserved = 0u;
-        RawData ptr;
+        RawData ptr = {};
     };
 
     //
@@ -42,7 +34,7 @@ namespace icv {
         uint32_t offset = 0u;
         uint32_t count = 1u;
         uint32_t materials = 0u; // binding
-        //uint32_t reserved = 0u;
+        uint32_t reserved = 0u;
     };
 
     
@@ -60,9 +52,10 @@ namespace icv {
             hasTangents: 1,
             hasColors: 1,
             hasTransform: 1;
-        //uint32_t reserved = 0u;
+        uint32_t type = 0u; // zero is triangle, other are custom and defined by custom shaders (NOT drawn by rasterization due difficults)
 
-        VertexInfo vertex = {};
+        BindingInfo aabbs = {}; // required for custom geometry
+        BindingInfo vertex = {};
         IndexInfo index = {};
         PrimitiveInfo primitive = {};
 
