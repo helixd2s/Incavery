@@ -27,7 +27,7 @@ layout (binding = 0, set = INSTANCE_LEVEL_MAP, scalar) buffer InstanceBuffer { I
 GeometryInfo readGeometryInfo(in uint instanceId, in uint geometryId) 
 {
     uint customIndex = bitfieldExtract(instances[instanceId].customIndex24_mask8, 0, 24);
-    return registry[customIndex].geometries[geometryId];
+    return registry[nonuniformEXT(customIndex)].geometries[geometryId];
 };
 
 //
