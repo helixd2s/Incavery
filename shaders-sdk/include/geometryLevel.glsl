@@ -48,7 +48,7 @@ struct GeometryInfo
 
     uint32_t aabbs; // needed for custom geometry types
     uint32_t vertex;
-    
+
     IndexInfo index; // suitable for triangles, but can be used by custom geometry if defined usage manually
     PrimitiveInfo primitive;
 

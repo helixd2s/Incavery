@@ -271,7 +271,7 @@ int main() {
 
 
     // TODO: needs flush data
-    vkh::uni_ptr<icv::MaterialSet> materialSet = std::make_shared<icv::MaterialSet>(device, icv::MaterialSetInfo{
+    vkh::uni_ptr<icv::MaterialSet<icv::MaterialSource>> materialSet = std::make_shared<icv::MaterialSet<icv::MaterialSource>>(device, icv::MaterialSetInfo<icv::MaterialSource>{
         .maxMaterialCount = 8u
     });
 
@@ -293,7 +293,7 @@ int main() {
     });
 
     // 
-    vkh::uni_ptr<icv::Renderer> renderer = std::make_shared<icv::Renderer>(device, icv::RendererInfo{
+    vkh::uni_ptr<icv::Renderer<icv::MaterialSource>> renderer = std::make_shared<icv::Renderer<icv::MaterialSource>>(device, icv::RendererInfo<icv::MaterialSource>{
         .geometryRegistry = geometryRegistry, 
         .instanceLevel = instanceLevel,
         .materialSet = materialSet

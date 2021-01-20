@@ -25,28 +25,30 @@ namespace icv {
     };
 
     //
+    template<class T = MaterialSource>
     struct MaterialSetInfo {
-        std::vector<MaterialSource> materials = {};
+        std::vector<T> materials = {};
         std::vector<vkh::VkDescriptorImageInfo> textures = {};
 
         uint32_t maxMaterialCount = 128u;
     };
 
     //
+    template<class M = MaterialSource>
     class MaterialSet : public DeviceBased 
     {
         protected: 
-        MaterialSetInfo info = {};
-        vkh::uni_ptr<DataSet<MaterialSource>> materials = {};
+        MaterialSetInfo<M> info = {};
+        vkh::uni_ptr<DataSet<M>> materials = {};
         VkDescriptorSet set = VK_NULL_HANDLE;
         bool created = false;
 
         // 
-        virtual void constructor(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<MaterialSetInfo> info = MaterialSetInfo{}) 
+        virtual void constructor(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<MaterialSetInfo<M>> info = MaterialSetInfo{}) 
         {
             this->info = info;
             this->device = device;
-            this->materials = std::make_shared<DataSet<MaterialSource>>(device, DataSetInfo{
+            this->materials = std::make_shared<DataSet<M>>(device, DataSetInfo{
                 .count = info->maxMaterialCount,
                 .usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT
             });
@@ -55,7 +57,7 @@ namespace icv {
         // 
         public:
         MaterialSet() {};
-        MaterialSet(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<MaterialSetInfo> info = MaterialSetInfo{}) { this->constructor(device, info); };
+        MaterialSet(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<MaterialSetInfo<M>> info = MaterialSetInfo{}) { this->constructor(device, info); };
 
         //
         static VkDescriptorSetLayout& createDescriptorSetLayout(vkh::uni_ptr<vkf::Device> device, VkDescriptorSetLayout& descriptorSetLayout) {
@@ -95,22 +97,22 @@ namespace icv {
         };
 
         //
-        virtual const MaterialSetInfo& getInfo() const {
+        virtual const MaterialSetInfo<M>& getInfo() const {
             return info;
         };
 
         //
-        virtual MaterialSetInfo& getInfo() {
+        virtual MaterialSetInfo<M>& getInfo() {
             return info;
         };
 
         //
-        virtual const vkf::Vector<MaterialSource>& getBuffer() const {
+        virtual const vkf::Vector<M>& getBuffer() const {
             return materials->getDeviceBuffer();
         };
 
         //
-        virtual vkf::Vector<MaterialSource>& getBuffer() {
+        virtual vkf::Vector<M>& getBuffer() {
             return materials->getDeviceBuffer();
         };
 
@@ -159,7 +161,7 @@ namespace icv {
         };
 
         //
-        virtual uintptr_t pushMaterial(vkh::uni_arg<MaterialSource> material) 
+        virtual uintptr_t pushMaterial(vkh::uni_arg<M> material) 
         {   
             uintptr_t index = this->info.materials.size();
             this->info.materials.push_back(material);
@@ -167,7 +169,7 @@ namespace icv {
         };
 
         //
-        void setMaterial(uintptr_t index, vkh::uni_arg<MaterialSource> material) {
+        void setMaterial(uintptr_t index, vkh::uni_arg<M> material) {
             if (info.materials.size() <= index) { info.materials.resize(index+1u); };
             info.materials[index] = material;
         };

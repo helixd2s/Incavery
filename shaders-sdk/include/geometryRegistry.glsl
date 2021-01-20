@@ -9,7 +9,7 @@
 #define GEOMETRY_REGISTRY_MAP 1
 #endif
 
-layout(buffer_reference, std430) buffer RawData {
+layout(buffer_reference, std430, buffer_reference_align = 1, scalar) buffer RawData {
     uint8_t data[];
 };
 

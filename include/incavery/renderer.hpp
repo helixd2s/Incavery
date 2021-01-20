@@ -13,12 +13,13 @@
 // 
 namespace icv {
 
+    template<class M = MaterialSource>
     struct RendererInfo
     {
         vkh::uni_ptr<Framebuffer> framebuffer = {};
         vkh::uni_ptr<GeometryRegistry> geometryRegistry = {};
         vkh::uni_ptr<InstanceLevel> instanceLevel = {};
-        vkh::uni_ptr<MaterialSet> materialSet = {};
+        vkh::uni_ptr<MaterialSet<M>> materialSet = {};
     };
 
     struct PipelineInfo
@@ -79,10 +80,11 @@ namespace icv {
         VkDescriptorSetLayout materialSet = VK_NULL_HANDLE;
     };
 
+    template<class M = MaterialSource>
     class Renderer: public DeviceBased
     {
         protected: 
-        RendererInfo info = {};
+        RendererInfo<M> info = {};
         PipelineInfo pipeline = {};
         DescriptorLayouts layouts = {};
 
@@ -91,7 +93,7 @@ namespace icv {
         std::vector<VkDescriptorSet> descriptorSets = {};
 
         // 
-        virtual void constructor(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<RendererInfo> info = RendererInfo{}) 
+        virtual void constructor(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<RendererInfo<M>> info = RendererInfo<M>{})
         {
             this->info = info;
             this->device = device;
@@ -99,7 +101,7 @@ namespace icv {
 
         public:
         Renderer() {};
-        Renderer(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<RendererInfo> info = RendererInfo{}) { this->constructor(device, info); };
+        Renderer(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<RendererInfo<M>> info = RendererInfo{}) { this->constructor(device, info); };
 
         //
         virtual void setFramebuffer(vkh::uni_ptr<Framebuffer> framebuffer) 
@@ -108,7 +110,7 @@ namespace icv {
         };
 
         //
-        virtual void setMaterialSet(vkh::uni_ptr<MaterialSet> materialSet) 
+        virtual void setMaterialSet(vkh::uni_ptr<MaterialSet<M>> materialSet) 
         {
             this->info.materialSet = materialSet;
         };
@@ -129,7 +131,7 @@ namespace icv {
         //
         virtual VkDescriptorSetLayout& getMaterialSetLayout() 
         {   //
-            return MaterialSet::createDescriptorSetLayout(device, layouts.materialSet);
+            return MaterialSet<M>::createDescriptorSetLayout(device, layouts.materialSet);
         };
 
         //
