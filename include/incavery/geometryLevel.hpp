@@ -23,7 +23,7 @@ namespace icv {
     {
         int32_t first = 0;
         uint32_t max = 1u;
-        uint32_t reserved = 0u;
+        glm::uvec3 reserved = glm::uvec3(0u, 0u, 0u);
         uint32_t type = 0u; // 0 = none, 1 = uint32_t, 2 = uint16_t, 3 = uint8_t
         RawData ptr = {};
     };
