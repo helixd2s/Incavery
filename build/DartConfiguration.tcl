@@ -4,14 +4,14 @@
 
 
 # Configuration directories and files
-SourceDirectory: F:/Data/Projects/Incavery
-BuildDirectory: F:/Data/Projects/Incavery/build
+SourceDirectory: D:/Data/Projects/Incavery
+BuildDirectory: D:/Data/Projects/Incavery/build
 
 # Where to place the cost data store
 CostDataFile: 
 
 # Site is something like machine.domain, i.e. pragmatic.crd
-Site: DESKTOP-HM653VF
+Site: DESKTOP-8HD69JI
 
 # Build name is osname-revision-compiler, i.e. Linux-2.4.2-2smp-c++
 BuildName: Win32-MSBuild
@@ -26,7 +26,7 @@ SubmitURL: http://
 NightlyStartTime: 00:00:00 EDT
 
 # Commands for the build/test/submit cycle
-ConfigureCommand: "C:/Program Files/CMake/bin/cmake.exe" "F:/Data/Projects/Incavery"
+ConfigureCommand: "C:/Program Files/CMake/bin/cmake.exe" "D:/Data/Projects/Incavery"
 MakeCommand: "C:\Program Files\CMake\bin\cmake.exe" --build . --config "${CTEST_CONFIGURATION_TYPE}"
 DefaultCTestConfigurationType: Release
 
@@ -35,11 +35,11 @@ UpdateVersionOnly:
 
 # CVS options
 # Default is "-d -P -A"
-CVSCommand: CVSCOMMAND-NOTFOUND
-CVSUpdateOptions: -d -A -P
+CVSCommand: 
+CVSUpdateOptions: 
 
 # Subversion options
-SVNCommand: SVNCOMMAND-NOTFOUND
+SVNCommand: 
 SVNOptions: 
 SVNUpdateOptions: 
 
@@ -50,7 +50,7 @@ GITUpdateOptions:
 GITUpdateCustom: 
 
 # Perforce options
-P4Command: P4COMMAND-NOTFOUND
+P4Command: 
 P4Client: 
 P4Options: 
 P4UpdateOptions: 
@@ -62,8 +62,8 @@ UpdateOptions:
 UpdateType: git
 
 # Compiler info
-Compiler: C:/Program Files (x86)/Microsoft Visual Studio/2019/Preview/VC/Tools/MSVC/14.28.29617/bin/Hostx64/x64/cl.exe
-CompilerVersion: 19.28.29617.0
+Compiler: C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.28.29828/bin/Hostx64/x64/cl.exe
+CompilerVersion: 19.28.29828.0
 
 # Dynamic analysis (MemCheck)
 PurifyCommand: 
@@ -71,8 +71,8 @@ ValgrindCommand:
 ValgrindCommandOptions: 
 DrMemoryCommand: 
 DrMemoryCommandOptions: 
-CudaMemcheckCommand: 
-CudaMemcheckCommandOptions: 
+CudaSanitizerCommand: 
+CudaSanitizerCommandOptions: 
 MemoryCheckType: 
 MemoryCheckSanitizerOptions: 
 MemoryCheckCommand: MEMORYCHECK_COMMAND-NOTFOUND
@@ -82,10 +82,6 @@ MemoryCheckSuppressionFile:
 # Coverage
 CoverageCommand: COVERAGE_COMMAND-NOTFOUND
 CoverageExtraFlags: -l
-
-# Cluster commands
-SlurmBatchCommand: SLURM_SBATCH_COMMAND-NOTFOUND
-SlurmRunCommand: SLURM_SRUN_COMMAND-NOTFOUND
 
 # Testing options
 # TimeOut is the amount of time in seconds to wait for processes

@@ -15,26 +15,32 @@
 struct InstanceInfo 
 {
     mat3x4 transform;
-    uint32_t customIndex24_mask8;
-    uint32_t sbtOffset24_flags8;
-    uint64_t reference;
+    uint32_t sbtOffsetId;
+    uint32_t rasterProgramId;
+    GeometryLevel geometryInfoReference;
+    uint64_t accelerationReference;
 };
 
 //
 layout (binding = 0, set = INSTANCE_LEVEL_MAP, scalar) buffer InstanceBuffer { InstanceInfo instances[]; };
 
 // 
+GeometryInfo readGeometryInfo(InstanceInfo instance, in uint geometryId) 
+{
+    return instance.geometryInfoReference.geometries[geometryId];
+};
+
+// 
 GeometryInfo readGeometryInfo(in uint instanceId, in uint geometryId) 
 {
-    uint customIndex = bitfieldExtract(instances[instanceId].customIndex24_mask8, 0, 24);
-    return registry[nonuniformEXT(customIndex)].geometries[geometryId];
+    return readGeometryInfo(instances[instanceId], geometryId);
 };
 
 //
 AttributeInterpolated transformNormal(inout AttributeInterpolated attributes, in uint instanceId, in uint geometryId)
 {
-    GeometryInfo geometryInfo = readGeometryInfo(instanceId, geometryId);
     InstanceInfo instanceInfo = instances[instanceId];
+    GeometryInfo geometryInfo = readGeometryInfo(instanceInfo, geometryId);
     attributes.normals = vec4(vec4(vec4(attributes.normals.xyz, 0.f) * geometryInfo.transform, 0.f) * instanceInfo.transform, 0.f);
     return attributes;
 };
@@ -42,8 +48,8 @@ AttributeInterpolated transformNormal(inout AttributeInterpolated attributes, in
 //
 AttributeMap transformNormals(inout AttributeMap map, in uint instanceId, in uint geometryId)
 {
-    GeometryInfo geometryInfo = readGeometryInfo(instanceId, geometryId);
     InstanceInfo instanceInfo = instances[instanceId];
+    GeometryInfo geometryInfo = readGeometryInfo(instanceInfo, geometryId);
     for (int i=0;i<3;i++) {
         //map.normals[i] = vec4(vec4(vec4(map.normals[i].xyz, 0.f) * geometryInfo.transform, 0.f) * instanceInfo.transform, 0.f);
         map.normals[i] = vec4(vec4(vec4(map.normals[i].xyz, 0.f) * inverse(geometryInfo.transform), 0.f) * inverse(instanceInfo.transform), 0.f);

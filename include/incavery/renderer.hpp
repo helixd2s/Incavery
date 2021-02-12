@@ -70,6 +70,7 @@ namespace icv {
         uint32_t type = 0u;
         uint32_t reserved0 = 0u;
         PushConstantInfo constants = {};
+        PrimitiveInfo primitive = {};
     };
 
     struct DescriptorLayouts 
@@ -80,6 +81,8 @@ namespace icv {
         VkDescriptorSetLayout materialSet = VK_NULL_HANDLE;
     };
 
+
+    // early alpha version (needs Optifine-like)
     template<class M = MaterialSource>
     class Renderer: public DeviceBased
     {
@@ -235,23 +238,6 @@ namespace icv {
                 pipelineInfo.depthStencilState = vkh::VkPipelineDepthStencilStateCreateInfo{ .depthTestEnable = true, .depthWriteEnable = true };
             };
 
-            //
-            /*{   // vertex input for dynamic bindings
-                pipelineInfo.vertexInputAttributeDescriptions.push_back(vkh::VkVertexInputAttributeDescription
-                {
-                    .location = 0u, 
-                    .binding = 0u,
-                    .format = VK_FORMAT_R32G32B32A32_UINT,
-                    .offset = 0u // infeasible with dynamic state bindings
-                });
-                pipelineInfo.vertexInputBindingDescriptions.push_back(vkh::VkVertexInputBindingDescription
-                {
-                    .binding = 0u,
-                    .stride = 16u, // can be changed
-                    .inputRate = VK_VERTEX_INPUT_RATE_VERTEX 
-                });
-            };*/
-
             // blend states
             for (uint32_t i=0;i<Framebuffer::FBO_COUNT;i++) 
             {   // TODO: full blending support
@@ -310,9 +296,9 @@ namespace icv {
             //    descriptorSets.push_back(set);
             //};
 
-            // 
-            const uint32_t LOCAL_GROUP_X = 32u, LOCAL_GROUP_Y = 24u;
+            
 
+            // TODO: indirect draw state
             // draw items
             std::vector<DrawInfo> opaque = {};
             std::vector<DrawInfo> translucent = {};
@@ -321,22 +307,27 @@ namespace icv {
             auto instanceLevelInfo = info.instanceLevel->getInfo();
             for (uint32_t I=0;I<instanceLevelInfo.instances.size();I++) {
                 auto& instanceInfo = instanceLevelInfo.instances[I];
-                auto& geometryLevel = instanceLevelInfo.geometries[instanceInfo.instanceCustomIndex];
-                auto& geometryLevelInfo = geometryLevel->getInfo();
+
+                // getting hosted data (backward compatibility)
+                auto& geometryLevelInfo = instanceLevelInfo.hosts[I].geometryLevel->getInfo();
+
+                // 
                 for (uint32_t G=0;G<geometryLevelInfo.geometries.size();G++) {
                     auto& geometryInfo = geometryLevelInfo.geometries[G];
                     if (geometryInfo.isOpaque) {
                         opaque.push_back(DrawInfo
                         {
                             .type = 0u,
-                            .constants = {I, G, 0u, 0u}
+                            .constants = {I, G, 0u, 0u},
+                            .primitive = geometryInfo.primitive
                         });
                     } else
                     {
                         translucent.push_back(DrawInfo
                         {
                             .type = 1u,
-                            .constants = {I, G, 0u, 0u}
+                            .constants = {I, G, 0u, 0u},
+                            .primitive = geometryInfo.primitive
                         });
                     }
                 };
@@ -352,33 +343,9 @@ namespace icv {
 
             // shortify code by lambda function
             auto& geometryRegistryInfo = info.geometryRegistry->getInfo();
-            auto drawItem = [&,this](DrawInfo& item){
-                auto& instanceInfo = instanceLevelInfo.instances[item.constants.instanceId];
-                auto& geometryLevel = instanceLevelInfo.geometries[instanceInfo.instanceCustomIndex];
-                auto& geometryLevelInfo = geometryLevel->getInfo();
-                auto& geometryInfo = geometryLevelInfo.geometries[item.constants.geometryId];
-
-                // Needs Vulkan API V3 
-                //auto& indexBuffer = geometryRegistryInfo.buffers[geometryInfo.index.buffer];
-                //auto& vertexBuffer = geometryRegistryInfo.buffers[geometryInfo.vertex.buffer];
-                //std::vector<VkBuffer> buffers = { vertexBuffer.buffer };
-                //std::vector<VkDeviceSize> offsets = { vertexBuffer.offset };
-                //std::vector<VkDeviceSize> ranges = { vertexBuffer.range };
-                //std::vector<VkDeviceSize> strides = { geometryInfo.vertex.stride };
-
-                // 
+            auto drawItem = [&,this](DrawInfo& item) {
                 device->dispatch->CmdPushConstants(commandBuffer, pipeline.layout, pipusage, 0u, sizeof(PushConstantInfo), &item.constants);
-                //device->dispatch->CmdBindVertexBuffers2EXT(commandBuffer, 0u, buffers.size(), buffers.data(), offsets.data(), ranges.data(), strides.data());
-
-                // rasterize command
-                if (geometryInfo.index.type == 0u) {
-                    //device->dispatch->CmdDraw(commandBuffer, geometryInfo.primitive.count*3u, 1u, geometryInfo.index.first, 0u);
-                    device->dispatch->CmdDraw(commandBuffer, geometryInfo.primitive.count*3u, 1u, 0u, 0u);
-                } else {
-                    device->dispatch->CmdDraw(commandBuffer, geometryInfo.primitive.count*3u, 1u, 0u, 0u);
-                    //device->dispatch->CmdBindIndexBuffer(commandBuffer, indexBuffer.buffer, indexBuffer.offset, getIndexType(geometryInfo.index.type));
-                    //device->dispatch->CmdDrawIndexed(commandBuffer, geometryInfo.primitive.count*3u, 1u, 0u, geometryInfo.index.first, 0u);
-                };
+                device->dispatch->CmdDraw(commandBuffer, item.primitive.count * 3u, 1u, 0u, 0u);
             };
 
             auto& framebuffer = info.framebuffer->getState();
@@ -419,6 +386,9 @@ namespace icv {
                 device->dispatch->CmdEndRenderPass(commandBuffer);
             };
 
+
+            // 
+            const uint32_t LOCAL_GROUP_X = 32u, LOCAL_GROUP_Y = 24u;
             if (pipeline.rayTracing) {   // compute ray tracing
                 device->dispatch->CmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline.rayTracing);
                 device->dispatch->CmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline.layout, 0u, descriptorSets.size(), descriptorSets.data(), 0u, nullptr);

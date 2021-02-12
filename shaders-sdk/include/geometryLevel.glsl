@@ -56,7 +56,11 @@ struct GeometryInfo
 };
 
 // 
-layout (binding = 2, set = INSTANCE_LEVEL_MAP, scalar) buffer GeometryBuffer { GeometryInfo geometries[]; } registry[];
+//layout (binding = 2, set = INSTANCE_LEVEL_MAP, scalar) buffer GeometryBuffer { GeometryInfo geometries[]; } registry[];
+
+layout(buffer_reference, scalar) buffer GeometryLevel {
+    GeometryInfo geometries[];
+};
 
 // 
 struct AttributeMap 

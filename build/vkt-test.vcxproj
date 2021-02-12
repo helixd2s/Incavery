@@ -22,7 +22,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{AEA09BB2-86CC-32CA-B41C-2EF8A12B2314}</ProjectGuid>
+    <ProjectGuid>{45817271-9241-3137-BEC9-71614A34A399}</ProjectGuid>
     <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
     <Keyword>Win32Proj</Keyword>
     <Platform>x64</Platform>
@@ -59,25 +59,25 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">F:\Data\Projects\Incavery\build\Debug\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Data\Projects\Incavery\build\Debug\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">vkt-test.dir\Debug\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">vkt-test</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.exe</TargetExt>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">F:\Data\Projects\Incavery\build\Release\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Data\Projects\Incavery\build\Release\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">vkt-test.dir\Release\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">vkt-test</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">F:\Data\Projects\Incavery\build\MinSizeRel\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\Data\Projects\Incavery\build\MinSizeRel\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">vkt-test.dir\MinSizeRel\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">vkt-test</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.exe</TargetExt>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkIncremental>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</GenerateManifest>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">F:\Data\Projects\Incavery\build\RelWithDebInfo\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\Data\Projects\Incavery\build\RelWithDebInfo\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">vkt-test.dir\RelWithDebInfo\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">vkt-test</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.exe</TargetExt>
@@ -86,7 +86,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>F:\Data\Projects\Incavery\include;F:\Data\Projects\Incavery\src;F:\Data\Projects\Incavery\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Data\Projects\Incavery\include;D:\Data\Projects\Incavery\src;D:\Data\Projects\Incavery\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>%(AdditionalOptions) /bigobj</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -104,10 +104,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;VKH_USE_VMA;VKT_USE_GLFW;NOMINMAX;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>F:\Data\Projects\Incavery\include;F:\Data\Projects\Incavery\src;F:\Data\Projects\Incavery\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Data\Projects\Incavery\include;D:\Data\Projects\Incavery\src;D:\Data\Projects\Incavery\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>F:\Data\Projects\Incavery\include;F:\Data\Projects\Incavery\src;F:\Data\Projects\Incavery\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Data\Projects\Incavery\include;D:\Data\Projects\Incavery\src;D:\Data\Projects\Incavery\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -116,12 +116,12 @@
     </Midl>
     <Link>
       <AdditionalDependencies>glfw3.lib;FreeImage.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>F:/Data/Projects/Incavery/lib;F:/Data/Projects/Incavery/lib/$(Configuration);F:/Data/Projects/Incavery/test;F:/Data/Projects/Incavery/test/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:/Data/Projects/Incavery/lib;D:/Data/Projects/Incavery/lib/$(Configuration);D:/Data/Projects/Incavery/test;D:/Data/Projects/Incavery/test/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <ImportLibrary>F:/Data/Projects/Incavery/build/Debug/vkt-test.lib</ImportLibrary>
-      <ProgramDataBaseFile>F:/Data/Projects/Incavery/build/Debug/vkt-test.pdb</ProgramDataBaseFile>
+      <ImportLibrary>D:/Data/Projects/Incavery/build/Debug/vkt-test.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/Data/Projects/Incavery/build/Debug/vkt-test.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
     </Link>
     <ProjectReference>
@@ -130,7 +130,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>F:\Data\Projects\Incavery\include;F:\Data\Projects\Incavery\src;F:\Data\Projects\Incavery\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Data\Projects\Incavery\include;D:\Data\Projects\Incavery\src;D:\Data\Projects\Incavery\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>%(AdditionalOptions) /bigobj</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -148,10 +148,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;VKH_USE_VMA;VKT_USE_GLFW;NOMINMAX;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>F:\Data\Projects\Incavery\include;F:\Data\Projects\Incavery\src;F:\Data\Projects\Incavery\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Data\Projects\Incavery\include;D:\Data\Projects\Incavery\src;D:\Data\Projects\Incavery\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>F:\Data\Projects\Incavery\include;F:\Data\Projects\Incavery\src;F:\Data\Projects\Incavery\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Data\Projects\Incavery\include;D:\Data\Projects\Incavery\src;D:\Data\Projects\Incavery\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -160,12 +160,12 @@
     </Midl>
     <Link>
       <AdditionalDependencies>glfw3.lib;FreeImage.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>F:/Data/Projects/Incavery/lib;F:/Data/Projects/Incavery/lib/$(Configuration);F:/Data/Projects/Incavery/test;F:/Data/Projects/Incavery/test/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:/Data/Projects/Incavery/lib;D:/Data/Projects/Incavery/lib/$(Configuration);D:/Data/Projects/Incavery/test;D:/Data/Projects/Incavery/test/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <ImportLibrary>F:/Data/Projects/Incavery/build/Release/vkt-test.lib</ImportLibrary>
-      <ProgramDataBaseFile>F:/Data/Projects/Incavery/build/Release/vkt-test.pdb</ProgramDataBaseFile>
+      <ImportLibrary>D:/Data/Projects/Incavery/build/Release/vkt-test.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/Data/Projects/Incavery/build/Release/vkt-test.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
     </Link>
     <ProjectReference>
@@ -174,7 +174,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>F:\Data\Projects\Incavery\include;F:\Data\Projects\Incavery\src;F:\Data\Projects\Incavery\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Data\Projects\Incavery\include;D:\Data\Projects\Incavery\src;D:\Data\Projects\Incavery\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>%(AdditionalOptions) /bigobj</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -192,10 +192,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;VKH_USE_VMA;VKT_USE_GLFW;NOMINMAX;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>F:\Data\Projects\Incavery\include;F:\Data\Projects\Incavery\src;F:\Data\Projects\Incavery\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Data\Projects\Incavery\include;D:\Data\Projects\Incavery\src;D:\Data\Projects\Incavery\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>F:\Data\Projects\Incavery\include;F:\Data\Projects\Incavery\src;F:\Data\Projects\Incavery\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Data\Projects\Incavery\include;D:\Data\Projects\Incavery\src;D:\Data\Projects\Incavery\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -204,12 +204,12 @@
     </Midl>
     <Link>
       <AdditionalDependencies>glfw3.lib;FreeImage.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>F:/Data/Projects/Incavery/lib;F:/Data/Projects/Incavery/lib/$(Configuration);F:/Data/Projects/Incavery/test;F:/Data/Projects/Incavery/test/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:/Data/Projects/Incavery/lib;D:/Data/Projects/Incavery/lib/$(Configuration);D:/Data/Projects/Incavery/test;D:/Data/Projects/Incavery/test/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <ImportLibrary>F:/Data/Projects/Incavery/build/MinSizeRel/vkt-test.lib</ImportLibrary>
-      <ProgramDataBaseFile>F:/Data/Projects/Incavery/build/MinSizeRel/vkt-test.pdb</ProgramDataBaseFile>
+      <ImportLibrary>D:/Data/Projects/Incavery/build/MinSizeRel/vkt-test.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/Data/Projects/Incavery/build/MinSizeRel/vkt-test.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
     </Link>
     <ProjectReference>
@@ -218,7 +218,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>F:\Data\Projects\Incavery\include;F:\Data\Projects\Incavery\src;F:\Data\Projects\Incavery\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Data\Projects\Incavery\include;D:\Data\Projects\Incavery\src;D:\Data\Projects\Incavery\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>%(AdditionalOptions) /bigobj</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -235,10 +235,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;VKH_USE_VMA;VKT_USE_GLFW;NOMINMAX;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>F:\Data\Projects\Incavery\include;F:\Data\Projects\Incavery\src;F:\Data\Projects\Incavery\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Data\Projects\Incavery\include;D:\Data\Projects\Incavery\src;D:\Data\Projects\Incavery\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>F:\Data\Projects\Incavery\include;F:\Data\Projects\Incavery\src;F:\Data\Projects\Incavery\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Data\Projects\Incavery\include;D:\Data\Projects\Incavery\src;D:\Data\Projects\Incavery\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -247,12 +247,12 @@
     </Midl>
     <Link>
       <AdditionalDependencies>glfw3.lib;FreeImage.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>F:/Data/Projects/Incavery/lib;F:/Data/Projects/Incavery/lib/$(Configuration);F:/Data/Projects/Incavery/test;F:/Data/Projects/Incavery/test/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:/Data/Projects/Incavery/lib;D:/Data/Projects/Incavery/lib/$(Configuration);D:/Data/Projects/Incavery/test;D:/Data/Projects/Incavery/test/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <ImportLibrary>F:/Data/Projects/Incavery/build/RelWithDebInfo/vkt-test.lib</ImportLibrary>
-      <ProgramDataBaseFile>F:/Data/Projects/Incavery/build/RelWithDebInfo/vkt-test.pdb</ProgramDataBaseFile>
+      <ImportLibrary>D:/Data/Projects/Incavery/build/RelWithDebInfo/vkt-test.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/Data/Projects/Incavery/build/RelWithDebInfo/vkt-test.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
     </Link>
     <ProjectReference>
@@ -260,11 +260,11 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CustomBuild Include="F:\Data\Projects\Incavery\CMakeLists.txt">
+    <CustomBuild Include="D:\Data\Projects\Incavery\CMakeLists.txt">
       <StdOutEncoding>UTF-8</StdOutEncoding>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule F:/Data/Projects/Incavery/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/Data/Projects/Incavery/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -SF:/Data/Projects/Incavery -BF:/Data/Projects/Incavery/build --check-stamp-file F:/Data/Projects/Incavery/build/CMakeFiles/generate.stamp
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Data/Projects/Incavery -BD:/Data/Projects/Incavery/build --check-stamp-file D:/Data/Projects/Incavery/build/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -272,12 +272,12 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CPack.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CPackComponent.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CTest.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CTestTargets.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CTestUseLaunchers.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\DartConfiguration.tcl.in;C:\Program Files\CMake\share\cmake-3.19\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\Platform\WindowsPaths.cmake;C:\Program Files\CMake\share\cmake-3.19\Templates\CPackConfig.cmake.in;F:\Data\Projects\Incavery\build\CMakeFiles\3.19.0-rc3\CMakeCCompiler.cmake;F:\Data\Projects\Incavery\build\CMakeFiles\3.19.0-rc3\CMakeCXXCompiler.cmake;F:\Data\Projects\Incavery\build\CMakeFiles\3.19.0-rc3\CMakeRCCompiler.cmake;F:\Data\Projects\Incavery\build\CMakeFiles\3.19.0-rc3\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">F:\Data\Projects\Incavery\build\CMakeFiles\generate.stamp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CPack.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CPackComponent.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CTest.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CTestTargets.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CTestUseLaunchers.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\DartConfiguration.tcl.in;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\WindowsPaths.cmake;C:\Program Files\CMake\share\cmake-3.20\Templates\CPackConfig.cmake.in;D:\Data\Projects\Incavery\build\CMakeFiles\3.20.20210210-gc64e736\CMakeCCompiler.cmake;D:\Data\Projects\Incavery\build\CMakeFiles\3.20.20210210-gc64e736\CMakeCXXCompiler.cmake;D:\Data\Projects\Incavery\build\CMakeFiles\3.20.20210210-gc64e736\CMakeRCCompiler.cmake;D:\Data\Projects\Incavery\build\CMakeFiles\3.20.20210210-gc64e736\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Data\Projects\Incavery\build\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule F:/Data/Projects/Incavery/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/Data/Projects/Incavery/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -SF:/Data/Projects/Incavery -BF:/Data/Projects/Incavery/build --check-stamp-file F:/Data/Projects/Incavery/build/CMakeFiles/generate.stamp
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Data/Projects/Incavery -BD:/Data/Projects/Incavery/build --check-stamp-file D:/Data/Projects/Incavery/build/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -285,12 +285,12 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CPack.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CPackComponent.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CTest.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CTestTargets.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CTestUseLaunchers.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\DartConfiguration.tcl.in;C:\Program Files\CMake\share\cmake-3.19\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\Platform\WindowsPaths.cmake;C:\Program Files\CMake\share\cmake-3.19\Templates\CPackConfig.cmake.in;F:\Data\Projects\Incavery\build\CMakeFiles\3.19.0-rc3\CMakeCCompiler.cmake;F:\Data\Projects\Incavery\build\CMakeFiles\3.19.0-rc3\CMakeCXXCompiler.cmake;F:\Data\Projects\Incavery\build\CMakeFiles\3.19.0-rc3\CMakeRCCompiler.cmake;F:\Data\Projects\Incavery\build\CMakeFiles\3.19.0-rc3\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">F:\Data\Projects\Incavery\build\CMakeFiles\generate.stamp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CPack.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CPackComponent.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CTest.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CTestTargets.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CTestUseLaunchers.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\DartConfiguration.tcl.in;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\WindowsPaths.cmake;C:\Program Files\CMake\share\cmake-3.20\Templates\CPackConfig.cmake.in;D:\Data\Projects\Incavery\build\CMakeFiles\3.20.20210210-gc64e736\CMakeCCompiler.cmake;D:\Data\Projects\Incavery\build\CMakeFiles\3.20.20210210-gc64e736\CMakeCXXCompiler.cmake;D:\Data\Projects\Incavery\build\CMakeFiles\3.20.20210210-gc64e736\CMakeRCCompiler.cmake;D:\Data\Projects\Incavery\build\CMakeFiles\3.20.20210210-gc64e736\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Data\Projects\Incavery\build\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule F:/Data/Projects/Incavery/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule D:/Data/Projects/Incavery/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -SF:/Data/Projects/Incavery -BF:/Data/Projects/Incavery/build --check-stamp-file F:/Data/Projects/Incavery/build/CMakeFiles/generate.stamp
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Data/Projects/Incavery -BD:/Data/Projects/Incavery/build --check-stamp-file D:/Data/Projects/Incavery/build/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -298,12 +298,12 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CPack.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CPackComponent.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CTest.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CTestTargets.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CTestUseLaunchers.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\DartConfiguration.tcl.in;C:\Program Files\CMake\share\cmake-3.19\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\Platform\WindowsPaths.cmake;C:\Program Files\CMake\share\cmake-3.19\Templates\CPackConfig.cmake.in;F:\Data\Projects\Incavery\build\CMakeFiles\3.19.0-rc3\CMakeCCompiler.cmake;F:\Data\Projects\Incavery\build\CMakeFiles\3.19.0-rc3\CMakeCXXCompiler.cmake;F:\Data\Projects\Incavery\build\CMakeFiles\3.19.0-rc3\CMakeRCCompiler.cmake;F:\Data\Projects\Incavery\build\CMakeFiles\3.19.0-rc3\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">F:\Data\Projects\Incavery\build\CMakeFiles\generate.stamp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CPack.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CPackComponent.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CTest.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CTestTargets.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CTestUseLaunchers.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\DartConfiguration.tcl.in;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\WindowsPaths.cmake;C:\Program Files\CMake\share\cmake-3.20\Templates\CPackConfig.cmake.in;D:\Data\Projects\Incavery\build\CMakeFiles\3.20.20210210-gc64e736\CMakeCCompiler.cmake;D:\Data\Projects\Incavery\build\CMakeFiles\3.20.20210210-gc64e736\CMakeCXXCompiler.cmake;D:\Data\Projects\Incavery\build\CMakeFiles\3.20.20210210-gc64e736\CMakeRCCompiler.cmake;D:\Data\Projects\Incavery\build\CMakeFiles\3.20.20210210-gc64e736\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\Data\Projects\Incavery\build\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule F:/Data/Projects/Incavery/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule D:/Data/Projects/Incavery/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -SF:/Data/Projects/Incavery -BF:/Data/Projects/Incavery/build --check-stamp-file F:/Data/Projects/Incavery/build/CMakeFiles/generate.stamp
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Data/Projects/Incavery -BD:/Data/Projects/Incavery/build --check-stamp-file D:/Data/Projects/Incavery/build/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -311,17 +311,378 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CPack.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CPackComponent.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CTest.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CTestTargets.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\CTestUseLaunchers.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\DartConfiguration.tcl.in;C:\Program Files\CMake\share\cmake-3.19\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.19\Modules\Platform\WindowsPaths.cmake;C:\Program Files\CMake\share\cmake-3.19\Templates\CPackConfig.cmake.in;F:\Data\Projects\Incavery\build\CMakeFiles\3.19.0-rc3\CMakeCCompiler.cmake;F:\Data\Projects\Incavery\build\CMakeFiles\3.19.0-rc3\CMakeCXXCompiler.cmake;F:\Data\Projects\Incavery\build\CMakeFiles\3.19.0-rc3\CMakeRCCompiler.cmake;F:\Data\Projects\Incavery\build\CMakeFiles\3.19.0-rc3\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">F:\Data\Projects\Incavery\build\CMakeFiles\generate.stamp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CPack.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CPackComponent.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CTest.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CTestTargets.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CTestUseLaunchers.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\DartConfiguration.tcl.in;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\WindowsPaths.cmake;C:\Program Files\CMake\share\cmake-3.20\Templates\CPackConfig.cmake.in;D:\Data\Projects\Incavery\build\CMakeFiles\3.20.20210210-gc64e736\CMakeCCompiler.cmake;D:\Data\Projects\Incavery\build\CMakeFiles\3.20.20210210-gc64e736\CMakeCXXCompiler.cmake;D:\Data\Projects\Incavery\build\CMakeFiles\3.20.20210210-gc64e736\CMakeRCCompiler.cmake;D:\Data\Projects\Incavery\build\CMakeFiles\3.20.20210210-gc64e736\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\Data\Projects\Incavery\build\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="F:\Data\Projects\Incavery\test\test.cpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\GLFW\glfw3.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\GLFW\glfw3native.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\common.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\_features.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\_fixes.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\_noise.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\_swizzle.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\_swizzle_func.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\_vectorize.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\compute_common.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\compute_vector_relational.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\qualifier.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\setup.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_float.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_half.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_mat2x2.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_mat2x3.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_mat2x4.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_mat3x2.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_mat3x3.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_mat3x4.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_mat4x2.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_mat4x3.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_mat4x4.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_quat.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_vec1.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_vec2.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_vec3.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_vec4.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\exponential.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_clip_space.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_common.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double2x2.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double2x2_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double2x3.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double2x3_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double2x4.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double2x4_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double3x2.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double3x2_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double3x3.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double3x3_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double3x4.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double3x4_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double4x2.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double4x2_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double4x3.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double4x3_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double4x4.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double4x4_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float2x2.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float2x2_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float2x3.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float2x3_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float2x4.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float2x4_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float3x2.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float3x2_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float3x3.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float3x3_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float3x4.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float3x4_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float4x2.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float4x2_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float4x3.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float4x3_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float4x4.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float4x4_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int2x2.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int2x2_sized.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int2x3.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int2x3_sized.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int2x4.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int2x4_sized.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int3x2.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int3x2_sized.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int3x3.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int3x3_sized.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int3x4.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int3x4_sized.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int4x2.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int4x2_sized.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int4x3.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int4x3_sized.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int4x4.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int4x4_sized.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_integer.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_projection.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_relational.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_transform.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint2x2.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint2x2_sized.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint2x3.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint2x3_sized.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint2x4.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint2x4_sized.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint3x2.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint3x2_sized.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint3x3.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint3x3_sized.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint3x4.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint3x4_sized.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint4x2.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint4x2_sized.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint4x3.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint4x3_sized.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint4x4.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint4x4_sized.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\quaternion_common.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\quaternion_double.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\quaternion_double_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\quaternion_exponential.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\quaternion_float.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\quaternion_float_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\quaternion_geometric.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\quaternion_relational.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\quaternion_transform.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\quaternion_trigonometric.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\scalar_common.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\scalar_constants.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\scalar_int_sized.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\scalar_integer.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\scalar_packing.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\scalar_reciprocal.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\scalar_relational.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\scalar_uint_sized.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\scalar_ulp.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_bool1.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_bool1_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_bool2.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_bool2_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_bool3.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_bool3_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_bool4.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_bool4_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_common.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_double1.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_double1_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_double2.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_double2_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_double3.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_double3_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_double4.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_double4_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_float1.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_float1_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_float2.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_float2_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_float3.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_float3_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_float4.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_float4_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_int1.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_int1_sized.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_int2.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_int2_sized.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_int3.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_int3_sized.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_int4.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_int4_sized.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_integer.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_packing.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_reciprocal.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_relational.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_uint1.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_uint1_sized.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_uint2.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_uint2_sized.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_uint3.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_uint3_sized.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_uint4.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_uint4_sized.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_ulp.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\fwd.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\geometric.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\glm.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\bitfield.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\color_space.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\constants.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\epsilon.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\integer.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\matrix_access.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\matrix_integer.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\matrix_inverse.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\matrix_transform.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\noise.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\packing.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\quaternion.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\random.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\reciprocal.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\round.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\type_aligned.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\type_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\type_ptr.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\ulp.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\vec1.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\associated_min_max.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\bit.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\closest_point.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\color_encoding.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\color_space.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\color_space_YCoCg.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\common.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\compatibility.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\component_wise.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\dual_quaternion.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\easing.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\euler_angles.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\extend.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\extended_min_max.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\exterior_product.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\fast_exponential.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\fast_square_root.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\fast_trigonometry.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\functions.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\gradient_paint.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\handed_coordinate_space.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\hash.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\integer.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\intersect.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\io.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\log_base.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\matrix_cross_product.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\matrix_decompose.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\matrix_factorisation.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\matrix_interpolation.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\matrix_major_storage.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\matrix_operation.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\matrix_query.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\matrix_transform_2d.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\mixed_product.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\norm.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\normal.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\normalize_dot.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\number_precision.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\optimum_pow.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\orthonormalize.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\perpendicular.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\polar_coordinates.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\projection.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\quaternion.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\range.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\raw_data.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\rotate_normalized_axis.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\rotate_vector.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\scalar_multiplication.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\scalar_relational.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\spline.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\std_based_type.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\string_cast.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\texture.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\transform.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\transform2.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\type_aligned.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\type_trait.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\vec_swizzle.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\vector_angle.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\vector_query.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\wrap.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\integer.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\mat2x2.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\mat2x3.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\mat2x4.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\mat3x2.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\mat3x3.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\mat3x4.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\mat4x2.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\mat4x3.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\mat4x4.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\matrix.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\packing.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\simd\common.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\simd\exponential.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\simd\geometric.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\simd\integer.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\simd\matrix.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\simd\neon.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\simd\packing.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\simd\platform.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\simd\trigonometric.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\simd\vector_relational.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\trigonometric.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\vec2.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\vec3.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\vec4.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\vector_relational.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\core.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\dataSet.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\framebuffer.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\geometryLevel.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\geometryRegistry.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\instanceLevel.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\materialSet.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\renderer.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\buffer-allocation.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\device-extensions.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\device.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\framework.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\image-allocation.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\image-region.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\incornation.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\instance-extensions.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\instance.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\memory-allocation.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\queue.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\swapchain.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\utils.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\vector-base.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\vector-typed.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\vma-buffer-allocation.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\vma-image-allocation.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkh\bitfields.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkh\core.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkh\enums.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkh\helpers.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkh\matching.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkh\spirv-mod.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkh\structures.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkt\definition.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkt\essential.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkt\inline.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkt3\definition.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkt3\essential.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkt3\inline.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkt4\definition.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkt4\essential.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkt4\inline.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vma\Common.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vma\SparseBindingTest.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vma\Tests.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vma\VmaReplay\Common.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vma\VmaReplay\Constants.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vma\VmaReplay\VmaUsage.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vma\VmaUsage.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vma\vk_mem_alloc.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vk_icd.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vk_layer.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vk_platform.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vk_sdk_platform.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_android.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_beta.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_core.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_directfb.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_fuchsia.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_ggp.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_ios.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_macos.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_metal.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_vi.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_wayland.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_win32.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_xcb.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_xlib.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_xlib_xrandr.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\xvk\xvk.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\xvk\xvkBase.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\xvk\xvkInterface.h" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\xvk\xvkInterface.hpp" />
+    <ClCompile Include="D:\Data\Projects\Incavery\test\test.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="F:\Data\Projects\Incavery\build\ZERO_CHECK.vcxproj">
-      <Project>{6199A78C-2A90-3170-8FE0-E53B9FB849D9}</Project>
+    <ProjectReference Include="D:\Data\Projects\Incavery\build\ZERO_CHECK.vcxproj">
+      <Project>{3ADF0363-59C7-3B9B-BAEC-9C79FB6417F5}</Project>
       <Name>ZERO_CHECK</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>

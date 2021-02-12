@@ -1,16 +1,1155 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="F:\Data\Projects\Incavery\test\test.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="D:\Data\Projects\Incavery\test\test.cpp">
+      <Filter>..\test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="F:\Data\Projects\Incavery\CMakeLists.txt" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\GLFW\glfw3.h">
+      <Filter>GLFW</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\GLFW\glfw3native.h">
+      <Filter>GLFW</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\common.hpp">
+      <Filter>glm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\_features.hpp">
+      <Filter>glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\_fixes.hpp">
+      <Filter>glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\_noise.hpp">
+      <Filter>glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\_swizzle.hpp">
+      <Filter>glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\_swizzle_func.hpp">
+      <Filter>glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\_vectorize.hpp">
+      <Filter>glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\compute_common.hpp">
+      <Filter>glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\compute_vector_relational.hpp">
+      <Filter>glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\qualifier.hpp">
+      <Filter>glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\setup.hpp">
+      <Filter>glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_float.hpp">
+      <Filter>glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_half.hpp">
+      <Filter>glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_mat2x2.hpp">
+      <Filter>glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_mat2x3.hpp">
+      <Filter>glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_mat2x4.hpp">
+      <Filter>glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_mat3x2.hpp">
+      <Filter>glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_mat3x3.hpp">
+      <Filter>glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_mat3x4.hpp">
+      <Filter>glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_mat4x2.hpp">
+      <Filter>glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_mat4x3.hpp">
+      <Filter>glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_mat4x4.hpp">
+      <Filter>glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_quat.hpp">
+      <Filter>glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_vec1.hpp">
+      <Filter>glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_vec2.hpp">
+      <Filter>glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_vec3.hpp">
+      <Filter>glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\detail\type_vec4.hpp">
+      <Filter>glm\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\exponential.hpp">
+      <Filter>glm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext.hpp">
+      <Filter>glm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_clip_space.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_common.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double2x2.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double2x2_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double2x3.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double2x3_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double2x4.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double2x4_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double3x2.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double3x2_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double3x3.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double3x3_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double3x4.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double3x4_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double4x2.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double4x2_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double4x3.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double4x3_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double4x4.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_double4x4_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float2x2.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float2x2_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float2x3.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float2x3_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float2x4.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float2x4_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float3x2.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float3x2_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float3x3.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float3x3_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float3x4.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float3x4_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float4x2.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float4x2_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float4x3.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float4x3_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float4x4.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_float4x4_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int2x2.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int2x2_sized.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int2x3.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int2x3_sized.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int2x4.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int2x4_sized.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int3x2.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int3x2_sized.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int3x3.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int3x3_sized.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int3x4.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int3x4_sized.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int4x2.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int4x2_sized.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int4x3.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int4x3_sized.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int4x4.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_int4x4_sized.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_integer.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_projection.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_relational.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_transform.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint2x2.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint2x2_sized.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint2x3.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint2x3_sized.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint2x4.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint2x4_sized.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint3x2.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint3x2_sized.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint3x3.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint3x3_sized.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint3x4.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint3x4_sized.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint4x2.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint4x2_sized.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint4x3.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint4x3_sized.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint4x4.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\matrix_uint4x4_sized.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\quaternion_common.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\quaternion_double.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\quaternion_double_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\quaternion_exponential.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\quaternion_float.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\quaternion_float_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\quaternion_geometric.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\quaternion_relational.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\quaternion_transform.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\quaternion_trigonometric.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\scalar_common.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\scalar_constants.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\scalar_int_sized.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\scalar_integer.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\scalar_packing.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\scalar_reciprocal.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\scalar_relational.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\scalar_uint_sized.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\scalar_ulp.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_bool1.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_bool1_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_bool2.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_bool2_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_bool3.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_bool3_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_bool4.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_bool4_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_common.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_double1.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_double1_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_double2.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_double2_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_double3.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_double3_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_double4.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_double4_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_float1.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_float1_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_float2.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_float2_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_float3.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_float3_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_float4.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_float4_precision.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_int1.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_int1_sized.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_int2.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_int2_sized.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_int3.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_int3_sized.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_int4.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_int4_sized.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_integer.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_packing.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_reciprocal.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_relational.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_uint1.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_uint1_sized.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_uint2.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_uint2_sized.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_uint3.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_uint3_sized.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_uint4.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_uint4_sized.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\ext\vector_ulp.hpp">
+      <Filter>glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\fwd.hpp">
+      <Filter>glm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\geometric.hpp">
+      <Filter>glm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\glm.hpp">
+      <Filter>glm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\bitfield.hpp">
+      <Filter>glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\color_space.hpp">
+      <Filter>glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\constants.hpp">
+      <Filter>glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\epsilon.hpp">
+      <Filter>glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\integer.hpp">
+      <Filter>glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\matrix_access.hpp">
+      <Filter>glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\matrix_integer.hpp">
+      <Filter>glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\matrix_inverse.hpp">
+      <Filter>glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\matrix_transform.hpp">
+      <Filter>glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\noise.hpp">
+      <Filter>glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\packing.hpp">
+      <Filter>glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\quaternion.hpp">
+      <Filter>glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\random.hpp">
+      <Filter>glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\reciprocal.hpp">
+      <Filter>glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\round.hpp">
+      <Filter>glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\type_aligned.hpp">
+      <Filter>glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\type_precision.hpp">
+      <Filter>glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\type_ptr.hpp">
+      <Filter>glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\ulp.hpp">
+      <Filter>glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtc\vec1.hpp">
+      <Filter>glm\gtc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\associated_min_max.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\bit.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\closest_point.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\color_encoding.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\color_space.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\color_space_YCoCg.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\common.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\compatibility.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\component_wise.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\dual_quaternion.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\easing.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\euler_angles.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\extend.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\extended_min_max.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\exterior_product.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\fast_exponential.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\fast_square_root.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\fast_trigonometry.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\functions.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\gradient_paint.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\handed_coordinate_space.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\hash.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\integer.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\intersect.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\io.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\log_base.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\matrix_cross_product.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\matrix_decompose.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\matrix_factorisation.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\matrix_interpolation.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\matrix_major_storage.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\matrix_operation.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\matrix_query.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\matrix_transform_2d.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\mixed_product.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\norm.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\normal.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\normalize_dot.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\number_precision.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\optimum_pow.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\orthonormalize.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\perpendicular.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\polar_coordinates.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\projection.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\quaternion.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\range.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\raw_data.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\rotate_normalized_axis.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\rotate_vector.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\scalar_multiplication.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\scalar_relational.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\spline.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\std_based_type.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\string_cast.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\texture.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\transform.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\transform2.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\type_aligned.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\type_trait.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\vec_swizzle.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\vector_angle.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\vector_query.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\gtx\wrap.hpp">
+      <Filter>glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\integer.hpp">
+      <Filter>glm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\mat2x2.hpp">
+      <Filter>glm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\mat2x3.hpp">
+      <Filter>glm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\mat2x4.hpp">
+      <Filter>glm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\mat3x2.hpp">
+      <Filter>glm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\mat3x3.hpp">
+      <Filter>glm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\mat3x4.hpp">
+      <Filter>glm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\mat4x2.hpp">
+      <Filter>glm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\mat4x3.hpp">
+      <Filter>glm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\mat4x4.hpp">
+      <Filter>glm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\matrix.hpp">
+      <Filter>glm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\packing.hpp">
+      <Filter>glm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\simd\common.h">
+      <Filter>glm\simd</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\simd\exponential.h">
+      <Filter>glm\simd</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\simd\geometric.h">
+      <Filter>glm\simd</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\simd\integer.h">
+      <Filter>glm\simd</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\simd\matrix.h">
+      <Filter>glm\simd</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\simd\neon.h">
+      <Filter>glm\simd</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\simd\packing.h">
+      <Filter>glm\simd</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\simd\platform.h">
+      <Filter>glm\simd</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\simd\trigonometric.h">
+      <Filter>glm\simd</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\simd\vector_relational.h">
+      <Filter>glm\simd</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\trigonometric.hpp">
+      <Filter>glm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\vec2.hpp">
+      <Filter>glm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\vec3.hpp">
+      <Filter>glm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\vec4.hpp">
+      <Filter>glm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\glm\vector_relational.hpp">
+      <Filter>glm</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\core.hpp">
+      <Filter>incavery</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\dataSet.hpp">
+      <Filter>incavery</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\framebuffer.hpp">
+      <Filter>incavery</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\geometryLevel.hpp">
+      <Filter>incavery</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\geometryRegistry.hpp">
+      <Filter>incavery</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\instanceLevel.hpp">
+      <Filter>incavery</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\materialSet.hpp">
+      <Filter>incavery</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\renderer.hpp">
+      <Filter>incavery</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\buffer-allocation.hpp">
+      <Filter>vkf</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\device-extensions.hpp">
+      <Filter>vkf</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\device.hpp">
+      <Filter>vkf</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\framework.hpp">
+      <Filter>vkf</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\image-allocation.hpp">
+      <Filter>vkf</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\image-region.hpp">
+      <Filter>vkf</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\incornation.hpp">
+      <Filter>vkf</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\instance-extensions.hpp">
+      <Filter>vkf</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\instance.hpp">
+      <Filter>vkf</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\memory-allocation.hpp">
+      <Filter>vkf</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\queue.hpp">
+      <Filter>vkf</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\swapchain.hpp">
+      <Filter>vkf</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\utils.hpp">
+      <Filter>vkf</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\vector-base.hpp">
+      <Filter>vkf</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\vector-typed.hpp">
+      <Filter>vkf</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\vma-buffer-allocation.hpp">
+      <Filter>vkf</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\vma-image-allocation.hpp">
+      <Filter>vkf</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkh\bitfields.hpp">
+      <Filter>vkh</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkh\core.hpp">
+      <Filter>vkh</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkh\enums.hpp">
+      <Filter>vkh</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkh\helpers.hpp">
+      <Filter>vkh</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkh\matching.hpp">
+      <Filter>vkh</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkh\spirv-mod.hpp">
+      <Filter>vkh</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkh\structures.hpp">
+      <Filter>vkh</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkt\definition.hpp">
+      <Filter>vkt</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkt\essential.hpp">
+      <Filter>vkt</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkt\inline.hpp">
+      <Filter>vkt</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkt3\definition.hpp">
+      <Filter>vkt3</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkt3\essential.hpp">
+      <Filter>vkt3</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkt3\inline.hpp">
+      <Filter>vkt3</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkt4\definition.hpp">
+      <Filter>vkt4</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkt4\essential.hpp">
+      <Filter>vkt4</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vkt4\inline.hpp">
+      <Filter>vkt4</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vma\Common.h">
+      <Filter>vma</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vma\SparseBindingTest.h">
+      <Filter>vma</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vma\Tests.h">
+      <Filter>vma</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vma\VmaReplay\Common.h">
+      <Filter>vma\VmaReplay</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vma\VmaReplay\Constants.h">
+      <Filter>vma\VmaReplay</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vma\VmaReplay\VmaUsage.h">
+      <Filter>vma\VmaReplay</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vma\VmaUsage.h">
+      <Filter>vma</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vma\vk_mem_alloc.h">
+      <Filter>vma</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vk_icd.h">
+      <Filter>vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vk_layer.h">
+      <Filter>vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vk_platform.h">
+      <Filter>vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vk_sdk_platform.h">
+      <Filter>vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan.h">
+      <Filter>vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan.hpp">
+      <Filter>vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_android.h">
+      <Filter>vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_beta.h">
+      <Filter>vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_core.h">
+      <Filter>vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_directfb.h">
+      <Filter>vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_fuchsia.h">
+      <Filter>vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_ggp.h">
+      <Filter>vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_ios.h">
+      <Filter>vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_macos.h">
+      <Filter>vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_metal.h">
+      <Filter>vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_vi.h">
+      <Filter>vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_wayland.h">
+      <Filter>vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_win32.h">
+      <Filter>vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_xcb.h">
+      <Filter>vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_xlib.h">
+      <Filter>vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\vulkan\vulkan_xlib_xrandr.h">
+      <Filter>vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\xvk\xvk.hpp">
+      <Filter>xvk</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\xvk\xvkBase.hpp">
+      <Filter>xvk</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\xvk\xvkInterface.h">
+      <Filter>xvk</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\xvk\xvkInterface.hpp">
+      <Filter>xvk</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{EA8A39BC-BD75-387A-ABAA-87E7C5305E12}</UniqueIdentifier>
+    <CustomBuild Include="D:\Data\Projects\Incavery\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="..">
+      <UniqueIdentifier>{BB1902DC-D8DC-3C6B-9BC4-3BA57E4A9233}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\test">
+      <UniqueIdentifier>{18FCB27F-5454-3F33-BAD8-4A29CFB735A7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GLFW">
+      <UniqueIdentifier>{98152E41-37B1-37AB-811A-1ED4295D4742}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glm">
+      <UniqueIdentifier>{D9FB0024-4FB4-3221-9A6E-5A720DA05987}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glm\detail">
+      <UniqueIdentifier>{09865A26-3EF4-39A6-87FE-B073749FD07A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glm\ext">
+      <UniqueIdentifier>{88064810-C25C-39DE-9CAC-2BCD84421F4F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glm\gtc">
+      <UniqueIdentifier>{36E3B692-24F1-3F5A-BDE6-022F4CE1193A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glm\gtx">
+      <UniqueIdentifier>{72262188-8FC3-3767-AF70-7CD327137ABF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glm\simd">
+      <UniqueIdentifier>{C8B15EFD-9AB6-3563-A16C-CCBFC8A49A8F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="incavery">
+      <UniqueIdentifier>{EC865183-F7C7-3FE2-BEB5-1D4081DF6D02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vkf">
+      <UniqueIdentifier>{C7DFBBDE-19CC-331D-AC9C-C9F0E26B8284}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vkh">
+      <UniqueIdentifier>{0557258C-2A32-3942-B8A2-2DE66EB04560}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vkt">
+      <UniqueIdentifier>{87FE4B56-2B98-3A6D-AAA1-074920D33DFA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vkt3">
+      <UniqueIdentifier>{E1A5B1B5-3299-3686-A85A-3A3D0DD526F9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vkt4">
+      <UniqueIdentifier>{119A764C-80C2-3E60-B7B5-D71175E0D1AB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vma">
+      <UniqueIdentifier>{0C0AF7EE-15AB-3BD1-8EDE-B9C9181DE28E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vma\VmaReplay">
+      <UniqueIdentifier>{B10517F6-515E-3F47-B30D-8F4616348DD9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vulkan">
+      <UniqueIdentifier>{41733535-A9A1-309A-805A-64332E763434}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="xvk">
+      <UniqueIdentifier>{2C3504D5-47A2-3CE6-8B1F-D3407E559EA7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

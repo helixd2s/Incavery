@@ -9,6 +9,10 @@
 namespace icv {
 
 #pragma pack(push, 8)
+
+    
+
+
     // 
     struct Attributes 
     {
@@ -24,7 +28,7 @@ namespace icv {
         int32_t first = 0;
         uint32_t max = 1u;
         glm::uvec3 reserved = glm::uvec3(0u, 0u, 0u);
-        uint32_t type = 0u; // 0 = none, 1 = uint32_t, 2 = uint16_t, 3 = uint8_t
+        IndexType type = IndexType::None; // 0 = none, 1 = uint32_t, 2 = uint16_t, 3 = uint8_t
         RawData ptr = {};
     };
 
@@ -188,9 +192,9 @@ namespace icv {
                     buildInfo.ranges[i].transformOffset = sizeof(GeometryInfo) * i;
 
                     // fill build info
-                    buildInfo.builds[i].geometryType = VK_GEOMETRY_TYPE_TRIANGLES_KHR;
                     if (info.geometries[i].type == 0u) {
                         auto& vertex = info.registry->getInfo().bindings[info.geometries[i].vertex];
+                        buildInfo.builds[i].geometryType = VK_GEOMETRY_TYPE_TRIANGLES_KHR;
                         buildInfo.builds[i].geometry = vkh::VkAccelerationStructureGeometryTrianglesDataKHR
                         {
                             .vertexFormat = info.geometries[i].useHalf ? VK_FORMAT_R16G16B16_SFLOAT : VK_FORMAT_R32G32B32_SFLOAT,
@@ -200,6 +204,16 @@ namespace icv {
                             .indexType = getIndexType(info.geometries[i].index.type),
                             .indexData = info.geometries[i].index.ptr.data /*bufferDeviceAddress(info.registry->getInfo().buffers[info.geometries[i].index.ptr.bufferId]) + info.geometries[i].index.ptr.offset*/,
                             .transformData = geometries->getDeviceBuffer().deviceAddress()
+                        };
+                    }
+                    else
+                    {
+                        auto& vertex = info.registry->getInfo().bindings[info.geometries[i].aabbs];
+                        buildInfo.builds[i].geometryType = VK_GEOMETRY_TYPE_AABBS_KHR;
+                        buildInfo.builds[i].geometry = vkh::VkAccelerationStructureGeometryAabbsDataKHR
+                        {
+                            .data = vertex.ptr.data,
+                            .stride = vertex.stride
                         };
                     };
 

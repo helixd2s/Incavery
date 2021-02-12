@@ -91,7 +91,7 @@ int main() {
 
 
     //
-    Constants constants = {};
+    //Constants constants = {};
 
     //
     std::vector<uint16_t> indices = { 0, 1, 2 };
@@ -127,7 +127,6 @@ int main() {
         };
         auto allocation = std::make_shared<vkf::VmaBufferAllocation>(device->allocator, bufferCreateInfo, vmaCreateInfo);
         verticesBuffer = vkf::Vector<glm::vec4>(allocation, 0ull, size, sizeof(glm::vec4));
-        //memcpy(verticesBuffer.map(), vertices.data(), size);
         queue->uploadIntoBuffer(verticesBuffer, vertices.data(), size); // use internal cache for upload buffer
     };
 
@@ -144,7 +143,6 @@ int main() {
         };
         auto allocation = std::make_shared<vkf::VmaBufferAllocation>(device->allocator, bufferCreateInfo, vmaCreateInfo);
         texcoordsBuffer = vkf::Vector<glm::vec2>(allocation, 0ull, size, sizeof(glm::vec2));
-        //memcpy(verticesBuffer.map(), vertices.data(), size);
         queue->uploadIntoBuffer(texcoordsBuffer, texcoords.data(), size); // use internal cache for upload buffer
     };
 
@@ -161,7 +159,6 @@ int main() {
         };
         auto allocation = std::make_shared<vkf::VmaBufferAllocation>(device->allocator, bufferCreateInfo, vmaCreateInfo);
         indicesBuffer = vkf::Vector<uint16_t>(allocation, 0ull, size, sizeof(uint16_t));
-        //memcpy(indicesBuffer.map(), indices.data(), size);
         queue->uploadIntoBuffer(indicesBuffer, indices.data(), size); // use internal cache for upload buffer
     };
 
@@ -178,8 +175,8 @@ int main() {
         };
         auto allocation = std::make_shared<vkf::VmaBufferAllocation>(device->allocator, bufferCreateInfo, vmaCreateInfo);
         constantsBuffer = vkf::Vector<Constants>(allocation, 0ull, size, sizeof(Constants));
-        memcpy(constantsBuffer.map(), &constants, size);
-        //queue->uploadIntoBuffer(constantsBuffer, &constants, size); // use internal cache for upload buffer
+        constantsBuffer[0] = Constants{};
+        //memcpy(constantsBuffer.map(), &constants, size);
     };
 
 
@@ -288,7 +285,6 @@ int main() {
 
     // 
     vkh::uni_ptr<icv::InstanceLevel> instanceLevel = std::make_shared<icv::InstanceLevel>(device, icv::InstanceLevelInfo{
-        .registry = geometryRegistry,
         .maxInstanceCount = 1u
     });
 
@@ -315,7 +311,7 @@ int main() {
         })),
         .index = {
             .max = 3u,
-            .type = 2u,
+            .type = icv::IndexType::Uint16,
             .ptr = indicesBuffer.deviceAddress() //{ .bufferId = 0u }
         },
         .primitive = {
@@ -335,9 +331,7 @@ int main() {
     //geometryRegistry->pushBuffer(texcoordsBuffer);
 
     //
-    instanceLevel->pushInstance(icv::InstanceInfo{
-        .instanceCustomIndex = uint32_t(instanceLevel->pushGeometryLevel(geometryLevel))
-    });
+    instanceLevel->pushInstance(icv::InstanceInfo{ }, icv::HostInfo{ .geometryLevel = geometryLevel });
 
 
     // 
@@ -469,10 +463,10 @@ int main() {
     // set perspective
     auto persp = glm::perspective(60.f / 180 * glm::pi<float>(), viewport.width / viewport.height, 0.001f, 10000.f);
     auto lkat = glm::lookAt(glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.f, 1.f, 0.f));
-    constants.perspective = glm::transpose(persp);
-    constants.perspectiveInverse = glm::transpose(glm::inverse(persp));
-    constants.lookAt = glm::mat3x4(glm::transpose(lkat));
-    constants.lookAtInverse = glm::mat3x4(glm::transpose(glm::inverse(lkat)));
+    constantsBuffer[0].perspective = glm::transpose(persp);
+    constantsBuffer[0].perspectiveInverse = glm::transpose(glm::inverse(persp));
+    constantsBuffer[0].lookAt = glm::mat3x4(glm::transpose(lkat));
+    constantsBuffer[0].lookAtInverse = glm::mat3x4(glm::transpose(glm::inverse(lkat)));
 
     // 
     int64_t currSemaphore = -1;
@@ -530,21 +524,6 @@ int main() {
                     .subresourceRange = vkh::VkImageSubresourceRange{ aspect, 0u, 1u, 0u, 1u }
                 });
             };
-
-            // ray tracing
-            //device->dispatch->CmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR, rayTracingPipeline);
-            //device->dispatch->CmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR, pipelineLayout, 0u, descriptorSets.size(), descriptorSets.data(), 0u, nullptr);
-            //device->dispatch->CmdTraceRaysKHR(commandBuffer, &rayGenSbt, &missSbt, &hitSbt, nullptr, 1280, 720, 1);
-            //vkt::commandBarrier(device->dispatch, commandBuffer);
-
-            // ray query hack
-            //device->dispatch->CmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, rayQueryPipeline);
-            //device->dispatch->CmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipelineLayout, 0u, descriptorSets.size(), descriptorSets.data(), 0u, nullptr);
-            //device->dispatch->CmdDispatch(commandBuffer, 1280u/32u, 720u/4u, 1u);
-
-            // 
-            memcpy(constantsBuffer.map(), &constants, sizeof(Constants));
-            vkt::commandBarrier(device->dispatch, commandBuffer);
 
             // 
             materialSet->copyCommand(commandBuffer);

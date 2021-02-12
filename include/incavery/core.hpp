@@ -40,6 +40,15 @@ namespace icv {
         bool isDepth = false;
     };
 
+    // 
+    enum class IndexType : uint32_t {
+        None = 0u,
+        Uint32 = 1u,
+        Uint16 = 2u,
+        Uint8 = 3u
+    };
+
+
     //
     class DeviceBased {
         protected: 
@@ -106,12 +115,12 @@ namespace icv {
         };
 
         // 
-        virtual VkIndexType getIndexType(uint32_t indexType = 0u) 
+        virtual VkIndexType getIndexType(IndexType indexType = IndexType::None)
         {   // 
-            if (indexType == 0u) { return VK_INDEX_TYPE_NONE_KHR; }; 
-            if (indexType == 1u) { return VK_INDEX_TYPE_UINT32; };
-            if (indexType == 2u) { return VK_INDEX_TYPE_UINT16; };
-            if (indexType == 3u) { return VK_INDEX_TYPE_UINT8_EXT; };
+            if (indexType == IndexType::None) { return VK_INDEX_TYPE_NONE_KHR; };
+            if (indexType == IndexType::Uint32) { return VK_INDEX_TYPE_UINT32; };
+            if (indexType == IndexType::Uint16) { return VK_INDEX_TYPE_UINT16; };
+            if (indexType == IndexType::Uint8) { return VK_INDEX_TYPE_UINT8_EXT; };
             return VK_INDEX_TYPE_NONE_KHR;
         };
     };
