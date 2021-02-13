@@ -16,7 +16,7 @@ namespace icv {
         // 
         uint32_t programId = 0u;
 
-        // planned to remove needing
+        // WTF?! It used by renderer!
         uint32_t geometryLevelId = 0u;
 
         //
@@ -36,10 +36,10 @@ namespace icv {
     struct DrawInstanceLevelInfo 
     {
         // reserved for future usage
-        vkh::uni_ptr<InstanceLevel> instanceLevel = {};
+        //vkh::uni_ptr<InstanceLevel> instanceLevel = {};
 
-        // planned to remove needing it
-        std::vector<GeometryLevel> geometries = {};
+        // now, used by renderer
+        //std::vector<GeometryLevel> geometries = {};
 
         // 
         std::vector<DrawInstance> instances = {};
@@ -97,6 +97,11 @@ namespace icv {
         };
 
         //
+        virtual vkf::Vector<VkDrawIndirectCommand>& getIndirectDrawBuffer(const intptr_t& I = 0u) {
+            return indirectDrawBuffers[I];
+        };
+
+        //
         static VkDescriptorSetLayout& createDescriptorSetLayout(vkh::uni_ptr<vkf::Device> device, VkDescriptorSetLayout& descriptorSetLayout) {
             auto pipusage = vkh::VkShaderStageFlags{ .eVertex = 1, .eGeometry = 1, .eFragment = 1, .eCompute = 1, .eRaygen = 1, .eAnyHit = 1, .eClosestHit = 1, .eMiss = 1 };
             auto indexedf = vkh::VkDescriptorBindingFlags{ .eUpdateAfterBind = 1, .eUpdateUnusedWhilePending = 1, .ePartiallyBound = 1 };
@@ -149,13 +154,19 @@ namespace icv {
             return set;
         };
 
+
+        //
+        virtual void setGeometryReferences(const std::vector<vkh::uni_ptr<GeometryLevel>>& geometries) {
+            // reload geometries from list to reference
+            for (intptr_t i=0;i<info.instances.size();i++) {
+                info.instances[i].geometryLevelReference = geometries[info.instances[i].geometryLevelId]->getBuffer().deviceAddress();
+            };
+        };
+
         // 
         virtual void buildCommand(VkCommandBuffer commandBuffer) 
         {
-            // reload geometries from list to reference
-            for (intptr_t i=0;i<info.instances.size();i++) {
-                info.instances[i].geometryLevelReference = info.geometries[info.instances[i].geometryLevelId]->getBuffer().deviceAddress();
-            };
+            
             
             {   // 
                 instances->copyFromVector(info.instances);
@@ -165,21 +176,7 @@ namespace icv {
 
 
 
-        //
-        virtual uintptr_t changeGeometry(uintptr_t geometryId, vkh::uni_arg<GeometryLevel> geometryLevel = GeometryLevel{})
-        {   // add instance into registry
-            if (this->info.geometries.size() <= geometryId) { this->info.geometries.resize(geometryId + 1u); };
-            this->info.geometries[geometryId] = info;
-            return geometryId;
-        };
-
-        //
-        virtual uintptr_t pushGeometry(vkh::uni_arg<GeometryLevel> info = GeometryLevel{})
-        {   // add instance into registry
-            uintptr_t geometryId = this->info.geometries.size();
-            this->info.geometries.push_back(info);
-            return geometryId;
-        };
+        
 
 
 

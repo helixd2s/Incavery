@@ -18,8 +18,11 @@ struct InstanceInfo
 
     uint8_t mask;
     uint8_t flags;
-    u8vec2 geometryCount;
+    u8vec2 todo;
     uint32_t sbtOffsetId;
+
+    uint32_t geometrylevelId;
+    uint32_t geometryLevelCount;
 
     GeometryLevel geometryInfoReference;
     accelerationStructureEXT accelerationReference;

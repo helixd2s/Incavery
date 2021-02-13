@@ -8,6 +8,7 @@
 #include "./framebuffer.hpp"
 
 //
+#include "./drawInstanceLevel.hpp"
 #include "./materialSet.hpp"
 
 // 
@@ -18,17 +19,41 @@ namespace icv {
         VkDescriptorSetLayout framebuffer = VK_NULL_HANDLE;
         VkDescriptorSetLayout geometryRegistry = VK_NULL_HANDLE;
         VkDescriptorSetLayout instanceLevel = VK_NULL_HANDLE;
+        VkDescriptorSetLayout drawInstanceLevel = VK_NULL_HANDLE;
         VkDescriptorSetLayout materialSet = VK_NULL_HANDLE;
     };
 
+    // 
+    struct DescriptorSetSources {
+        vkh::uni_ptr<Framebuffer> framebuffer = {};
+        vkh::uni_ptr<GeometryRegistry> geometryRegistry = {};
+        vkh::uni_ptr<InstanceLevel> instanceLevel = {};
+        vkh::uni_ptr<MaterialSetBase> materialSet = {};
+        vkh::uni_ptr<DrawInstanceLevel> drawInstanceLevel = {};
+    };
+
+    // 
     class PipelineLayout {
         public:
         vkh::uni_ptr<vkf::Device> device = {};
         DefinedDescriptorSetLayout definedLayouts = {};
         VkPipelineLayout layout = VK_NULL_HANDLE;
         VkRenderPass renderPass = VK_NULL_HANDLE;
+        std::vector<VkDescriptorSet> descriptorSets = {};
 
         public: 
+
+        //
+        virtual std::vector<VkDescriptorSet>& makeDescriptorSets(vkh::uni_arg<DescriptorSetSources> info = DescriptorSetSources{})
+        {   //
+            if (this->descriptorSets.size() < 5u) { this->descriptorSets.resize(4u); };
+            this->descriptorSets[0u] = info->framebuffer->getState().set;
+            this->descriptorSets[1u] = info->geometryRegistry->makeDescriptorSet( DescriptorInfo{ .layout = definedLayouts.geometryRegistry, .pipelineLayout = layout } );
+            this->descriptorSets[2u] = info->instanceLevel->makeDescriptorSet( DescriptorInfo{ .layout = definedLayouts.instanceLevel, .pipelineLayout = layout } );
+            this->descriptorSets[3u] = info->drawInstanceLevel->makeDescriptorSet( DescriptorInfo{ .layout = definedLayouts.drawInstanceLevel, .pipelineLayout = layout } );
+            this->descriptorSets[4u] = info->materialSet->makeDescriptorSet( DescriptorInfo{ .layout = definedLayouts.materialSet, .pipelineLayout = layout } );
+            return this->descriptorSets;
+        };
 
         // 
         virtual VkRenderPass& createRenderPass() 
@@ -37,10 +62,15 @@ namespace icv {
         };
 
         //
-        template<class M = MaterialSource>
         VkDescriptorSetLayout& getMaterialSetLayout() 
         {   //
-            return MaterialSet<M>::createDescriptorSetLayout(device, definedLayouts.materialSet);
+            return MaterialSetBase::createDescriptorSetLayout(device, definedLayouts.materialSet);
+        };
+
+        //
+        VkDescriptorSetLayout& getDrawInstanceLevelLayout() 
+        {   //
+            return DrawInstanceLevel::createDescriptorSetLayout(device, definedLayouts.drawInstanceLevel);
         };
 
         //
@@ -62,7 +92,6 @@ namespace icv {
         };
 
         //
-        template<class M = MaterialSource>
         VkPipelineLayout& createPipelineLayout(std::vector<VkDescriptorSetLayout> layouts = {}) 
         {   //
             auto pipusage = vkh::VkShaderStageFlags{ .eVertex = 1, .eGeometry = 1, .eFragment = 1, .eCompute = 1, .eRaygen = 1, .eAnyHit = 1, .eClosestHit = 1, .eMiss = 1 };
@@ -70,7 +99,8 @@ namespace icv {
             auto dflags = vkh::VkDescriptorSetLayoutCreateFlags{ .eUpdateAfterBindPool = 1 };
 
             // 
-            layouts.insert(layouts.begin(), this->getMaterialSetLayout<M>());
+            layouts.insert(layouts.begin(), this->getMaterialSetLayout());
+            layouts.insert(layouts.begin(), this->getDrawInstanceLevelLayout()); // 3th
             layouts.insert(layouts.begin(), this->getInstanceLevelLayout()); // 3th
             layouts.insert(layouts.begin(), this->getGeometryRegistryLayout()); // secondly
             layouts.insert(layouts.begin(), this->getFramebufferLayout()); // firstly

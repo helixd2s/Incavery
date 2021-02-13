@@ -10,19 +10,28 @@ namespace icv {
 
     //
     struct InstanceInfo
-    {
+    {   // 
         glm::mat3x4 transform = glm::mat3x4(1.f);
 
+        // system ray tracing parameters
         uint8_t mask = 0xFFu;
         uint8_t flags = 0u;
-        glm::u8vec2 geometryCount = glm::u8vec2(0u);
+        glm::u8vec2 todo = glm::u8vec2(0u);
         uint32_t sbtOffsetId = 0u;
 
+        // WTF?! It used by renderer!
+        uint32_t geometrylevelId = 0u;
 
-        uint64_t geometryInfoReference = 0ull; // buffer reference
-        uint64_t accelerationReference = 0ull; // acceleration structure reference (bottom level)
+        // 
+        uint32_t geometryLevelCount = 0u;
 
+        // used by GLSL (directly access), buffer reference
+        uint64_t geometryInfoReference = 0ull;
 
+        // acceleration structure reference (bottom level)
+        uint64_t accelerationReference = 0ull; 
+
+        // 
         void acceptGeometryLevel(vkh::uni_ptr<GeometryLevel> geometryLevel) {
             this->accelerationReference = geometryLevel->getDeviceAddress();
             this->geometryInfoReference = geometryLevel->getBuffer().deviceAddress();
