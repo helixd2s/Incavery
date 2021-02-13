@@ -16,7 +16,6 @@
 // 
 namespace icv {
 
-    
 
     struct RendererInfo
     {
@@ -26,15 +25,14 @@ namespace icv {
         vkh::uni_ptr<MaterialSetBase> materialSet = {};
         vkh::uni_ptr<DrawInstanceLevel> drawInstanceLevel = {};
         
-        
+        vkh::uni_ptr<PipelineLayout> pipelineLayout = {};
+        std::vector<vkh::uni_ptr<GraphicsPipeline>> pipelines = {};
     };
 
 
     class Renderer2 {
         protected:
         vkh::uni_ptr<vkf::Device> device = {};
-        vkh::uni_ptr<PipelineLayout> pipelineLayout = {};
-        std::vector<vkh::uni_ptr<GraphicsPipeline>> pipelines = {};
         RendererInfo info = {};
 
         virtual void constructor(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<RendererInfo> info = RendererInfo{}) {
