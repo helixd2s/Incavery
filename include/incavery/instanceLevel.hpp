@@ -13,8 +13,12 @@ namespace icv {
     {
         glm::mat3x4 transform = glm::mat3x4(1.f);
 
+        uint8_t mask = 0xFFu;
+        uint8_t flags = 0u;
+        glm::u8vec2 geometryCount = glm::u8vec2(0u);
         uint32_t sbtOffsetId = 0u;
-        uint32_t rasterProgramId = 0u;
+
+
         uint64_t geometryInfoReference = 0ull; // buffer reference
         uint64_t accelerationReference = 0ull; // acceleration structure reference (bottom level)
 
@@ -25,29 +29,12 @@ namespace icv {
         }
     };
 
-    // used for rasterization
-    struct HostInfo
-    {
-        vkh::uni_ptr<GeometryLevel> geometryLevel = {};
-    };
-
-
-
     // 
     struct InstanceLevelInfo 
     {
         std::vector<InstanceInfo> instances = {};
-        std::vector<HostInfo> hosts = {};
 
         uint32_t maxInstanceCount = 128u;
-    };
-
-    
-
-    //
-    struct IndirectDrawState
-    {
-
     };
 
     // 
@@ -200,7 +187,8 @@ namespace icv {
                 nativeInstances->getCpuCache().at(i).transform = info.instances[i].transform;
                 nativeInstances->getCpuCache().at(i).accelerationStructureReference = info.instances[i].accelerationReference;
                 nativeInstances->getCpuCache().at(i).instanceShaderBindingTableRecordOffset = info.instances[i].sbtOffsetId;
-                nativeInstances->getCpuCache().at(i).mask = 0xFF;
+                nativeInstances->getCpuCache().at(i).mask = info.instances[i].mask;
+                nativeInstances->getCpuCache().at(i).flags = info.instances[i].flags;
             };
 
             if (!acceleration) { this->makeAccelerationStructure(); };
@@ -268,23 +256,18 @@ namespace icv {
         };
 
         //
-        virtual uintptr_t changeInstance(uintptr_t instanceId, vkh::uni_arg<InstanceInfo> info = InstanceInfo{}, vkh::uni_arg<HostInfo> hostInfo = HostInfo{})
+        virtual uintptr_t changeInstance(uintptr_t instanceId, vkh::uni_arg<InstanceInfo> info = InstanceInfo{})
         {   // add instance into registry
-            info->acceptGeometryLevel(hostInfo->geometryLevel);
             if (this->info.instances.size() <= instanceId) { this->info.instances.resize(instanceId + 1u); };
-            if (this->info.hosts.size() <= instanceId) { this->info.hosts.resize(instanceId + 1u); };
             this->info.instances[instanceId] = info;
-            this->info.hosts[instanceId] = hostInfo;
             return instanceId;
         };
 
         //
-        virtual uintptr_t pushInstance(vkh::uni_arg<InstanceInfo> info = InstanceInfo{}, vkh::uni_arg<HostInfo> hostInfo = HostInfo{})
+        virtual uintptr_t pushInstance(vkh::uni_arg<InstanceInfo> info = InstanceInfo{})
         {   // add instance into registry
-            info->acceptGeometryLevel(hostInfo->geometryLevel);
             uintptr_t instanceId = this->info.instances.size();
             this->info.instances.push_back(info);
-            this->info.hosts.push_back(hostInfo);
             return instanceId;
         };
 

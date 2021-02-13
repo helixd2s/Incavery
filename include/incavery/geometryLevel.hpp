@@ -88,6 +88,7 @@ namespace icv {
         BuildInfo buildInfo = {};
 
         // 
+        vkf::Vector<VkAccelerationStructureGeometryKHR> indirectBuildBuffer = {};
         vkh::uni_ptr<DataSet<GeometryInfo>> geometries = {};
         VkDescriptorSet set = VK_NULL_HANDLE;
         bool created = false;

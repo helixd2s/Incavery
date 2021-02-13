@@ -15,10 +15,14 @@
 struct InstanceInfo 
 {
     mat3x4 transform;
+
+    uint8_t mask;
+    uint8_t flags;
+    u8vec2 geometryCount;
     uint32_t sbtOffsetId;
-    uint32_t rasterProgramId;
+
     GeometryLevel geometryInfoReference;
-    uint64_t accelerationReference;
+    accelerationStructureEXT accelerationReference;
 };
 
 //

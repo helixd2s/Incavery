@@ -33,33 +33,40 @@ namespace icv {
         uint32_t maxMaterialCount = 128u;
     };
 
-    //
-    template<class M = MaterialSource>
-    class MaterialSet : public DeviceBased 
+
+    class MaterialSetBase : public DeviceBased 
     {
         protected: 
-        MaterialSetInfo<M> info = {};
-        vkh::uni_ptr<DataSet<M>> materials = {};
         VkDescriptorSet set = VK_NULL_HANDLE;
         bool created = false;
 
-        // 
-        virtual void constructor(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<MaterialSetInfo<M>> info = MaterialSetInfo{}) 
-        {
-            this->info = info;
-            this->device = device;
-            this->materials = std::make_shared<DataSet<M>>(device, DataSetInfo{
-                .count = info->maxMaterialCount,
-                .usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT
+        public: 
+
+        //
+        virtual VkDescriptorSet& makeDescriptorSet(vkh::uni_arg<DescriptorInfo> info = DescriptorInfo{}) { return set; };
+
+        //
+        virtual const VkDescriptorSet& getDescriptorSet() const {
+            return set;
+        };
+
+        //
+        virtual VkDescriptorSet& getDescriptorSet() {
+            return set;
+        };
+
+        //
+        virtual void copyCommand(VkCommandBuffer commandBuffer) {};
+
+        //
+        virtual void flush(vkh::uni_ptr<vkf::Queue> queue = {}) 
+        {   // 
+            queue->submitOnce([&,this](VkCommandBuffer commandBuffer){
+                this->copyCommand(commandBuffer);
             });
         };
 
         // 
-        public:
-        MaterialSet() {};
-        MaterialSet(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<MaterialSetInfo<M>> info = MaterialSetInfo{}) { this->constructor(device, info); };
-
-        //
         static VkDescriptorSetLayout& createDescriptorSetLayout(vkh::uni_ptr<vkf::Device> device, VkDescriptorSetLayout& descriptorSetLayout) {
             auto pipusage = vkh::VkShaderStageFlags{ .eVertex = 1, .eGeometry = 1, .eFragment = 1, .eCompute = 1, .eRaygen = 1, .eAnyHit = 1, .eClosestHit = 1, .eMiss = 1 };
             auto indexedf = vkh::VkDescriptorBindingFlags{ .eUpdateAfterBind = 1, .eUpdateUnusedWhilePending = 1, .ePartiallyBound = 1 };
@@ -85,16 +92,32 @@ namespace icv {
 
             return descriptorSetLayout;
         };
+    };
 
-        //
-        virtual const VkDescriptorSet& getDescriptorSet() const {
-            return set;
+
+    //
+    template<class M = MaterialSource>
+    class MaterialSet : public DeviceBased 
+    {
+        protected: 
+        MaterialSetInfo<M> info = {};
+        vkh::uni_ptr<DataSet<M>> materials = {};
+        
+        // 
+        virtual void constructor(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<MaterialSetInfo<M>> info = MaterialSetInfo{}) 
+        {
+            this->info = info;
+            this->device = device;
+            this->materials = std::make_shared<DataSet<M>>(device, DataSetInfo{
+                .count = info->maxMaterialCount,
+                .usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT
+            });
         };
 
-        //
-        virtual VkDescriptorSet& getDescriptorSet() {
-            return set;
-        };
+        // 
+        public:
+        MaterialSet() {};
+        MaterialSet(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<MaterialSetInfo<M>> info = MaterialSetInfo{}) { this->constructor(device, info); };
 
         //
         virtual const MaterialSetInfo<M>& getInfo() const {
@@ -117,7 +140,7 @@ namespace icv {
         };
 
         // 
-        virtual VkDescriptorSet& makeDescriptorSet(vkh::uni_arg<DescriptorInfo> info = DescriptorInfo{}) 
+        virtual VkDescriptorSet& makeDescriptorSet(vkh::uni_arg<DescriptorInfo> info = DescriptorInfo{}) override 
         {
             vkh::VsDescriptorSetCreateInfoHelper descriptorSetHelper(info->layout, device->descriptorPool);
             if (this->info.textures.size() > 0) {
@@ -138,18 +161,10 @@ namespace icv {
         };
 
         //
-        virtual void copyCommand(VkCommandBuffer commandBuffer)
+        virtual void copyCommand(VkCommandBuffer commandBuffer) override 
         {   // 
             materials->copyFromVector(info.materials);
             materials->cmdCopyFromCpu(commandBuffer);
-        };
-
-        //
-        virtual void flush(vkh::uni_ptr<vkf::Queue> queue = {}) 
-        {   // 
-            queue->submitOnce([&,this](VkCommandBuffer commandBuffer){
-                this->copyCommand(commandBuffer);
-            });
         };
 
         //

@@ -7,6 +7,20 @@
 // 
 namespace icv {
 
+    // 
+    struct GraphicsPipelineSource 
+    {
+        std::string vertex = "";
+        std::string geometry = "";
+        std::string fragment = "";
+    };
+
+    // 
+    struct ComputePipelineSource
+    {
+        std::string path = "";
+    };
+
     //
     struct DescriptorInfo {
         VkDescriptorSetLayout layout = VK_NULL_HANDLE;
