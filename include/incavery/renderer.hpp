@@ -8,103 +8,87 @@
 #include "./framebuffer.hpp"
 
 //
+#include "./drawInstanceLevel.hpp"
 #include "./materialSet.hpp"
+#include "./pipelineLayout.hpp"
+#include "./graphicsPipeline.hpp"
+#include "./computePipeline.hpp"
 
 // 
 namespace icv {
 
-    template<class M = MaterialSource>
+
     struct RendererInfo
-    {
-        vkh::uni_ptr<Framebuffer> framebuffer = {};
-        vkh::uni_ptr<GeometryRegistry> geometryRegistry = {};
-        vkh::uni_ptr<InstanceLevel> instanceLevel = {};
-        vkh::uni_ptr<MaterialSet<M>> materialSet = {};
-    };
-
-    struct PipelineInfo
-    {
-        VkPipelineLayout layout = VK_NULL_HANDLE;
-        VkPipeline rayTracing = VK_NULL_HANDLE;
-        VkPipeline opaqueRasterization = VK_NULL_HANDLE;
-        VkPipeline translucentRasterization = VK_NULL_HANDLE;
-    };
-
-    struct GraphicsPipelineSource 
-    {
-        std::string vertex = "";
-        std::string geometry = "";
-        std::string fragment = "";
-    };
-
-    struct ComputePipelineSource
-    {
-        std::string path = "";
-    };
-
-    struct PipelineCreateInfo
-    {
-        std::optional<ComputePipelineSource> rayTracing = ComputePipelineSource{ std::string("./shaders/rayTracing.comp.spv") };
-        std::optional<GraphicsPipelineSource> opaque = GraphicsPipelineSource{
-            std::string("./shaders/opaque.vert.spv"),
-            std::string("./shaders/opaque.geom.spv"),
-            std::string("./shaders/opaque.frag.spv")
-        };
-        std::optional<GraphicsPipelineSource> translucent = GraphicsPipelineSource{
-            std::string("./shaders/translucent.vert.spv"),
-            std::string("./shaders/translucent.geom.spv"),
-            std::string("./shaders/translucent.frag.spv")
-        };
-    };
-
-    struct PushConstantInfo 
-    {
-        uint32_t instanceId = 0u;
-        uint32_t geometryId = 0u;
-        uint32_t reserved0 = 0u;
-        uint32_t reserved1 = 0u;
-    };
-
-    struct DrawInfo
-    {
-        uint32_t type = 0u;
-        uint32_t reserved0 = 0u;
-        PushConstantInfo constants = {};
-        PrimitiveInfo primitive = {};
-    };
-
-    struct DescriptorLayouts 
     {   // 
-        VkDescriptorSetLayout framebuffer = VK_NULL_HANDLE;
-        VkDescriptorSetLayout geometryRegistry = VK_NULL_HANDLE;
-        VkDescriptorSetLayout instanceLevel = VK_NULL_HANDLE;
-        VkDescriptorSetLayout materialSet = VK_NULL_HANDLE;
+        vkh::uni_ptr<Framebuffer> framebuffer = {};
+        vkh::uni_ptr<InstanceLevel> instanceLevel = {};
+        vkh::uni_ptr<DrawInstanceLevel> drawInstanceLevel = {};
+
+        // reserved for future usage (currently are descriptor set sources)
+        vkh::uni_ptr<GeometryRegistry> geometryRegistry = {};
+        vkh::uni_ptr<MaterialSetBase> materialSet = {};
+
+        // needs for some related operations
+        std::vector<vkh::uni_ptr<GeometryLevel>> geometryLevels = {};
+
+        // pipelines
+        vkh::uni_ptr<ComputePipeline> indirectCompute = {};
+        std::vector<vkh::uni_ptr<GraphicsPipeline>> pipelines = {};
+        vkh::uni_ptr<ComputePipeline> rayTraceCompute = {};
     };
 
 
-    // early alpha version (needs Optifine-like)
-    template<class M = MaterialSource>
-    class Renderer: public DeviceBased
-    {
-        protected: 
-        RendererInfo<M> info = {};
-        PipelineInfo pipeline = {};
-        DescriptorLayouts layouts = {};
+    class Renderer2 {
+        protected:
+        vkh::uni_ptr<vkf::Device> device = {};
+        RendererInfo info = {};
 
         // 
-        VkRenderPass renderPass = VK_NULL_HANDLE;
-        std::vector<VkDescriptorSet> descriptorSets = {};
-
-        // 
-        virtual void constructor(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<RendererInfo<M>> info = RendererInfo<M>{})
-        {
-            this->info = info;
+        virtual void constructor(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<RendererInfo> info = RendererInfo{}) {
             this->device = device;
+            this->info = info;
         };
 
+        // 
         public:
-        Renderer() {};
-        Renderer(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<RendererInfo<M>> info = RendererInfo{}) { this->constructor(device, info); };
+        Renderer2(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<RendererInfo> info = RendererInfo{}) { this->constructor(device, info); };
+        Renderer2() {};
+
+
+        //
+        virtual uintptr_t changeGeometry(uintptr_t geometryId, vkh::uni_ptr<GeometryLevel> geometryLevel = {})
+        {   // add instance into registry
+            if (this->info.geometryLevels.size() <= geometryId) { this->info.geometryLevels.resize(geometryId + 1u); };
+            this->info.geometryLevels[geometryId] = geometryLevel;
+            return geometryId;
+        };
+
+        //
+        virtual uintptr_t pushGeometry(vkh::uni_ptr<GeometryLevel> info = {})
+        {   // add instance into registry
+            uintptr_t geometryId = this->info.geometryLevels.size();
+            this->info.geometryLevels.push_back(info);
+            return geometryId;
+        };
+
+
+
+        //
+        virtual uintptr_t changeGraphicsPipeline(uintptr_t pipelineId, vkh::uni_ptr<GraphicsPipeline> graphicsPipeline = {})
+        {   // add instance into registry
+            if (this->info.pipelines.size() <= pipelineId) { this->info.pipelines.resize(pipelineId + 1u); };
+            this->info.pipelines[pipelineId] = graphicsPipeline;
+            return pipelineId;
+        };
+
+        //
+        virtual uintptr_t pushGraphicsPipeline(vkh::uni_ptr<GraphicsPipeline> graphicsPipeline = {})
+        {   // add instance into registry
+            uintptr_t pipelineId = this->info.pipelines.size();
+            this->info.pipelines.push_back(graphicsPipeline);
+            return pipelineId;
+        };
+
 
         //
         virtual void setFramebuffer(vkh::uni_ptr<Framebuffer> framebuffer) 
@@ -113,241 +97,26 @@ namespace icv {
         };
 
         //
-        virtual void setMaterialSet(vkh::uni_ptr<MaterialSet<M>> materialSet) 
+        virtual void setMaterialSet(vkh::uni_ptr<MaterialSetBase> materialSet) 
         {
             this->info.materialSet = materialSet;
         };
 
-
         // 
-        virtual std::vector<VkDescriptorSet>& editDescriptorSets() 
+        virtual void setGeometryReferences() 
         {
-            return descriptorSets;
-        };
-
-        // 
-        virtual const std::vector<VkDescriptorSet>& editDescriptorSets() const
-        {
-            return descriptorSets;
-        };
-
-        //
-        virtual VkDescriptorSetLayout& getMaterialSetLayout() 
-        {   //
-            return MaterialSet<M>::createDescriptorSetLayout(device, layouts.materialSet);
-        };
-
-        //
-        virtual VkDescriptorSetLayout& getInstanceLevelLayout() 
-        {   //
-            return InstanceLevel::createDescriptorSetLayout(device, layouts.instanceLevel);
-        };
-
-        //
-        virtual VkDescriptorSetLayout& getGeometryRegistryLayout() 
-        {   //
-            return GeometryRegistry::createDescriptorSetLayout(device, layouts.geometryRegistry);
-        };
-
-        //
-        virtual VkDescriptorSetLayout& getFramebufferLayout() 
-        {   //
-            return Framebuffer::createDescriptorSetLayout(device, layouts.framebuffer);
+            this->info.drawInstanceLevel->setGeometryReferences(this->info.geometryLevels);
         };
 
 
         //
-        virtual const VkDescriptorSetLayout& getMaterialSetLayout() const 
-        {   // 
-            return layouts.materialSet;
-        };
-
-        //
-        virtual const VkDescriptorSetLayout& getInstanceLevelLayout() const 
-        {   // 
-            return layouts.instanceLevel;
-        };
-
-        //
-        virtual const VkDescriptorSetLayout& getGeometryRegistryLayout() const 
-        {   // 
-            return layouts.geometryRegistry;
-        };
-
-        //
-        virtual const VkDescriptorSetLayout& getFramebufferLayout() const 
-        {   // 
-            return layouts.framebuffer;
-        };
-
-        // 
-        virtual VkRenderPass& createRenderPass() 
-        {   // 
-            return Framebuffer::createRenderPass(device, renderPass);
-        };
-
-        //
-        virtual VkRenderPass& getRenderPass() 
-        {   // 
-            if (!renderPass) { this->createRenderPass(); };
-            return renderPass;
-        };
-
-        //
-        virtual VkPipelineLayout& getPipelineLayout() 
-        {   // 
-            if (!pipeline.layout) { this->createPipelineLayout(); };
-            return pipeline.layout;
-        };
-
-
-        //
-        virtual VkPipelineLayout& createPipelineLayout(std::vector<VkDescriptorSetLayout> layouts = {}) 
-        {   //
-            auto pipusage = vkh::VkShaderStageFlags{ .eVertex = 1, .eGeometry = 1, .eFragment = 1, .eCompute = 1, .eRaygen = 1, .eAnyHit = 1, .eClosestHit = 1, .eMiss = 1 };
-            auto indexedf = vkh::VkDescriptorBindingFlags{ .eUpdateAfterBind = 1, .eUpdateUnusedWhilePending = 1, .ePartiallyBound = 1 };
-            auto dflags = vkh::VkDescriptorSetLayoutCreateFlags{ .eUpdateAfterBindPool = 1 };
-
-            // 
-            layouts.insert(layouts.begin(), this->getMaterialSetLayout());
-            layouts.insert(layouts.begin(), this->getInstanceLevelLayout()); // 3th
-            layouts.insert(layouts.begin(), this->getGeometryRegistryLayout()); // secondly
-            layouts.insert(layouts.begin(), this->getFramebufferLayout()); // firstly
-
-            // 
-            std::vector<vkh::VkPushConstantRange> rtRanges = { vkh::VkPushConstantRange{.stageFlags = pipusage, .offset = 0u, .size = 16u } };
-            vkt::handleVk(device->dispatch->CreatePipelineLayout(vkh::VkPipelineLayoutCreateInfo{  }.setSetLayouts(layouts).setPushConstantRanges(rtRanges), nullptr, &pipeline.layout));
-            return pipeline.layout;
-        };
-
-        // 
-        virtual PipelineInfo& createPipeline(vkh::uni_arg<PipelineCreateInfo> info = PipelineCreateInfo{}) 
-        {   
-            auto& framebuffer = this->info.framebuffer->getState();
-
-            // 
-            vkh::VsGraphicsPipelineCreateInfoConstruction pipelineInfo = {};
-            {   // initial state
-                pipelineInfo.inputAssemblyState.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
-                pipelineInfo.graphicsPipelineCreateInfo.layout = this->getPipelineLayout();
-                pipelineInfo.graphicsPipelineCreateInfo.renderPass = this->getRenderPass();
-                pipelineInfo.viewportState.pViewports = &reinterpret_cast<::VkViewport&>(framebuffer.viewport);
-                pipelineInfo.viewportState.pScissors = &reinterpret_cast<::VkRect2D&>(framebuffer.scissor);
-                pipelineInfo.colorBlendAttachmentStates = {};
-                pipelineInfo.dynamicStates = { VK_DYNAMIC_STATE_SCISSOR, VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_VERTEX_INPUT_BINDING_STRIDE_EXT };
-                pipelineInfo.depthStencilState = vkh::VkPipelineDepthStencilStateCreateInfo{ .depthTestEnable = true, .depthWriteEnable = true };
-            };
-
-            // blend states
-            for (uint32_t i=0;i<Framebuffer::FBO_COUNT;i++) 
-            {   // TODO: full blending support
-                pipelineInfo.colorBlendAttachmentStates.push_back(vkh::VkPipelineColorBlendAttachmentState{
-                    .blendEnable = false
-                });
-            };
-
-            if (info->opaque) {   // opaque rasterization
-                pipelineInfo.stages = {
-                    vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->opaque->vertex), VK_SHADER_STAGE_VERTEX_BIT),
-                    vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->opaque->geometry), VK_SHADER_STAGE_GEOMETRY_BIT),
-                    vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->opaque->fragment), VK_SHADER_STAGE_FRAGMENT_BIT)
-                };
-                vkt::handleVk(device->dispatch->CreateGraphicsPipelines(device->pipelineCache, 1u, pipelineInfo, nullptr, &pipeline.opaqueRasterization));
-            };
-
-            if (info->translucent) {   // translucent rasterization
-                pipelineInfo.stages = {
-                    vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->translucent->vertex), VK_SHADER_STAGE_VERTEX_BIT),
-                    vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->translucent->geometry), VK_SHADER_STAGE_GEOMETRY_BIT),
-                    vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info->translucent->fragment), VK_SHADER_STAGE_FRAGMENT_BIT)
-                };
-                vkt::handleVk(device->dispatch->CreateGraphicsPipelines(device->pipelineCache, 1u, pipelineInfo, nullptr, &pipeline.translucentRasterization));
-            };
-
-            if (info->rayTracing) {
-                pipeline.rayTracing = vkt::createCompute(device->dispatch, info->rayTracing->path, this->getPipelineLayout(), device->pipelineCache);
-            };
-
-            return pipeline;
-        };
-
-        //
-        virtual std::vector<VkDescriptorSet>& makeDescriptorSets()
-        {   //
-            if (this->descriptorSets.size() < 4u) { this->descriptorSets.resize(4u); };
-            this->descriptorSets[0u] = this->info.framebuffer->getState().set;
-            this->descriptorSets[1u] = this->info.geometryRegistry->makeDescriptorSet( DescriptorInfo{ .layout = layouts.geometryRegistry, .pipelineLayout = pipeline.layout } );
-            this->descriptorSets[2u] = this->info.instanceLevel->makeDescriptorSet( DescriptorInfo{ .layout = layouts.instanceLevel, .pipelineLayout = pipeline.layout } );
-            this->descriptorSets[3u] = this->info.materialSet->makeDescriptorSet( DescriptorInfo{ .layout = layouts.materialSet, .pipelineLayout = pipeline.layout } );
-            return this->descriptorSets;
-        };
-
-        // 
         virtual void createRenderingCommand(VkCommandBuffer commandBuffer) 
-        {   //
+        {
             auto pipusage = vkh::VkShaderStageFlags{ .eVertex = 1, .eGeometry = 1, .eFragment = 1, .eCompute = 1, .eRaygen = 1, .eAnyHit = 1, .eClosestHit = 1, .eMiss = 1 };
             auto indexedf = vkh::VkDescriptorBindingFlags{ .eUpdateAfterBind = 1, .eUpdateUnusedWhilePending = 1, .ePartiallyBound = 1 };
             auto dflags = vkh::VkDescriptorSetLayoutCreateFlags{ .eUpdateAfterBindPool = 1 };
 
-            //
-            //auto descriptorSets = std::vector<VkDescriptorSet>();
-            //descriptorSets.resize(3u);
-            //for (auto& set : this->descriptorSets) {
-            //    descriptorSets.push_back(set);
-            //};
-
-            
-
-            // TODO: indirect draw state
-            // draw items
-            std::vector<DrawInfo> opaque = {};
-            std::vector<DrawInfo> translucent = {};
-
-            // select opaque and translucent for draw
-            auto instanceLevelInfo = info.instanceLevel->getInfo();
-            for (uint32_t I=0;I<instanceLevelInfo.instances.size();I++) {
-                auto& instanceInfo = instanceLevelInfo.instances[I];
-
-                // getting hosted data (backward compatibility)
-                auto& geometryLevelInfo = instanceLevelInfo.hosts[I].geometryLevel->getInfo();
-
-                // 
-                for (uint32_t G=0;G<geometryLevelInfo.geometries.size();G++) {
-                    auto& geometryInfo = geometryLevelInfo.geometries[G];
-                    if (geometryInfo.isOpaque) {
-                        opaque.push_back(DrawInfo
-                        {
-                            .type = 0u,
-                            .constants = {I, G, 0u, 0u},
-                            .primitive = geometryInfo.primitive
-                        });
-                    } else
-                    {
-                        translucent.push_back(DrawInfo
-                        {
-                            .type = 1u,
-                            .constants = {I, G, 0u, 0u},
-                            .primitive = geometryInfo.primitive
-                        });
-                    }
-                };
-            };
-
-            // TODO: use with framebuffer as native
-            std::vector<vkh::VkClearValue> clearValues = {};
-            for (uint32_t i=0;i<Framebuffer::FBO_COUNT;i++) {
-                clearValues.push_back(vkh::VkClearColorValue{});
-                clearValues.back().color.float32 = glm::vec4(0.f, 0.f, 0.f, 0.f);
-            };
-            clearValues.push_back(vkh::VkClearDepthStencilValue{ 1.0f, 0 });
-
-            // shortify code by lambda function
-            auto& geometryRegistryInfo = info.geometryRegistry->getInfo();
-            auto drawItem = [&,this](DrawInfo& item) {
-                device->dispatch->CmdPushConstants(commandBuffer, pipeline.layout, pipusage, 0u, sizeof(PushConstantInfo), &item.constants);
-                device->dispatch->CmdDraw(commandBuffer, item.primitive.count * 3u, 1u, 0u, 0u);
-            };
-
+            // clear framebuffers
             auto& framebuffer = info.framebuffer->getState();
             {
                 for (auto& image : framebuffer.images) {
@@ -363,40 +132,47 @@ namespace icv {
                 vkt::commandBarrier(device->dispatch, commandBuffer);
             };
 
-            {
-                device->dispatch->CmdBeginRenderPass(commandBuffer, vkh::VkRenderPassBeginInfo{ .renderPass = renderPass, .framebuffer = framebuffer.framebuffer, .renderArea = framebuffer.scissor, .clearValueCount = uint32_t(clearValues.size()), .pClearValues = reinterpret_cast<vkh::VkClearValue*>(clearValues.data()) }, VK_SUBPASS_CONTENTS_INLINE);
+            // select opaque and translucent for draw
+            auto instanceLevelInfo = info.drawInstanceLevel->getInfo();
 
-                {   // initial rasterization layout
-                    device->dispatch->CmdSetViewport(commandBuffer, 0u, 1u, framebuffer.viewport);
-                    device->dispatch->CmdSetScissor(commandBuffer, 0u, 1u, framebuffer.scissor);
-                    device->dispatch->CmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.layout, 0u, descriptorSets.size(), descriptorSets.data(), 0u, nullptr);
-                };
-
-                if (pipeline.opaqueRasterization || pipeline.translucentRasterization) {   // draw opaque
-                    device->dispatch->CmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.opaqueRasterization ? pipeline.opaqueRasterization : pipeline.translucentRasterization);
-                    for (auto& item : opaque) { drawItem(item); };
-                    vkt::commandBarrier(device->dispatch, commandBuffer);
-
-                    // draw translucent
-                    device->dispatch->CmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.translucentRasterization ? pipeline.translucentRasterization : pipeline.opaqueRasterization);
-                    for (auto& item : translucent) { drawItem(item); };
-                    vkt::commandBarrier(device->dispatch, commandBuffer);
-                };
-
-                device->dispatch->CmdEndRenderPass(commandBuffer);
+            // compute indirect operations
+            if (info.indirectCompute.has()) {
+                info.indirectCompute->createComputeCommand(commandBuffer, glm::uvec3(instanceLevelInfo.instances.size(), 1u, 1u), glm::uvec4(0u));
+                vkt::commandBarrier(device->dispatch, commandBuffer);
+            } else {
+                std::cerr << "Indirect compute not defined" << std::endl;
             };
 
-
             // 
-            const uint32_t LOCAL_GROUP_X = 32u, LOCAL_GROUP_Y = 24u;
-            if (pipeline.rayTracing) {   // compute ray tracing
-                device->dispatch->CmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline.rayTracing);
-                device->dispatch->CmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline.layout, 0u, descriptorSets.size(), descriptorSets.data(), 0u, nullptr);
-                device->dispatch->CmdDispatch(commandBuffer, framebuffer.scissor.extent.width/LOCAL_GROUP_X, framebuffer.scissor.extent.height/LOCAL_GROUP_Y, 1u);
+            for (uint32_t I=0;I<instanceLevelInfo.instances.size();I++) {
+                auto& instanceInfo = instanceLevelInfo.instances[I];
+
+                // using geometry levels descriptions for draw
+                auto& geometryLevelInfo = info.geometryLevels[instanceInfo.geometryLevelId]->getInfo();
+                for (uint32_t G=0;G<geometryLevelInfo.geometries.size();G++) {
+                    DrawInfo drawInfo = {0u, 0u, DrawInfo{I, G, 0u, 0u}, geometryLevelInfo.geometries[G].primitive};
+                    info.pipelines[instanceInfo.programId]->createRenderingCommand(commandBuffer, info.framebuffer, drawInfo);
+                };
+
+                // TODO: instances support (needs pre-compute shader)
+                //info.pipelines[instanceInfo.programId]->createRenderingCommand(commandBuffer, info.framebuffer, info.drawInstanceLevel, I);
+            };
+
+            //
+            if (instanceLevelInfo.instances.size() > 0u) {
                 vkt::commandBarrier(device->dispatch, commandBuffer);
             };
 
+            // compute ray tracing
+            if (info.rayTraceCompute.has()) {
+                const uint32_t LOCAL_GROUP_X = 32u, LOCAL_GROUP_Y = 24u;
+                info.rayTraceCompute->createComputeCommand(commandBuffer, glm::uvec3(framebuffer.scissor.extent.width/LOCAL_GROUP_X, framebuffer.scissor.extent.height/LOCAL_GROUP_Y, 1u), glm::uvec4(0u));
+                vkt::commandBarrier(device->dispatch, commandBuffer);
+            } else {
+                std::cerr << "Ray tracing compute not defined" << std::endl;
+            };
         };
+
 
     };
 
