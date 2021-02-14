@@ -132,34 +132,38 @@ namespace icv {
             };
 
             // select opaque and translucent for draw
-            auto instanceLevelInfo = info.drawInstanceLevel->getInfo();
+            if (info.drawInstanceLevel.has()) {
+                auto instanceLevelInfo = info.drawInstanceLevel->getInfo();
 
-            // compute indirect operations
-            if (info.indirectCompute.has()) {
-                info.indirectCompute->createComputeCommand(commandBuffer, glm::uvec3(instanceLevelInfo.instances.size(), 1u, 1u), glm::uvec4(0u));
-                vkt::commandBarrier(device->dispatch, commandBuffer);
-            } else {
-                std::cerr << "Indirect compute not defined" << std::endl;
-            };
-
-            // 
-            for (uint32_t I=0;I<instanceLevelInfo.instances.size();I++) {
-                auto& instanceInfo = instanceLevelInfo.instances[I];
-
-                // using geometry levels descriptions for draw
-                auto& geometryLevelInfo = info.geometryLevels[instanceInfo.geometryLevelId]->getInfo();
-                for (uint32_t G=0;G<geometryLevelInfo.geometries.size();G++) {
-                    DrawInfo drawInfo = DrawInfo{0u, 0u, PushConstantInfo{I, G, 0u, 0u}, geometryLevelInfo.geometries[G].primitive};
-                    info.pipelines[instanceInfo.programId]->createRenderingCommand(commandBuffer, info.framebuffer, drawInfo);
+                // compute indirect operations
+                if (info.indirectCompute.has()) {
+                    info.indirectCompute->createComputeCommand(commandBuffer, glm::uvec3(instanceLevelInfo.instances.size(), 1u, 1u), glm::uvec4(0u));
+                    vkt::commandBarrier(device->dispatch, commandBuffer);
+                } else {
+                    std::cerr << "Indirect compute not defined" << std::endl;
                 };
 
-                // TODO: instances support (needs pre-compute shader)
-                //info.pipelines[instanceInfo.programId]->createRenderingCommand(commandBuffer, info.framebuffer, info.drawInstanceLevel, I);
-            };
+                // 
+                for (uint32_t I=0;I<instanceLevelInfo.instances.size();I++) {
+                    auto& instanceInfo = instanceLevelInfo.instances[I];
 
-            //
-            if (instanceLevelInfo.instances.size() > 0u) {
-                vkt::commandBarrier(device->dispatch, commandBuffer);
+                    // using geometry levels descriptions for draw
+                    auto& geometryLevelInfo = info.geometryLevels[instanceInfo.geometryLevelId]->getInfo();
+                    for (uint32_t G=0;G<geometryLevelInfo.geometries.size();G++) {
+                        DrawInfo drawInfo = DrawInfo{0u, 0u, PushConstantInfo{I, G, 0u, 0u}, geometryLevelInfo.geometries[G].primitive};
+                        info.pipelines[instanceInfo.programId]->createRenderingCommand(commandBuffer, info.framebuffer, drawInfo);
+                    };
+
+                    // TODO: instances support (needs pre-compute shader)
+                    //info.pipelines[instanceInfo.programId]->createRenderingCommand(commandBuffer, info.framebuffer, info.drawInstanceLevel, I);
+                };
+
+                //
+                if (instanceLevelInfo.instances.size() > 0u) {
+                    vkt::commandBarrier(device->dispatch, commandBuffer);
+                };
+            } else {
+                std::cerr << "Draw instances not defined" << std::endl;
             };
 
             // compute ray tracing
