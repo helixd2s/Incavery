@@ -7,6 +7,12 @@
 // 
 namespace icv {
 
+    //
+    struct DescriptorInfo {
+        VkDescriptorSetLayout layout = VK_NULL_HANDLE;
+        //VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
+    };
+
     // 
     struct GraphicsPipelineSource 
     {
@@ -19,13 +25,6 @@ namespace icv {
     struct ComputePipelineSource
     {
         std::string path = "";
-    };
-
-    //
-    struct DescriptorInfo {
-        VkDescriptorSetLayout layout = VK_NULL_HANDLE;
-        VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
-        
     };
 
     // Vulkan needs f&cking SoA, EVERY TIME!

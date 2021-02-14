@@ -38,7 +38,6 @@ namespace icv {
         vkh::uni_ptr<vkf::Device> device = {};
         DefinedDescriptorSetLayout definedLayouts = {};
         VkPipelineLayout layout = VK_NULL_HANDLE;
-        VkRenderPass renderPass = VK_NULL_HANDLE;
         std::vector<VkDescriptorSet> descriptorSets = {};
 
         public: 
@@ -47,18 +46,12 @@ namespace icv {
         virtual std::vector<VkDescriptorSet>& makeDescriptorSets(vkh::uni_arg<DescriptorSetSources> info = DescriptorSetSources{})
         {   //
             if (this->descriptorSets.size() < 5u) { this->descriptorSets.resize(4u); };
-            this->descriptorSets[0u] = info->framebuffer->getState().set;
-            this->descriptorSets[1u] = info->geometryRegistry->makeDescriptorSet( DescriptorInfo{ .layout = definedLayouts.geometryRegistry, .pipelineLayout = layout } );
-            this->descriptorSets[2u] = info->instanceLevel->makeDescriptorSet( DescriptorInfo{ .layout = definedLayouts.instanceLevel, .pipelineLayout = layout } );
-            this->descriptorSets[3u] = info->drawInstanceLevel->makeDescriptorSet( DescriptorInfo{ .layout = definedLayouts.drawInstanceLevel, .pipelineLayout = layout } );
-            this->descriptorSets[4u] = info->materialSet->makeDescriptorSet( DescriptorInfo{ .layout = definedLayouts.materialSet, .pipelineLayout = layout } );
+            this->descriptorSets[0u] = info->framebuffer->makeDescriptorSet( DescriptorInfo{ .layout = definedLayouts.framebuffer } );
+            this->descriptorSets[1u] = info->geometryRegistry->makeDescriptorSet( DescriptorInfo{ .layout = definedLayouts.geometryRegistry } );
+            this->descriptorSets[2u] = info->instanceLevel->makeDescriptorSet( DescriptorInfo{ .layout = definedLayouts.instanceLevel } );
+            this->descriptorSets[3u] = info->drawInstanceLevel->makeDescriptorSet( DescriptorInfo{ .layout = definedLayouts.drawInstanceLevel } );
+            this->descriptorSets[4u] = info->materialSet->makeDescriptorSet( DescriptorInfo{ .layout = definedLayouts.materialSet } );
             return this->descriptorSets;
-        };
-
-        // 
-        virtual VkRenderPass& createRenderPass() 
-        {   // 
-            return Framebuffer::createRenderPass(device, renderPass);
         };
 
         //

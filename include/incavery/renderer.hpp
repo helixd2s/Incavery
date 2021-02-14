@@ -17,7 +17,7 @@
 // 
 namespace icv {
 
-
+    // 
     struct RendererInfo
     {   // 
         vkh::uni_ptr<Framebuffer> framebuffer = {};
@@ -150,7 +150,7 @@ namespace icv {
                 // using geometry levels descriptions for draw
                 auto& geometryLevelInfo = info.geometryLevels[instanceInfo.geometryLevelId]->getInfo();
                 for (uint32_t G=0;G<geometryLevelInfo.geometries.size();G++) {
-                    DrawInfo drawInfo = {0u, 0u, DrawInfo{I, G, 0u, 0u}, geometryLevelInfo.geometries[G].primitive};
+                    DrawInfo drawInfo = DrawInfo{0u, 0u, PushConstantInfo{I, G, 0u, 0u}, geometryLevelInfo.geometries[G].primitive};
                     info.pipelines[instanceInfo.programId]->createRenderingCommand(commandBuffer, info.framebuffer, drawInfo);
                 };
 

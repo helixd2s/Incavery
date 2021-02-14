@@ -16,13 +16,12 @@ namespace icv {
 
     // 
     struct GraphicsPipelineInfo {
+        vkh::uni_ptr<Framebuffer> framebuffer = {};
         vkh::uni_ptr<PipelineLayout> layout = {};
         GraphicsPipelineSource source = {};
-        
-        vkh::VkViewport viewport = {};
-        vkh::VkRect2D scissor = {};
     };
 
+    // 
     struct PushConstantInfo 
     {
         uint32_t instanceId = 0u;
@@ -65,9 +64,9 @@ namespace icv {
             {   // initial state
                 pipelineInfo.inputAssemblyState.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
                 pipelineInfo.graphicsPipelineCreateInfo.layout = info.layout->layout;
-                pipelineInfo.graphicsPipelineCreateInfo.renderPass = info.layout->renderPass;
-                pipelineInfo.viewportState.pViewports = &reinterpret_cast<::VkViewport&>(info.viewport);
-                pipelineInfo.viewportState.pScissors = &reinterpret_cast<::VkRect2D&>(info.scissor);
+                pipelineInfo.graphicsPipelineCreateInfo.renderPass = info.framebuffer->getInfo().renderPass;
+                pipelineInfo.viewportState.pViewports = &reinterpret_cast<::VkViewport&>(info.framebuffer->getState().viewport);
+                pipelineInfo.viewportState.pScissors = &reinterpret_cast<::VkRect2D&>(info.framebuffer->getState().scissor);
                 pipelineInfo.colorBlendAttachmentStates = {};
                 pipelineInfo.dynamicStates = { VK_DYNAMIC_STATE_SCISSOR, VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_VERTEX_INPUT_BINDING_STRIDE_EXT };
                 pipelineInfo.depthStencilState = vkh::VkPipelineDepthStencilStateCreateInfo{ .depthTestEnable = true, .depthWriteEnable = true };
@@ -110,7 +109,7 @@ namespace icv {
             if (this->pipeline) {
                 PushConstantInfo constants = PushConstantInfo{instanceId, 0u, 0u, 0u};
                 auto& instanceInfo = drawInstanceLevel->getInfo().instances[instanceId];
-                device->dispatch->CmdBeginRenderPass(commandBuffer, vkh::VkRenderPassBeginInfo{ .renderPass = info.layout->renderPass, .framebuffer = framebuffer->getState().framebuffer, .renderArea = framebuffer->getState().scissor, .clearValueCount = uint32_t(clearValues.size()), .pClearValues = reinterpret_cast<vkh::VkClearValue*>(clearValues.data()) }, VK_SUBPASS_CONTENTS_INLINE);
+                device->dispatch->CmdBeginRenderPass(commandBuffer, vkh::VkRenderPassBeginInfo{ .renderPass = info.framebuffer->getInfo().renderPass, .framebuffer = framebuffer->getState().framebuffer, .renderArea = framebuffer->getState().scissor, .clearValueCount = uint32_t(clearValues.size()), .pClearValues = reinterpret_cast<vkh::VkClearValue*>(clearValues.data()) }, VK_SUBPASS_CONTENTS_INLINE);
                 device->dispatch->CmdSetViewport(commandBuffer, 0u, 1u, framebuffer->getState().viewport);
                 device->dispatch->CmdSetScissor(commandBuffer, 0u, 1u, framebuffer->getState().scissor);
                 device->dispatch->CmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
@@ -140,7 +139,7 @@ namespace icv {
 
             // 
             if (this->pipeline) {
-                device->dispatch->CmdBeginRenderPass(commandBuffer, vkh::VkRenderPassBeginInfo{ .renderPass = info.layout->renderPass, .framebuffer = framebuffer->getState().framebuffer, .renderArea = framebuffer->getState().scissor, .clearValueCount = uint32_t(clearValues.size()), .pClearValues = reinterpret_cast<vkh::VkClearValue*>(clearValues.data()) }, VK_SUBPASS_CONTENTS_INLINE);
+                device->dispatch->CmdBeginRenderPass(commandBuffer, vkh::VkRenderPassBeginInfo{ .renderPass = info.framebuffer->getInfo().renderPass, .framebuffer = framebuffer->getState().framebuffer, .renderArea = framebuffer->getState().scissor, .clearValueCount = uint32_t(clearValues.size()), .pClearValues = reinterpret_cast<vkh::VkClearValue*>(clearValues.data()) }, VK_SUBPASS_CONTENTS_INLINE);
                 device->dispatch->CmdSetViewport(commandBuffer, 0u, 1u, framebuffer->getState().viewport);
                 device->dispatch->CmdSetScissor(commandBuffer, 0u, 1u, framebuffer->getState().scissor);
                 device->dispatch->CmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
