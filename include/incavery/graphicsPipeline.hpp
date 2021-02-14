@@ -45,11 +45,13 @@ namespace icv {
         VkPipeline pipeline = VK_NULL_HANDLE;
         GraphicsPipelineInfo info = {};
 
+        // 
         virtual void constructor(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<GraphicsPipelineInfo> info = GraphicsPipelineInfo{}) {
             this->device = device;
             this->info = info;
         };
 
+        // 
         public:
         GraphicsPipeline(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<GraphicsPipelineInfo> info = GraphicsPipelineInfo{}) { this->constructor(device, info); };
         GraphicsPipeline() {};

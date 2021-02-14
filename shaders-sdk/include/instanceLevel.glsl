@@ -24,7 +24,7 @@ struct InstanceInfo
     uint32_t geometrylevelId;
     uint32_t geometryLevelCount;
 
-    GeometryLevel geometryInfoReference;
+    GeometryLevel geometryLevelReference;
     accelerationStructureEXT accelerationReference;
 };
 
@@ -32,9 +32,9 @@ struct InstanceInfo
 layout (binding = 0, set = INSTANCE_LEVEL_MAP, scalar) buffer InstanceBuffer { InstanceInfo instances[]; };
 
 // 
-GeometryInfo readGeometryInfo(InstanceInfo instance, in uint geometryId) 
+GeometryInfo readGeometryInfo(inout InstanceInfo instance, in uint geometryId) 
 {
-    return instance.geometryInfoReference.geometries[geometryId];
+    return instance.geometryLevelReference.geometries[geometryId];
 };
 
 // 

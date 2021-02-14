@@ -133,6 +133,18 @@ namespace icv {
             return info;
         };
 
+
+        //
+        virtual const vkf::Vector<VkAccelerationStructureGeometryKHR>& getIndirectBuildBuffer() const {
+            return indirectBuildBuffer;
+        };
+
+        //
+        virtual vkf::Vector<VkAccelerationStructureGeometryKHR>& getIndirectBuildBuffer() {
+            return indirectBuildBuffer;
+        };
+
+
         //
         virtual const vkf::Vector<GeometryInfo>& getBuffer() const {
             return geometries->getDeviceBuffer();

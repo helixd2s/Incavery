@@ -26,7 +26,7 @@ namespace icv {
         uint32_t geometryLevelCount = 0u;
 
         // used by GLSL (directly access), buffer reference
-        uint64_t geometryInfoReference = 0ull;
+        uint64_t geometryLevelReference = 0ull;
 
         // acceleration structure reference (bottom level)
         uint64_t accelerationReference = 0ull; 
@@ -34,7 +34,7 @@ namespace icv {
         // 
         void acceptGeometryLevel(vkh::uni_ptr<GeometryLevel> geometryLevel) {
             this->accelerationReference = geometryLevel->getDeviceAddress();
-            this->geometryInfoReference = geometryLevel->getBuffer().deviceAddress();
+            this->geometryLevelReference = geometryLevel->getBuffer().deviceAddress();
         }
     };
 

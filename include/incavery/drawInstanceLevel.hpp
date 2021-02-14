@@ -30,6 +30,12 @@ namespace icv {
 
         // for indirect acceleration structure GPU supported
         uint64_t geometryLevelIndirectReference = 0ull;
+
+        // 
+        void acceptGeometryLevel(vkh::uni_ptr<GeometryLevel> geometryLevel) {
+            this->geometryLevelIndirectReference = geometryLevel->getIndirectBuildBuffer().deviceAddress();
+            this->geometryLevelReference = geometryLevel->getBuffer().deviceAddress();
+        }
     };
 
     // 
@@ -159,7 +165,7 @@ namespace icv {
         virtual void setGeometryReferences(const std::vector<vkh::uni_ptr<GeometryLevel>>& geometries) {
             // reload geometries from list to reference
             for (intptr_t i=0;i<info.instances.size();i++) {
-                info.instances[i].geometryLevelReference = geometries[info.instances[i].geometryLevelId]->getBuffer().deviceAddress();
+                info.instances[i].acceptGeometryLevel(geometries[info.instances[i].geometryLevelId]);
             };
         };
 
