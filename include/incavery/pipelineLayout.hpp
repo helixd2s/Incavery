@@ -33,9 +33,8 @@ namespace icv {
     };
 
     // 
-    class PipelineLayout {
+    class PipelineLayout: public DeviceBased {
         public:
-        vkh::uni_ptr<vkf::Device> device = {};
         DefinedDescriptorSetLayout definedLayouts = {};
         VkPipelineLayout layout = VK_NULL_HANDLE;
         std::vector<VkDescriptorSet> descriptorSets = {};

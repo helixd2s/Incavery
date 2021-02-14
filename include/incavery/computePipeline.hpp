@@ -21,11 +21,8 @@ namespace icv {
     };
 
     // 
-    class ComputePipeline {
-        protected:
-        vkh::uni_ptr<vkf::Device> device = {};
-
-        // 
+    class ComputePipeline: public DeviceBased {
+        protected: // 
         VkPipeline pipeline = VK_NULL_HANDLE;
         ComputePipelineInfo info = {};
 

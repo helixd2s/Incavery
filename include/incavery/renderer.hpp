@@ -37,10 +37,9 @@ namespace icv {
         vkh::uni_ptr<ComputePipeline> rayTraceCompute = {};
     };
 
-
-    class Renderer2 {
+    // 
+    class Renderer2: public DeviceBased {
         protected:
-        vkh::uni_ptr<vkf::Device> device = {};
         RendererInfo info = {};
 
         // 

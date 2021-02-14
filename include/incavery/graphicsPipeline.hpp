@@ -40,10 +40,8 @@ namespace icv {
     };
 
     // 
-    class GraphicsPipeline {
+    class GraphicsPipeline: public DeviceBased {
         protected:
-        vkh::uni_ptr<vkf::Device> device = {};
-        
         VkPipeline pipeline = VK_NULL_HANDLE;
         GraphicsPipelineInfo info = {};
 
