@@ -97,7 +97,7 @@ namespace icv {
 
     //
     template<class M = MaterialSource>
-    class MaterialSet : public DeviceBased 
+    class MaterialSet : public MaterialSetBase
     {
         protected: 
         MaterialSetInfo<M> info = {};

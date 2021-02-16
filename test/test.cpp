@@ -289,17 +289,21 @@ int main() {
     });
 
     // 
-    vkh::uni_ptr<icv::Renderer<icv::MaterialSource>> renderer = std::make_shared<icv::Renderer<icv::MaterialSource>>(device, icv::RendererInfo<icv::MaterialSource>{
-        .geometryRegistry = geometryRegistry, 
+    vkh::uni_ptr<icv::DrawInstanceLevel> drawInstanceLevel = std::make_shared<icv::DrawInstanceLevel>(device, icv::DrawInstanceLevelInfo{
+        .maxInstanceCount = 1u
+    });
+
+    // 
+    vkh::uni_ptr<icv::Renderer> renderer = std::make_shared<icv::Renderer>(device, icv::RendererInfo{
         .instanceLevel = instanceLevel,
-        .materialSet = materialSet
+        .drawInstanceLevel = drawInstanceLevel,
+        .geometryRegistry = geometryRegistry, 
+        .materialSet = std::dynamic_pointer_cast<icv::MaterialSetBase>(materialSet.get_shared())
     });
 
     //
     vkh::uni_ptr<icv::Framebuffer> framebuffer = std::make_shared<icv::Framebuffer>(device, icv::FramebufferInfo{
-        .size = { downscaled.width, downscaled.height, 1u },
-        .layout = renderer->getFramebufferLayout(),
-        .renderPass = renderer->createRenderPass()
+        .size = { downscaled.width, downscaled.height, 1u }
     });
 
     //
@@ -331,7 +335,8 @@ int main() {
     //geometryRegistry->pushBuffer(texcoordsBuffer);
 
     //
-    instanceLevel->pushInstance(icv::InstanceInfo{ }, icv::HostInfo{ .geometryLevel = geometryLevel });
+    instanceLevel->pushInstance(icv::InstanceInfo{ });
+    drawInstanceLevel->pushInstance(icv::DrawInstance{  });
 
 
     // 
@@ -422,17 +427,55 @@ int main() {
         .baseColorTexture = 0
     });
 
+    //
+    icv::DescriptorSetSources descriptorSetSources = {
+        .framebuffer = framebuffer,
+        .geometryRegistry = geometryRegistry,
+        .instanceLevel = instanceLevel,
+        .materialSet = std::dynamic_pointer_cast<icv::MaterialSetBase>(materialSet.get_shared()),
+        .drawInstanceLevel = drawInstanceLevel
+    };
+
+    //
+    vkh::uni_ptr<icv::PipelineLayout> pipelineLayoutIcv = std::make_shared<icv::PipelineLayout>(device, icv::PipelineLayoutInfo{
+
+    });
+
+    // 
+    pipelineLayoutIcv->createPipelineLayout({ constantsLayout });
+    pipelineLayoutIcv->makeDescriptorSets(descriptorSetSources);
 
     // create renderer
     framebuffer->createFramebuffer(queue);
-    renderer->setFramebuffer(framebuffer);
-    renderer->createPipelineLayout({ constantsLayout });
-    renderer->createPipeline(icv::PipelineCreateInfo{});
-    renderer->makeDescriptorSets();
+
+    //
+    vkh::uni_ptr<icv::GraphicsPipeline> graphicsPipeline = std::make_shared<icv::GraphicsPipeline>(device, icv::GraphicsPipelineInfo{
+        .framebuffer = framebuffer,
+        .layout = pipelineLayoutIcv,
+        .path = {
+            .vertex = "./shaders/translucent.vert.spv",
+            .geometry = "./shaders/translucent.geom.spv",
+            .fragment = "./shaders/translucent.frag.spv"
+        }
+    });
+
+    //
+    vkh::uni_ptr<icv::ComputePipeline> rayTracingPipeline = std::make_shared<icv::ComputePipeline>(device, icv::ComputePipelineInfo{
+        .layout = pipelineLayoutIcv,
+        .path = {
+            .compute = "./shaders/rayTracing.comp.spv"
+        }
+    });
+
 
     // 
-    auto& descriptorSets = renderer->editDescriptorSets();
-    auto& pipelineLayout = renderer->getPipelineLayout();
+    renderer->setFramebuffer(framebuffer);
+    renderer->pushGraphicsPipeline(graphicsPipeline);
+    renderer->changeRayTracingPipeline(rayTracingPipeline);
+
+    // 
+    auto& descriptorSets = pipelineLayoutIcv->descriptorSets;
+    auto& pipelineLayout = pipelineLayoutIcv->layout;
 
     // additional descriptor set
     descriptorSets.push_back(constantsSet);

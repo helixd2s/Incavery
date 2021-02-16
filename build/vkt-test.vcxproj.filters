@@ -867,10 +867,16 @@
     <ClInclude Include="D:\Data\Projects\Incavery\include\glm\vector_relational.hpp">
       <Filter>glm</Filter>
     </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\computePipeline.hpp">
+      <Filter>incavery</Filter>
+    </ClInclude>
     <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\core.hpp">
       <Filter>incavery</Filter>
     </ClInclude>
     <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\dataSet.hpp">
+      <Filter>incavery</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\drawInstanceLevel.hpp">
       <Filter>incavery</Filter>
     </ClInclude>
     <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\framebuffer.hpp">
@@ -882,10 +888,16 @@
     <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\geometryRegistry.hpp">
       <Filter>incavery</Filter>
     </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\graphicsPipeline.hpp">
+      <Filter>incavery</Filter>
+    </ClInclude>
     <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\instanceLevel.hpp">
       <Filter>incavery</Filter>
     </ClInclude>
     <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\materialSet.hpp">
+      <Filter>incavery</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\pipelineLayout.hpp">
       <Filter>incavery</Filter>
     </ClInclude>
     <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\renderer.hpp">

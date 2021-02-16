@@ -32,14 +32,30 @@ namespace icv {
         vkh::uni_ptr<DrawInstanceLevel> drawInstanceLevel = {};
     };
 
+    //
+    struct PipelineLayoutInfo {
+
+    };
+
     // 
     class PipelineLayout: public DeviceBased {
         public:
+        PipelineLayoutInfo info = {};
         DefinedDescriptorSetLayout definedLayouts = {};
         VkPipelineLayout layout = VK_NULL_HANDLE;
         std::vector<VkDescriptorSet> descriptorSets = {};
 
-        public: 
+
+        // 
+        virtual void constructor(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<PipelineLayoutInfo> info = PipelineLayoutInfo{}) {
+            this->device = device;
+            this->info = info;
+        };
+
+        // 
+    public:
+        PipelineLayout(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<PipelineLayoutInfo> info = PipelineLayoutInfo{}) { this->constructor(device, info); };
+        PipelineLayout() {};
 
         //
         virtual std::vector<VkDescriptorSet>& makeDescriptorSets(vkh::uni_arg<DescriptorSetSources> info = DescriptorSetSources{})

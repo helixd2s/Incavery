@@ -604,13 +604,17 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="D:\Data\Projects\Incavery\include\glm\vec3.hpp" />
     <ClInclude Include="D:\Data\Projects\Incavery\include\glm\vec4.hpp" />
     <ClInclude Include="D:\Data\Projects\Incavery\include\glm\vector_relational.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\computePipeline.hpp" />
     <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\core.hpp" />
     <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\dataSet.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\drawInstanceLevel.hpp" />
     <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\framebuffer.hpp" />
     <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\geometryLevel.hpp" />
     <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\geometryRegistry.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\graphicsPipeline.hpp" />
     <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\instanceLevel.hpp" />
     <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\materialSet.hpp" />
+    <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\pipelineLayout.hpp" />
     <ClInclude Include="D:\Data\Projects\Incavery\include\incavery\renderer.hpp" />
     <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\buffer-allocation.hpp" />
     <ClInclude Include="D:\Data\Projects\Incavery\include\vkf\device-extensions.hpp" />

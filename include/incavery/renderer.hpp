@@ -38,7 +38,7 @@ namespace icv {
     };
 
     // 
-    class Renderer2: public DeviceBased {
+    class Renderer: public DeviceBased {
         protected:
         RendererInfo info = {};
 
@@ -50,8 +50,14 @@ namespace icv {
 
         // 
         public:
-        Renderer2(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<RendererInfo> info = RendererInfo{}) { this->constructor(device, info); };
-        Renderer2() {};
+        Renderer(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<RendererInfo> info = RendererInfo{}) { this->constructor(device, info); };
+        Renderer() {};
+
+
+        //
+        virtual void changeRayTracingPipeline(vkh::uni_ptr<ComputePipeline> computePipeline = {}) {
+            this->info.rayTraceCompute = computePipeline;
+        };
 
 
         //

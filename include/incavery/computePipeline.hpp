@@ -17,7 +17,7 @@ namespace icv {
     //
     struct ComputePipelineInfo {
         vkh::uni_ptr<PipelineLayout> layout = {};
-        ComputePipelineSource source = {};
+        ComputePipelinePath path = {};
     };
 
     // 
@@ -41,7 +41,7 @@ namespace icv {
         virtual void createPipeline() 
         {   
             if (!this->pipeline) {
-                this->pipeline = vkt::createCompute(device->dispatch, info.source.path, info.layout->layout, device->pipelineCache);
+                this->pipeline = vkt::createCompute(device->dispatch, info.path.compute, info.layout->layout, device->pipelineCache);
             };
         };
 

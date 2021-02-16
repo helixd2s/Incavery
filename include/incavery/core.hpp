@@ -14,7 +14,7 @@ namespace icv {
     };
 
     // 
-    struct GraphicsPipelineSource 
+    struct GraphicsPipelinePath 
     {
         std::string vertex = "";
         std::string geometry = "";
@@ -22,9 +22,9 @@ namespace icv {
     };
 
     // 
-    struct ComputePipelineSource
+    struct ComputePipelinePath 
     {
-        std::string path = "";
+        std::string compute = "";
     };
 
     // Vulkan needs f&cking SoA, EVERY TIME!

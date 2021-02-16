@@ -18,7 +18,7 @@ namespace icv {
     struct GraphicsPipelineInfo {
         vkh::uni_ptr<Framebuffer> framebuffer = {};
         vkh::uni_ptr<PipelineLayout> layout = {};
-        GraphicsPipelineSource source = {};
+        GraphicsPipelinePath path = {};
     };
 
     // 
@@ -82,9 +82,9 @@ namespace icv {
 
             // opaque rasterization
             pipelineInfo.stages = {
-                vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info.source.vertex), VK_SHADER_STAGE_VERTEX_BIT),
-                vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info.source.geometry), VK_SHADER_STAGE_GEOMETRY_BIT),
-                vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info.source.fragment), VK_SHADER_STAGE_FRAGMENT_BIT)
+                vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info.path.vertex), VK_SHADER_STAGE_VERTEX_BIT),
+                vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info.path.geometry), VK_SHADER_STAGE_GEOMETRY_BIT),
+                vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info.path.fragment), VK_SHADER_STAGE_FRAGMENT_BIT)
             };
             vkt::handleVk(device->dispatch->CreateGraphicsPipelines(device->pipelineCache, 1u, pipelineInfo, nullptr, &pipeline));
         };
