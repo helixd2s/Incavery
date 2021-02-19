@@ -61,7 +61,7 @@ namespace icv {
 
 
         //
-        virtual uintptr_t changeGeometry(uintptr_t geometryId, vkh::uni_ptr<GeometryLevel> geometryLevel = {})
+        virtual uintptr_t changeGeometryLevel(uintptr_t geometryId, vkh::uni_ptr<GeometryLevel> geometryLevel = {})
         {   // add instance into registry
             if (this->info.geometryLevels.size() <= geometryId) { this->info.geometryLevels.resize(geometryId + 1u); };
             this->info.geometryLevels[geometryId] = geometryLevel;
@@ -69,7 +69,7 @@ namespace icv {
         };
 
         //
-        virtual uintptr_t pushGeometry(vkh::uni_ptr<GeometryLevel> info = {})
+        virtual uintptr_t pushGeometryLevel(vkh::uni_ptr<GeometryLevel> info = {})
         {   // add instance into registry
             uintptr_t geometryId = this->info.geometryLevels.size();
             this->info.geometryLevels.push_back(info);
@@ -111,6 +111,7 @@ namespace icv {
         virtual void setGeometryReferences() 
         {
             this->info.drawInstanceLevel->setGeometryReferences(this->info.geometryLevels);
+            this->info.instanceLevel->setGeometryReferences(this->info.geometryLevels);
         };
 
 

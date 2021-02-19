@@ -6,6 +6,7 @@
 #include "./common.glsl"
 #include "./geometryRegistry.glsl"
 #include "./instanceLevel.glsl"
+#include "./drawInstanceLevel.glsl"
 #include "./material.glsl"
 
 #ifndef FRAMEBUFFER_MAP
@@ -34,7 +35,7 @@ IntersectionInfo rasterization(in RayData rays, in float maxT) {
 
     // compute hitT from rasterization
     if (any(greaterThan(result.barycentric, 0.f.xxx))) {
-        GeometryInfo geometryInfo = readGeometryInfo(result.instanceId, result.geometryId);
+        GeometryInfo geometryInfo = readGeometryInfoFromDrawInstance(result.instanceId, result.geometryId);
         mat3x4 vertices = readBindings3x4(bindings[geometryInfo.vertex], readIndices(geometryInfo.index, result.primitiveId));
         vec4 origin = vertices * result.barycentric;
         result.hitT = distance(rays.origin.xyz, origin.xyz);

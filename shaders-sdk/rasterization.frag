@@ -14,6 +14,7 @@
 #include "./include/framebuffer.glsl"
 #include "./include/geometryRegistry.glsl"
 #include "./include/instanceLevel.glsl"
+#include "./include/drawInstanceLevel.glsl"
 #include "./include/material.glsl"
 #include "./include/external.glsl"
 //#include "./include/rayTracing.glsl"
@@ -28,9 +29,11 @@ layout (location = 0) in vec4 transformed;
 layout (location = 1) in vec4 original;
 layout (location = 2) in vec4 barycentric;
 layout (location = 3) in vec4 normals;
-layout (location = 4) flat in uint primitiveId;
-layout (location = 5) flat in uint vertexIndex;
-//layout (location = 3) flat in uvec4 indices;
+layout (location = 4) flat in uvec4 parameters;
+
+#define primitiveId parameters.x
+#define vertexIndex parameters.y
+#define drawIndex parameters.z
 
 // 
 layout(push_constant) uniform pushConstants {
@@ -43,7 +46,7 @@ layout(push_constant) uniform pushConstants {
 // 
 void main() 
 {
-    GeometryInfo geometryInfo = readGeometryInfo(pushed.instanceId, pushed.geometryId);
+    GeometryInfo geometryInfo = readGeometryInfoFromDrawInstance(pushed.instanceId, pushed.geometryId + drawIndex);
     InstanceInfo instanceInfo = instances[pushed.instanceId];
 
     // 

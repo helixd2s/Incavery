@@ -8,6 +8,7 @@
 #include "./include/framebuffer.glsl"
 #include "./include/geometryRegistry.glsl"
 #include "./include/instanceLevel.glsl"
+#include "./include/drawInstanceLevel.glsl"
 #include "./include/material.glsl"
 #include "./include/external.glsl"
 
@@ -21,14 +22,22 @@ layout (triangle_strip, max_vertices = 3) out;
 //
 //layout (location = 0) in vec4 position[3];
 //layout (location = 1) in flat uint indices[3];
+layout (location = 0) in flat uvec4 passed[3];
 
 // 
 layout (location = 0) out vec4 transformed;
 layout (location = 1) out vec4 original;
 layout (location = 2) out vec4 barycentric;
 layout (location = 3) out vec4 normals;
-layout (location = 4) flat out uint primitiveId;
-layout (location = 5) flat out uint vertexIndex;
+layout (location = 4) flat out uvec4 parameters;
+
+#define primitiveId parameters.x
+#define vertexIndex parameters.y
+#define drawIndex parameters.z
+
+#define gl_DrawID passed[0].x
+
+//gl_DrawID
 
 // 
 layout(push_constant) uniform pushConstants {
@@ -42,16 +51,19 @@ layout(push_constant) uniform pushConstants {
 void main() 
 {
     // 
-    GeometryInfo geometryInfo = readGeometryInfo(pushed.instanceId, pushed.geometryId);
+    GeometryInfo geometryInfo = readGeometryInfoFromDrawInstance(pushed.instanceId, pushed.geometryId + gl_DrawID);
     uvec3 indices = readIndices(geometryInfo.index, gl_PrimitiveID);
     mat3x4 objectspace = readBindings3x4(bindings[geometryInfo.vertex], indices);
 
     // 
-    transformVertices(objectspace, pushed.instanceId, pushed.geometryId);
+    transformVerticesFromDrawInstance(objectspace, pushed.instanceId, pushed.geometryId);
     normals = vec4(normalize(cross(objectspace[1].xyz-objectspace[0].xyz, objectspace[2].xyz-objectspace[0].xyz)), 1.f);
 
     // finalize results
     primitiveId = gl_PrimitiveIDIn;
+    drawIndex = gl_DrawID;
+
+    // 
     for (int i=0;i<3;i++) 
     {
         transformed = objectspace[i];

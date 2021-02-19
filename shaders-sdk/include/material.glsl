@@ -6,7 +6,7 @@
 #include "./common.glsl"
 
 #ifndef MATERIAL_MAP
-#define MATERIAL_MAP 3
+#define MATERIAL_MAP 4
 #endif
 
 // 

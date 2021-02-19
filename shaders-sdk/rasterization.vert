@@ -16,6 +16,8 @@
 //layout (location = 0) out vec4 position;
 //layout (location = 1) out flat uint indices;
 
+layout (location = 0) out flat uvec4 passed;
+
 // 
 void main() 
 {
@@ -23,4 +25,5 @@ void main()
     //position = vec4(uintBitsToFloat(vertex.xyz), 1.f); // TODO: fp16 support
     //gl_Position = position;
     gl_Position = vec4(0.f.xxx,1.f);
+    passed = uvec4(gl_DrawID, 0u, 0u, 0u);
 };

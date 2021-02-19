@@ -20,7 +20,7 @@ namespace icv {
         uint32_t sbtOffsetId = 0u;
 
         // WTF?! It used by renderer!
-        uint32_t geometrylevelId = 0u;
+        uint32_t geometryLevelId = 0u;
 
         // 
         uint32_t geometryLevelCount = 0u;
@@ -287,6 +287,14 @@ namespace icv {
             {   // 
                 this->buildCommand(commandBuffer);
             });
+        };
+
+        //
+        virtual void setGeometryReferences(const std::vector<vkh::uni_ptr<GeometryLevel>>& geometries) {
+            // reload geometries from list to reference
+            for (intptr_t i = 0; i < info.instances.size(); i++) {
+                info.instances[i].acceptGeometryLevel(geometries[info.instances[i].geometryLevelId]);
+            };
         };
     };
 

@@ -335,8 +335,12 @@ int main() {
     //geometryRegistry->pushBuffer(texcoordsBuffer);
 
     //
-    instanceLevel->pushInstance(icv::InstanceInfo{ });
-    drawInstanceLevel->pushInstance(icv::DrawInstance{  });
+    instanceLevel->pushInstance(icv::InstanceInfo{ 
+        .geometryLevelId = 0u
+    });
+    drawInstanceLevel->pushInstance(icv::DrawInstance{  
+        .geometryLevelId = 0u
+    });
 
 
     // 
@@ -472,6 +476,10 @@ int main() {
     renderer->setFramebuffer(framebuffer);
     renderer->pushGraphicsPipeline(graphicsPipeline);
     renderer->changeRayTracingPipeline(rayTracingPipeline);
+
+    // 
+    renderer->pushGeometryLevel(geometryLevel);
+    renderer->setGeometryReferences();
 
     // 
     auto& descriptorSets = pipelineLayoutIcv->descriptorSets;
