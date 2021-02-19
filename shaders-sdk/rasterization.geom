@@ -35,7 +35,8 @@ layout (location = 4) flat out uvec4 parameters;
 #define vertexIndex parameters.y
 #define drawIndex parameters.z
 
-#define gl_DrawID passed[0].x
+//#define gl_DrawID passed[0].x
+#define gl_DrawID 0u
 
 //gl_DrawID
 
@@ -60,6 +61,7 @@ void main()
     normals = vec4(normalize(cross(objectspace[1].xyz-objectspace[0].xyz, objectspace[2].xyz-objectspace[0].xyz)), 1.f);
 
     // finalize results
+    parameters = uvec4(0u,0u,0u,0u);
     primitiveId = gl_PrimitiveIDIn;
     drawIndex = gl_DrawID;
 
