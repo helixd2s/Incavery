@@ -172,11 +172,11 @@ namespace icv {
                         DrawInfo drawInfo = DrawInfo{0u, 0u, PushConstantInfo{I, G, 0u, 0u}, geometryLevelInfo.geometries[G].primitive};
 
                         // CAUTION!!! You may get BSoD here!
-                        info.pipelines[instanceInfo.programId]->createRenderingCommand(commandBuffer, info.framebuffer, drawInfo);
+                        //info.pipelines[instanceInfo.programId]->createRenderingCommand(commandBuffer, info.framebuffer, drawInfo);
                     };
 
                     // TODO: instances support (needs pre-compute shader)
-                    //info.pipelines[instanceInfo.programId]->createRenderingCommand(commandBuffer, info.framebuffer, info.drawInstanceLevel, I);
+                    info.pipelines[instanceInfo.programId]->createRenderingCommand(commandBuffer, info.framebuffer, info.drawInstanceLevel, I);
                 };
 
                 //
