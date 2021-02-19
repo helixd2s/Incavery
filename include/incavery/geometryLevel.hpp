@@ -107,6 +107,7 @@ namespace icv {
                 .count = info->maxGeometryCount,
                 .usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT
             });
+            this->indirectBuildBuffer = vkf::Vector<VkAccelerationStructureGeometryKHR>(createBuffer(BufferCreateInfo{ .usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, .size = sizeof(VkAccelerationStructureGeometryKHR) * info->maxGeometryCount, .stride = sizeof(VkAccelerationStructureGeometryKHR), .memoryUsage = VMA_MEMORY_USAGE_GPU_ONLY }));
         };
 
         public: 

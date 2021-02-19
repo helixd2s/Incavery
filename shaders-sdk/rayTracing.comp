@@ -61,4 +61,6 @@ void main()
     vec4 coloring = vec4(testRasterData.xyz, 1.f);
     if (results.hitT >= 10000.f) { coloring.xyz = vec3(0.1f); };
     imageStore(fOutput[0], ivec2(launchId), vec4(coloring.xyz, 1.f));
+
+    //imageStore(fOutput[0], ivec2(launchId), vec4(0.1f.xxx, 1.f));
 };

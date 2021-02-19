@@ -338,10 +338,12 @@ int main() {
     {
         uintptr_t geometryLevelId = renderer->pushGeometryLevel(geometryLevel);
         instanceLevel->pushInstance(icv::InstanceInfo{
-            .geometryLevelId = geometryLevelId
+            .geometryLevelId = uint32_t(geometryLevelId)
         });
+
+        // WARNING! We getting BSoD when try to rasterize something
         drawInstanceLevel->pushInstance(icv::DrawInstance{
-            .geometryLevelId = geometryLevelId
+           .geometryLevelId = uint32_t(geometryLevelId)
         });
     };
 

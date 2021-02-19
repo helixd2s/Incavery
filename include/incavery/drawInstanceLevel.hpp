@@ -184,7 +184,7 @@ namespace icv {
         virtual void createIndirectBuffers() {
             if (this->indirectDrawBuffers.size() < this->info.instances.size()) { this->indirectDrawBuffers.resize(this->info.instances.size()); };
             for (uintptr_t I = 0; I < this->info.instances.size(); I++) {
-                this->indirectDrawBuffers[I] = vkf::Vector<VkDrawIndirectCommand>(createBuffer(BufferCreateInfo{ .usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT, .size = sizeof(VkDrawIndirectCommand) * this->info.instances[I].geometryLevelCount, .stride = sizeof(VkDrawIndirectCommand), .memoryUsage = VMA_MEMORY_USAGE_GPU_ONLY }));
+                this->indirectDrawBuffers[I] = vkf::Vector<VkDrawIndirectCommand>(createBuffer(BufferCreateInfo{ .usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, .size = sizeof(VkDrawIndirectCommand) * this->info.instances[I].geometryLevelCount, .stride = sizeof(VkDrawIndirectCommand), .memoryUsage = VMA_MEMORY_USAGE_GPU_ONLY }));
                 info.instances[I].indirectDrawReference = this->indirectDrawBuffers[I].deviceAddress();
             };
         };
@@ -210,7 +210,7 @@ namespace icv {
 
             if (info->geometryLevelCount > 0) {
                 if (this->indirectDrawBuffers.size() <= instanceId) { this->indirectDrawBuffers.resize(instanceId + 1u); };
-                this->indirectDrawBuffers[instanceId] = vkf::Vector<VkDrawIndirectCommand>(createBuffer(BufferCreateInfo{ .usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT, .size = sizeof(VkDrawIndirectCommand) * info->geometryLevelCount, .stride = sizeof(VkDrawIndirectCommand), .memoryUsage = VMA_MEMORY_USAGE_GPU_ONLY }));
+                this->indirectDrawBuffers[instanceId] = vkf::Vector<VkDrawIndirectCommand>(createBuffer(BufferCreateInfo{ .usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, .size = sizeof(VkDrawIndirectCommand) * info->geometryLevelCount, .stride = sizeof(VkDrawIndirectCommand), .memoryUsage = VMA_MEMORY_USAGE_GPU_ONLY }));
                 this->info.instances[instanceId].indirectDrawReference = this->indirectDrawBuffers[instanceId].deviceAddress();
             };
 
@@ -227,7 +227,7 @@ namespace icv {
 
             if (info->geometryLevelCount > 0) {
                 if (this->indirectDrawBuffers.size() <= instanceId) { this->indirectDrawBuffers.resize(instanceId + 1u); };
-                this->indirectDrawBuffers[instanceId] = vkf::Vector<VkDrawIndirectCommand>(createBuffer(BufferCreateInfo{ .usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT, .size = sizeof(VkDrawIndirectCommand) * info->geometryLevelCount, .stride = sizeof(VkDrawIndirectCommand), .memoryUsage = VMA_MEMORY_USAGE_GPU_ONLY }));
+                this->indirectDrawBuffers[instanceId] = vkf::Vector<VkDrawIndirectCommand>(createBuffer(BufferCreateInfo{ .usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, .size = sizeof(VkDrawIndirectCommand) * info->geometryLevelCount, .stride = sizeof(VkDrawIndirectCommand), .memoryUsage = VMA_MEMORY_USAGE_GPU_ONLY }));
                 this->info.instances[instanceId].indirectDrawReference = this->indirectDrawBuffers[instanceId].deviceAddress();
             };
 

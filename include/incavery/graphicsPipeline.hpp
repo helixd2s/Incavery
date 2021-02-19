@@ -49,6 +49,11 @@ namespace icv {
         virtual void constructor(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<GraphicsPipelineInfo> info = GraphicsPipelineInfo{}) {
             this->device = device;
             this->info = info;
+
+            // if framebuffer was found
+            if (this->info.framebuffer.has() && this->info.layout.has()) {
+                this->createPipeline();
+            }
         };
 
         // 
@@ -81,11 +86,10 @@ namespace icv {
             };
 
             // opaque rasterization
-            pipelineInfo.stages = {
-                vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info.path.vertex), VK_SHADER_STAGE_VERTEX_BIT),
-                vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info.path.geometry), VK_SHADER_STAGE_GEOMETRY_BIT),
-                vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info.path.fragment), VK_SHADER_STAGE_FRAGMENT_BIT)
-            };
+            pipelineInfo.stages = {};
+            if (info.path.vertex != "") { pipelineInfo.stages.push_back(vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info.path.vertex), VK_SHADER_STAGE_VERTEX_BIT)); };
+            if (info.path.geometry != "") { pipelineInfo.stages.push_back(vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info.path.geometry), VK_SHADER_STAGE_GEOMETRY_BIT)); };
+            if (info.path.fragment != "") { pipelineInfo.stages.push_back(vkt::makePipelineStageInfo(device->dispatch, vkt::readBinary(info.path.fragment), VK_SHADER_STAGE_FRAGMENT_BIT)); };
             vkt::handleVk(device->dispatch->CreateGraphicsPipelines(device->pipelineCache, 1u, pipelineInfo, nullptr, &pipeline));
         };
 

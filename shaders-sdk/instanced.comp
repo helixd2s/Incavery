@@ -24,9 +24,11 @@ void main()
     uvec2 launchId = gl_GlobalInvocationID.xy;
     for (uint I=0;I<drawInstances[launchId.y].geometryLevelCount;I+=gl_WorkGroupSize.x) {
         const uint i = I+launchId.x;
-        drawInstances[launchId.y].drawIndirectReference.geometries[i].vertexCount = drawInstances[launchId.y].geometryLevelReference.geometries[i].primitive.count*3u;
-        drawInstances[launchId.y].drawIndirectReference.geometries[i].instanceCount = 1u;
-        drawInstances[launchId.y].drawIndirectReference.geometries[i].firstVertex = 0u;
-        drawInstances[launchId.y].drawIndirectReference.geometries[i].firstInstance = 0u;
+        if (i < drawInstances[launchId.y].geometryLevelCount) {
+            drawInstances[launchId.y].drawIndirectReference.geometries[i].vertexCount = drawInstances[launchId.y].geometryLevelReference.geometries[i].primitive.count*3u;
+            drawInstances[launchId.y].drawIndirectReference.geometries[i].instanceCount = 1u;
+            drawInstances[launchId.y].drawIndirectReference.geometries[i].firstVertex = 0u;
+            drawInstances[launchId.y].drawIndirectReference.geometries[i].firstInstance = 0u;
+        };
     };
 };

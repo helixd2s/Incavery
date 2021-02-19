@@ -5,7 +5,7 @@
 #include "./constants.glsl"
 
 //
-layout(binding = 0, set = 4) uniform Constants {
+layout(binding = 0, set = 5) uniform Constants {
     mat4x4 perspective;
     mat4x4 perspectiveInverse;
     mat3x4 lookAt;
@@ -13,7 +13,7 @@ layout(binding = 0, set = 4) uniform Constants {
 } constants;
 
 //
-layout(binding = 1, set = 4, rgba32f) uniform image2D fOutput[];
+layout(binding = 1, set = 5, rgba32f) uniform image2D fOutput[];
 
 // 
 vec4 GetTextureLinear(in vec2 txc) {

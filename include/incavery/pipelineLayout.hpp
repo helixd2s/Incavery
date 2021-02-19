@@ -60,7 +60,7 @@ namespace icv {
         //
         virtual std::vector<VkDescriptorSet>& makeDescriptorSets(vkh::uni_arg<DescriptorSetSources> info = DescriptorSetSources{})
         {   //
-            if (this->descriptorSets.size() < 5u) { this->descriptorSets.resize(4u); };
+            if (this->descriptorSets.size() < 5u) { this->descriptorSets.resize(5u); };
             this->descriptorSets[0u] = info->framebuffer->makeDescriptorSet( DescriptorInfo{ .layout = definedLayouts.framebuffer } );
             this->descriptorSets[1u] = info->geometryRegistry->makeDescriptorSet( DescriptorInfo{ .layout = definedLayouts.geometryRegistry } );
             this->descriptorSets[2u] = info->instanceLevel->makeDescriptorSet( DescriptorInfo{ .layout = definedLayouts.instanceLevel } );

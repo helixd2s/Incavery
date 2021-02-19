@@ -30,6 +30,9 @@ namespace icv {
         virtual void constructor(vkh::uni_ptr<vkf::Device> device, vkh::uni_arg<ComputePipelineInfo> info = ComputePipelineInfo{}) {
             this->device = device;
             this->info = info;
+
+            // 
+            if (info->path.compute != "" && this->info.layout.has()) { this->createPipeline(); };
         };
 
         // 
