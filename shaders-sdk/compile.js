@@ -23,6 +23,7 @@ compileShader("rasterization.geom", "translucent.geom");
 compileShader("rasterization.vert", "translucent.vert");
 
 compileShader("rayTracing.comp", "rayTracing.comp");
+compileShader("instanced.comp", "instanced.comp");
 
 compileShader("render.frag", "render.frag");
 compileShader("render.vert", "render.vert");

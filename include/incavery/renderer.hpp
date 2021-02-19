@@ -144,7 +144,7 @@ namespace icv {
 
                 // compute indirect operations
                 if (info.indirectCompute.has()) {
-                    info.indirectCompute->createComputeCommand(commandBuffer, glm::uvec3(instanceLevelInfo.instances.size(), 1u, 1u), glm::uvec4(0u));
+                    info.indirectCompute->createComputeCommand(commandBuffer, glm::uvec3(1u, instanceLevelInfo.instances.size(), 1u), glm::uvec4(0u));
                     vkt::commandBarrier(device->dispatch, commandBuffer);
                 } else {
                     std::cerr << "Indirect compute not defined" << std::endl;

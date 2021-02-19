@@ -35,7 +35,8 @@ namespace icv {
         void acceptGeometryLevel(vkh::uni_ptr<GeometryLevel> geometryLevel) {
             this->accelerationReference = geometryLevel->getDeviceAddress();
             this->geometryLevelReference = geometryLevel->getBuffer().deviceAddress();
-        }
+            this->geometryLevelCount = geometryLevel->getInfo().geometries.size();
+        };
     };
 
     // 

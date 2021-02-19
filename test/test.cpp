@@ -431,14 +431,7 @@ int main() {
         .baseColorTexture = 0
     });
 
-    //
-    icv::DescriptorSetSources descriptorSetSources = {
-        .framebuffer = framebuffer,
-        .geometryRegistry = geometryRegistry,
-        .instanceLevel = instanceLevel,
-        .materialSet = std::dynamic_pointer_cast<icv::MaterialSetBase>(materialSet.get_shared()),
-        .drawInstanceLevel = drawInstanceLevel
-    };
+    
 
     //
     vkh::uni_ptr<icv::PipelineLayout> pipelineLayoutIcv = std::make_shared<icv::PipelineLayout>(device, icv::PipelineLayoutInfo{
@@ -447,7 +440,7 @@ int main() {
 
     // 
     pipelineLayoutIcv->createPipelineLayout({ constantsLayout });
-    pipelineLayoutIcv->makeDescriptorSets(descriptorSetSources);
+    
 
     // create renderer
     framebuffer->createFramebuffer(queue);
@@ -474,14 +467,24 @@ int main() {
 
     // 
     renderer->setFramebuffer(framebuffer);
+    renderer->pushGeometryLevel(geometryLevel);
     renderer->pushGraphicsPipeline(graphicsPipeline);
     renderer->changeRayTracingPipeline(rayTracingPipeline);
 
-    // 
-    renderer->pushGeometryLevel(geometryLevel);
+    // setup instance data from geometry levels
     renderer->setGeometryReferences();
 
+    //
+    icv::DescriptorSetSources descriptorSetSources = {
+        .framebuffer = framebuffer,
+        .geometryRegistry = geometryRegistry,
+        .instanceLevel = instanceLevel,
+        .materialSet = std::dynamic_pointer_cast<icv::MaterialSetBase>(materialSet.get_shared()),
+        .drawInstanceLevel = drawInstanceLevel
+    };
+
     // 
+    pipelineLayoutIcv->makeDescriptorSets(descriptorSetSources);
     auto& descriptorSets = pipelineLayoutIcv->descriptorSets;
     auto& pipelineLayout = pipelineLayoutIcv->layout;
 

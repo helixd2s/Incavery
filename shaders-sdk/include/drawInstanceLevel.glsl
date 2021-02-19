@@ -12,6 +12,20 @@
 #define DRAW_INSTANCE_LEVEL_MAP 3
 #endif
 
+//
+struct DrawIndirect 
+{
+    uint32_t vertexCount;
+    uint32_t instanceCount;
+    uint32_t firstVertex;
+    uint32_t firstInstance;
+};
+
+// 
+layout(buffer_reference, scalar) buffer DrawIndirectBuffer {
+    DrawIndirect geometries[];
+};
+
 // 
 struct DrawInstanceInfo 
 {
@@ -23,8 +37,7 @@ struct DrawInstanceInfo
     uint32_t reserved;
 
     GeometryLevel geometryLevelReference;
-
-    uint64_t geometryLevelIndirectReference;
+    DrawIndirectBuffer geometryLevelIndirectReference;
 };
 
 //
