@@ -134,6 +134,14 @@ namespace icv {
                     device->dispatch->CmdClearColorImage(commandBuffer, image, image.getImageLayout(), vkh::VkClearColorValue{ .float32 = { 0.f,0.f,0.f,0.f } }, 1u, image.getImageSubresourceRange());
                     image.transfer(commandBuffer, VK_IMAGE_LAYOUT_GENERAL);
                 };
+
+                //{   // DEBUG!
+                //    auto& image = framebuffer.images[0];
+                //    image.transfer(commandBuffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+                //    device->dispatch->CmdClearColorImage(commandBuffer, image, image.getImageLayout(), vkh::VkClearColorValue{ .float32 = { 1.f,0.f,0.f,0.f } }, 1u, image.getImageSubresourceRange());
+                //    image.transfer(commandBuffer, VK_IMAGE_LAYOUT_GENERAL);
+                //};
+                
                 {
                     framebuffer.depthImage.transfer(commandBuffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
                     device->dispatch->CmdClearDepthStencilImage(commandBuffer, framebuffer.depthImage, framebuffer.depthImage.getImageLayout(), vkh::VkClearDepthStencilValue{ .depth = 1.0f, .stencil = 0 }, 1u, framebuffer.depthImage.getImageSubresourceRange());
@@ -164,7 +172,7 @@ namespace icv {
                         DrawInfo drawInfo = DrawInfo{0u, 0u, PushConstantInfo{I, G, 0u, 0u}, geometryLevelInfo.geometries[G].primitive};
 
                         // CAUTION!!! You may get BSoD here!
-                        //info.pipelines[instanceInfo.programId]->createRenderingCommand(commandBuffer, info.framebuffer, drawInfo);
+                        info.pipelines[instanceInfo.programId]->createRenderingCommand(commandBuffer, info.framebuffer, drawInfo);
                     };
 
                     // TODO: instances support (needs pre-compute shader)

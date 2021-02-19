@@ -37,8 +37,8 @@ void main()
     rays.launchId = u16vec2(launchId);
 
     //
-    //IntersectionInfo results = rasterization(rays, 10000.f);
-    IntersectionInfo results = traceRays(rays, 10000.f); // it working, but needs for second passes
+    IntersectionInfo results = rasterization(rays, 10000.f);
+    //IntersectionInfo results = traceRays(rays, 10000.f); // it working, but needs for second passes
     GeometryInfo geometryInfo = readGeometryInfo(results.instanceId, results.geometryId);
     uvec3 indices = readIndices(geometryInfo.index, results.primitiveId);
     AttributeMap attributeMap = readAttributes3x4(geometryInfo.attributes, indices);
@@ -58,7 +58,7 @@ void main()
     vec4 testRasterData = material.baseColorFactor;
 
     // how from rasterization 
-    vec4 coloring = vec4(testRasterData.xyz, 1.f);
+    vec4 coloring = vec4(/*texelFetch(imageBuffers[0], ivec2(launchId), 0).xyz*/testRasterData.xyz, 1.f);
     if (results.hitT >= 10000.f) { coloring.xyz = vec3(0.1f); };
     imageStore(fOutput[0], ivec2(launchId), vec4(coloring.xyz, 1.f));
 

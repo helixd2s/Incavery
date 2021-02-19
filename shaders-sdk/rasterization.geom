@@ -35,8 +35,7 @@ layout (location = 4) flat out uvec4 parameters;
 #define vertexIndex parameters.y
 #define drawIndex parameters.z
 
-//#define gl_DrawID passed[0].x
-#define gl_DrawID 0u
+#define gl_DrawID passed[0].x
 
 //gl_DrawID
 
@@ -53,8 +52,13 @@ void main()
 {
     // 
     GeometryInfo geometryInfo = readGeometryInfoFromDrawInstance(pushed.instanceId, pushed.geometryId + gl_DrawID);
-    uvec3 indices = readIndices(geometryInfo.index, gl_PrimitiveID);
-    mat3x4 objectspace = readBindings3x4(bindings[geometryInfo.vertex], indices);
+    uvec3 indices = readIndices(geometryInfo.index, gl_PrimitiveIDIn); // please, always use correct "gl_PrimitiveIDIn"
+    mat3x4 objectspace = readBindings3x4(bindings[geometryInfo.vertex], indices); // BROKEN!
+    //mat3x4(
+    //    vec4(1.f, -1.f, 1.f, 1.f),
+    //    vec4(-1.f, -1.f, 1.f, 1.f),
+    //    vec4(0.f,  1.f, 1.f, 1.f)
+    //);//
 
     // 
     transformVerticesFromDrawInstance(objectspace, pushed.instanceId, pushed.geometryId);

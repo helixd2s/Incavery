@@ -594,9 +594,20 @@ int main() {
 
             // 
             materialSet->copyCommand(commandBuffer);
+
+            //
             geometryRegistry->copyCommand(commandBuffer);
+
+            //
             geometryLevel->buildCommand(commandBuffer);
+
+            //
             instanceLevel->buildCommand(commandBuffer);
+
+            // THIS LINE REQUIRED! OTHERWISE YOU GET BSOD!
+            drawInstanceLevel->buildCommand(commandBuffer); 
+
+            // 
             renderer->createRenderingCommand(commandBuffer);
             vkt::commandBarrier(device->dispatch, commandBuffer);
 
