@@ -22,9 +22,9 @@ struct DrawIndirect
 };
 
 // 
-layout(buffer_reference, scalar) buffer DrawIndirectBuffer {
-    DrawIndirect geometries[];
-};
+//layout(buffer_reference, scalar) buffer DrawIndirectBuffer {
+//    DrawIndirect geometries[];
+//};
 
 // 
 struct DrawInstanceInfo 
@@ -37,11 +37,13 @@ struct DrawInstanceInfo
     uint32_t reserved;
 
     GeometryLevel geometryLevelReference;
-    DrawIndirectBuffer geometryLevelIndirectReference;
+    uint64_t geometryLevelIndirectReference;
+    //DrawIndirectBuffer geometryLevelIndirectReference;
 };
 
 //
 layout (binding = 0, set = DRAW_INSTANCE_LEVEL_MAP, scalar) buffer DrawInstanceBuffer { DrawInstanceInfo drawInstances[]; };
+layout (binding = 1, set = DRAW_INSTANCE_LEVEL_MAP, scalar) buffer DrawIndirectBuffer { DrawIndirect drawIndirect[]; } drawInstancesIndirect[];
 
 // 
 GeometryInfo readGeometryInfo(inout DrawInstanceInfo instance, in uint geometryId) 
