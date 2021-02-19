@@ -55,10 +55,14 @@ namespace icv {
 
 
         //
-        virtual void changeRayTracingPipeline(vkh::uni_ptr<ComputePipeline> computePipeline = {}) {
+        virtual void changeRayTracingComputePipeline(vkh::uni_ptr<ComputePipeline> computePipeline = {}) {
             this->info.rayTraceCompute = computePipeline;
         };
 
+        //
+        virtual void changeIndirectComputePipeline(vkh::uni_ptr<ComputePipeline> computePipeline = {}) {
+            this->info.indirectCompute = computePipeline;
+        };
 
         //
         virtual uintptr_t changeGeometryLevel(uintptr_t geometryId, vkh::uni_ptr<GeometryLevel> geometryLevel = {})

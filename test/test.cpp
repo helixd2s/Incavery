@@ -335,12 +335,15 @@ int main() {
     //geometryRegistry->pushBuffer(texcoordsBuffer);
 
     //
-    instanceLevel->pushInstance(icv::InstanceInfo{ 
-        .geometryLevelId = 0u
-    });
-    drawInstanceLevel->pushInstance(icv::DrawInstance{  
-        .geometryLevelId = 0u
-    });
+    {
+        uintptr_t geometryLevelId = renderer->pushGeometryLevel(geometryLevel);
+        instanceLevel->pushInstance(icv::InstanceInfo{
+            .geometryLevelId = geometryLevelId
+        });
+        drawInstanceLevel->pushInstance(icv::DrawInstance{
+            .geometryLevelId = geometryLevelId
+        });
+    };
 
 
     // 
@@ -440,7 +443,7 @@ int main() {
 
     // 
     pipelineLayoutIcv->createPipelineLayout({ constantsLayout });
-    
+
 
     // create renderer
     framebuffer->createFramebuffer(queue);
@@ -464,12 +467,20 @@ int main() {
         }
     });
 
+    //
+    vkh::uni_ptr<icv::ComputePipeline> instancedPipeline = std::make_shared<icv::ComputePipeline>(device, icv::ComputePipelineInfo{
+        .layout = pipelineLayoutIcv,
+        .path = {
+            .compute = "./shaders/instanced.comp.spv"
+        }
+    });
+
 
     // 
     renderer->setFramebuffer(framebuffer);
-    renderer->pushGeometryLevel(geometryLevel);
     renderer->pushGraphicsPipeline(graphicsPipeline);
-    renderer->changeRayTracingPipeline(rayTracingPipeline);
+    renderer->changeRayTracingComputePipeline(rayTracingPipeline);
+    renderer->changeIndirectComputePipeline(instancedPipeline);
 
     // setup instance data from geometry levels
     renderer->setGeometryReferences();

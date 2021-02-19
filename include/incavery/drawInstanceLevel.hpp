@@ -31,6 +31,12 @@ namespace icv {
         // for indirect acceleration structure GPU supported
         uint64_t geometryLevelIndirectReference = 0ull;
 
+        //
+        uint64_t indirectDrawReference = 0ull;
+
+        //
+        //uint64_t reserved0 = 0ull;
+
         // 
         void acceptGeometryLevel(vkh::uni_ptr<GeometryLevel> geometryLevel) {
             this->geometryLevelIndirectReference = geometryLevel->getIndirectBuildBuffer().deviceAddress();
@@ -179,6 +185,7 @@ namespace icv {
             if (this->indirectDrawBuffers.size() < this->info.instances.size()) { this->indirectDrawBuffers.resize(this->info.instances.size()); };
             for (uintptr_t I = 0; I < this->info.instances.size(); I++) {
                 this->indirectDrawBuffers[I] = vkf::Vector<VkDrawIndirectCommand>(createBuffer(BufferCreateInfo{ .usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT, .size = sizeof(VkDrawIndirectCommand) * this->info.instances[I].geometryLevelCount, .stride = sizeof(VkDrawIndirectCommand), .memoryUsage = VMA_MEMORY_USAGE_GPU_ONLY }));
+                info.instances[I].indirectDrawReference = this->indirectDrawBuffers[I].deviceAddress();
             };
         };
 
@@ -196,15 +203,16 @@ namespace icv {
         //
         virtual uintptr_t changeInstance(uintptr_t instanceId, vkh::uni_arg<DrawInstance> info = DrawInstance{})
         {   // add instance into registry
-            info->geometryLevelCount = std::max(info->geometryLevelCount, 1u);
+            //info->geometryLevelCount = std::max(info->geometryLevelCount, 1u);
+
+            if (this->info.instances.size() <= instanceId) { this->info.instances.resize(instanceId + 1u); };
+            this->info.instances[instanceId] = info;
 
             if (info->geometryLevelCount > 0) {
                 if (this->indirectDrawBuffers.size() <= instanceId) { this->indirectDrawBuffers.resize(instanceId + 1u); };
                 this->indirectDrawBuffers[instanceId] = vkf::Vector<VkDrawIndirectCommand>(createBuffer(BufferCreateInfo{ .usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT, .size = sizeof(VkDrawIndirectCommand) * info->geometryLevelCount, .stride = sizeof(VkDrawIndirectCommand), .memoryUsage = VMA_MEMORY_USAGE_GPU_ONLY }));
+                this->info.instances[instanceId].indirectDrawReference = this->indirectDrawBuffers[instanceId].deviceAddress();
             };
-
-            if (this->info.instances.size() <= instanceId) { this->info.instances.resize(instanceId + 1u); };
-            this->info.instances[instanceId] = info;
 
             return instanceId;
         };
@@ -212,7 +220,7 @@ namespace icv {
         //
         virtual uintptr_t pushInstance(vkh::uni_arg<DrawInstance> info = DrawInstance{})
         {   // add instance into registry
-            info->geometryLevelCount = std::max(info->geometryLevelCount, 1u);
+            //info->geometryLevelCount = std::max(info->geometryLevelCount, 1u);
 
             uintptr_t instanceId = this->info.instances.size();
             this->info.instances.push_back(info);
@@ -220,6 +228,7 @@ namespace icv {
             if (info->geometryLevelCount > 0) {
                 if (this->indirectDrawBuffers.size() <= instanceId) { this->indirectDrawBuffers.resize(instanceId + 1u); };
                 this->indirectDrawBuffers[instanceId] = vkf::Vector<VkDrawIndirectCommand>(createBuffer(BufferCreateInfo{ .usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT, .size = sizeof(VkDrawIndirectCommand) * info->geometryLevelCount, .stride = sizeof(VkDrawIndirectCommand), .memoryUsage = VMA_MEMORY_USAGE_GPU_ONLY }));
+                this->info.instances[instanceId].indirectDrawReference = this->indirectDrawBuffers[instanceId].deviceAddress();
             };
 
             return instanceId;
