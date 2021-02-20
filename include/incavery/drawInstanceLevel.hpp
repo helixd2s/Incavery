@@ -22,9 +22,8 @@ namespace icv {
         //
         uint32_t geometryLevelCount = 0u;
 
-        // 
-        //uint32_t customIndex = 0u;
-        glm::u16vec2 customIndex_instanceCount = glm::u16vec2(0u,1u);
+        //
+        uint32_t customIndex = 0u;
 
         // used by GLSL (directly access)
         uint64_t geometryLevelReference = 0ull;
@@ -35,8 +34,9 @@ namespace icv {
         //
         uint64_t indirectDrawReference = 0ull;
 
-        //
-        //uint64_t reserved0 = 0ull;
+        // 
+        uint32_t instanceCount = 1u;
+        uint32_t reserved = 0u;
 
         // 
         void acceptGeometryLevel(vkh::uni_ptr<GeometryLevel> geometryLevel) {

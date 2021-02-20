@@ -34,12 +34,14 @@ struct DrawInstanceInfo
     uint32_t programId;
     uint32_t geometryLevelId;
     uint32_t geometryLevelCount;
-    u16vec2 customIndex_instanceCount;
+    uint32_t customIndex;
 
     GeometryLevel geometryLevelReference;
     uint64_t geometryLevelIndirectReference;
     DrawIndirectBuffer drawIndirectReference;
-    //uint64_t reserved0;
+    
+    uint32_t instanceCount;
+    uint32_t reserved;
 };
 
 //
