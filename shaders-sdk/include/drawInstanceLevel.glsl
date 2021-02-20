@@ -34,7 +34,7 @@ struct DrawInstanceInfo
     uint32_t programId;
     uint32_t geometryLevelId;
     uint32_t geometryLevelCount;
-    uint32_t reserved;
+    uint32_t customIndex;
 
     GeometryLevel geometryLevelReference;
     uint64_t geometryLevelIndirectReference;

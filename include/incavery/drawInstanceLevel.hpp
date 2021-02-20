@@ -23,7 +23,7 @@ namespace icv {
         uint32_t geometryLevelCount = 0u;
 
         // 
-        uint32_t reserved = 0u;
+        uint32_t customIndex = 0u;
 
         // used by GLSL (directly access)
         uint64_t geometryLevelReference = 0ull;

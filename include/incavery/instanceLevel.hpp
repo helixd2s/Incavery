@@ -16,7 +16,7 @@ namespace icv {
         // system ray tracing parameters
         uint8_t mask = 0xFFu;
         uint8_t flags = 0u;
-        glm::u8vec2 todo = glm::u8vec2(0u);
+        glm::u8vec2 customIndex = glm::u8vec2(0u);
         uint32_t sbtOffsetId = 0u;
 
         // WTF?! It used by renderer!
@@ -199,6 +199,7 @@ namespace icv {
                 nativeInstances->getCpuCache().at(i).instanceShaderBindingTableRecordOffset = info.instances[i].sbtOffsetId;
                 nativeInstances->getCpuCache().at(i).mask = info.instances[i].mask;
                 nativeInstances->getCpuCache().at(i).flags = info.instances[i].flags;
+                nativeInstances->getCpuCache().at(i).instanceCustomIndex = *((uint16_t*)&info.instances[i].customIndex);
             };
 
             if (!acceleration) { this->makeAccelerationStructure(); };

@@ -19,7 +19,7 @@ struct InstanceInfo
 
     uint8_t mask;
     uint8_t flags;
-    u8vec2 todo;
+    u8vec2 customIndex;
     uint32_t sbtOffsetId;
 
     uint32_t geometrylevelId;
