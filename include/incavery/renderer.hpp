@@ -162,7 +162,7 @@ namespace icv {
                     std::cerr << "Indirect compute not defined" << std::endl;
                 };
 
-                // WARNING! We getting BSoD from here! 
+                // 
                 for (uint32_t I=0;I<instanceLevelInfo.instances.size();I++) {
                     auto& instanceInfo = instanceLevelInfo.instances[I];
 
@@ -171,7 +171,7 @@ namespace icv {
                     //for (uint32_t G=0;G<geometryLevelInfo.geometries.size();G++) {
                         //DrawInfo drawInfo = DrawInfo{0u, 0u, PushConstantInfo{I, G, 0u, 0u}, geometryLevelInfo.geometries[G].primitive};
 
-                        // CAUTION!!! You may get BSoD here!
+                        // 
                         //info.pipelines[instanceInfo.programId]->createRenderingCommand(commandBuffer, info.framebuffer, drawInfo);
                     //};
 
