@@ -46,7 +46,8 @@ layout(push_constant) uniform pushConstants {
 // 
 void main() 
 {
-    GeometryInfo geometryInfo = readGeometryInfoFromDrawInstance(pushed.instanceId, pushed.geometryId + drawIndex);
+    uint geometryId = pushed.geometryId + drawIndex; // fate with `gl_DrawID`
+    GeometryInfo geometryInfo = readGeometryInfoFromDrawInstance(pushed.instanceId, geometryId);
     InstanceInfo instanceInfo = instances[pushed.instanceId];
 
     // 
@@ -65,7 +66,7 @@ void main()
         // finalize fragment results
         gl_FragDepth = gl_FragCoord.z;
         fBarycentrics = barycentric;
-        fIndices = uvec4(pushed.instanceId, pushed.geometryId, primitiveId, 0u);//indices;
+        fIndices = uintBitsToFloat(uvec4(pushed.instanceId, geometryId, primitiveId, 0u)); // IMPORTANT! Pls, use `uintBitsToFloat`!
         fSRAA = vec4(normals.xyz, gl_FragCoord.z);
     };
 };

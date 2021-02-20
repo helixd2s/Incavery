@@ -51,7 +51,8 @@ layout(push_constant) uniform pushConstants {
 void main() 
 {
     // 
-    GeometryInfo geometryInfo = readGeometryInfoFromDrawInstance(pushed.instanceId, pushed.geometryId + gl_DrawID);
+    uint geometryId = pushed.geometryId + gl_DrawID; // fate with `gl_DrawID`
+    GeometryInfo geometryInfo = readGeometryInfoFromDrawInstance(pushed.instanceId, geometryId);
     uvec3 indices = readIndices(geometryInfo.index, gl_PrimitiveIDIn); // please, always use correct "gl_PrimitiveIDIn"
     mat3x4 objectspace = readBindings3x4(bindings[geometryInfo.vertex], indices); // BROKEN!
     //mat3x4(
@@ -61,7 +62,7 @@ void main()
     //);//
 
     // 
-    transformVerticesFromDrawInstance(objectspace, pushed.instanceId, pushed.geometryId);
+    transformVerticesFromDrawInstance(objectspace, pushed.instanceId, geometryId);
     normals = vec4(normalize(cross(objectspace[1].xyz-objectspace[0].xyz, objectspace[2].xyz-objectspace[0].xyz)), 1.f);
 
     // finalize results
@@ -75,6 +76,7 @@ void main()
         transformed = objectspace[i];
         barycentric = vec4(bary[i], 1.f);
         vertexIndex = indices[i];
+        drawIndex = gl_DrawID;
 
         // TODO: perspective projection
         gl_Position = vec4(transformed * constants.lookAt, 1.f) * constants.perspective;

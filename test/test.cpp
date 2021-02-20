@@ -280,7 +280,7 @@ int main() {
     //
     vkh::uni_ptr<icv::GeometryLevel> geometryLevel = std::make_shared<icv::GeometryLevel>(device, icv::GeometryLevelInfo{
         .registry = geometryRegistry,
-        .maxGeometryCount = 1u
+        .maxGeometryCount = 2u
     });
 
     // 
@@ -308,6 +308,31 @@ int main() {
 
     //
     geometryLevel->pushGeometry(icv::GeometryInfo{
+        .vertex = uint32_t(geometryRegistry->pushBinding(icv::BindingInfo{
+            .format = 0u,
+            .stride = sizeof(glm::vec4),
+            .ptr = verticesBuffer.deviceAddress() //{ .bufferId = 1u }
+        })),
+        .index = {
+            .max = 3u,
+            .type = icv::IndexType::Uint16,
+            .ptr = indicesBuffer.deviceAddress() //{ .bufferId = 0u }
+        },
+        .primitive = {
+            .count = 1u
+        },
+        .attributes = {
+            .texcoords = int32_t(geometryRegistry->pushBinding(icv::BindingInfo{
+                .format = 0u,
+                .stride = sizeof(glm::vec2),
+                .ptr = texcoordsBuffer.deviceAddress() //{ .bufferId = 2u }
+            }))
+        }
+    });
+
+    // TEST with additional geometry and shifting
+    geometryLevel->pushGeometry(icv::GeometryInfo{
+        .transform = glm::mat3x4(glm::transpose(glm::translate(glm::mat4(1.f), glm::vec3(1.f, 0.f, 0.f)))),
         .vertex = uint32_t(geometryRegistry->pushBinding(icv::BindingInfo{
             .format = 0u,
             .stride = sizeof(glm::vec4),
