@@ -26,7 +26,7 @@ void main()
         const uint i = I+launchId.x;
         if (i < drawInstances[launchId.y].geometryLevelCount) {
             drawInstances[launchId.y].drawIndirectReference.geometries[i].vertexCount = drawInstances[launchId.y].geometryLevelReference.geometries[i].primitive.count*3u;
-            drawInstances[launchId.y].drawIndirectReference.geometries[i].instanceCount = 1u;
+            drawInstances[launchId.y].drawIndirectReference.geometries[i].instanceCount = drawInstances[launchId.y].customIndex_instanceCount.y;
             drawInstances[launchId.y].drawIndirectReference.geometries[i].firstVertex = 0u;
             drawInstances[launchId.y].drawIndirectReference.geometries[i].firstInstance = 0u;
         };
