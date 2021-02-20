@@ -167,15 +167,15 @@ namespace icv {
                     auto& instanceInfo = instanceLevelInfo.instances[I];
 
                     // using geometry levels descriptions for draw
-                    auto& geometryLevelInfo = info.geometryLevels[instanceInfo.geometryLevelId]->getInfo();
-                    for (uint32_t G=0;G<geometryLevelInfo.geometries.size();G++) {
-                        DrawInfo drawInfo = DrawInfo{0u, 0u, PushConstantInfo{I, G, 0u, 0u}, geometryLevelInfo.geometries[G].primitive};
+                    //auto& geometryLevelInfo = info.geometryLevels[instanceInfo.geometryLevelId]->getInfo();
+                    //for (uint32_t G=0;G<geometryLevelInfo.geometries.size();G++) {
+                        //DrawInfo drawInfo = DrawInfo{0u, 0u, PushConstantInfo{I, G, 0u, 0u}, geometryLevelInfo.geometries[G].primitive};
 
                         // CAUTION!!! You may get BSoD here!
                         //info.pipelines[instanceInfo.programId]->createRenderingCommand(commandBuffer, info.framebuffer, drawInfo);
-                    };
+                    //};
 
-                    // TODO: instances support (needs pre-compute shader)
+                    // instances support (needs pre-compute shader)
                     info.pipelines[instanceInfo.programId]->createRenderingCommand(commandBuffer, info.framebuffer, info.drawInstanceLevel, I);
                 };
 
