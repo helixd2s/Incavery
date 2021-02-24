@@ -18,11 +18,11 @@ layout(buffer_reference, scalar, buffer_reference_align = 1) buffer RawDataByte 
     uint8_t data[];
 };
 
-layout(buffer_reference, scalar, buffer_reference_align = 2) buffer RawDataShort {
+layout(buffer_reference, scalar, buffer_reference_align = 1) buffer RawDataShort {
     uint16_t data[];
 };
 
-layout(buffer_reference, scalar, buffer_reference_align = 4) buffer RawDataUint {
+layout(buffer_reference, scalar, buffer_reference_align = 1) buffer RawDataUint {
     uint32_t data[];
 };
 
