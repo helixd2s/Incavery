@@ -9,8 +9,21 @@
 #define GEOMETRY_REGISTRY_MAP 1
 #endif
 
-layout(buffer_reference, scalar, buffer_reference_align = 1) buffer RawData {
+// what a f&ck?!
+#define RawData uint64_t
+
+
+
+layout(buffer_reference, scalar, buffer_reference_align = 1) buffer RawDataByte {
     uint8_t data[];
+};
+
+layout(buffer_reference, scalar, buffer_reference_align = 2) buffer RawDataShort {
+    uint16_t data[];
+};
+
+layout(buffer_reference, scalar, buffer_reference_align = 4) buffer RawDataUint {
+    uint32_t data[];
 };
 
 
@@ -34,20 +47,28 @@ layout (binding = 1, set = GEOMETRY_REGISTRY_MAP, scalar) buffer BindingsBuffer 
 
 uint8_t readUint8(in RawData ptr, in uint byteOffset) 
 {
-    return ptr.data[byteOffset+0u];
+    return RawDataByte(ptr).data[byteOffset];
     //return buffers[nonuniformEXT(ptr.bufferId)].data[byteOffset+ptr.offset];
 };
 
-// NEEDS OPTIMIZATION (SIMD READ U8VEC2 BLOCK)
+// 
 uint16_t readUint16(in RawData ptr, in uint byteOffset) 
 {
-    return pack16(u8vec2(ptr.data[byteOffset+0u], ptr.data[byteOffset+1u]));
+    if ((byteOffset&1)==0u) {
+        return RawDataShort(ptr).data[byteOffset>>1u];
+    } else {
+        return pack16(u8vec2(readUint8(ptr, byteOffset+0u), readUint8(ptr, byteOffset+1u)));
+    }
 };
 
-// NEEDS OPTIMIZATION (SIMD READ U8VEC4 BLOCK)
+// 
 uint32_t readUint32(in RawData ptr, in uint byteOffset) 
 {
-    return pack32(u8vec4(ptr.data[byteOffset+0u], ptr.data[byteOffset+1u], ptr.data[byteOffset+2u], ptr.data[byteOffset+3u]));
+    if ((byteOffset&3)==0u) {
+        return RawDataUint(ptr).data[byteOffset>>2u];
+    } else {
+        return pack32(u16vec2(readUint16(ptr, byteOffset+0u), readUint16(ptr, byteOffset+2u)));
+    }
 };
 
 
