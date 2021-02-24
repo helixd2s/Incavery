@@ -47,28 +47,30 @@ layout (binding = 1, set = GEOMETRY_REGISTRY_MAP, scalar) buffer BindingsBuffer 
 
 uint8_t readUint8(in RawData ptr, in uint byteOffset) 
 {
-    return RawDataByte(ptr).data[byteOffset];
+    return RawDataByte(ptr+byteOffset).data[0u];
     //return buffers[nonuniformEXT(ptr.bufferId)].data[byteOffset+ptr.offset];
 };
 
 // 
 uint16_t readUint16(in RawData ptr, in uint byteOffset) 
 {
-    if ((byteOffset&1)==0u) {
-        return RawDataShort(ptr).data[byteOffset>>1u];
-    } else {
-        return pack16(u8vec2(readUint8(ptr, byteOffset+0u), readUint8(ptr, byteOffset+1u)));
-    }
+    return RawDataShort(ptr+byteOffset).data[0u];
+    //if ((byteOffset&1)==0u) {
+    //    return RawDataShort(ptr).data[byteOffset>>1u];
+    //} else {
+    //    return pack16(u8vec2(readUint8(ptr, byteOffset+0u), readUint8(ptr, byteOffset+1u)));
+    //}
 };
 
 // 
 uint32_t readUint32(in RawData ptr, in uint byteOffset) 
 {
-    if ((byteOffset&3)==0u) {
-        return RawDataUint(ptr).data[byteOffset>>2u];
-    } else {
-        return pack32(u16vec2(readUint16(ptr, byteOffset+0u), readUint16(ptr, byteOffset+2u)));
-    }
+    return RawDataUint(ptr+byteOffset).data[0u];
+    //if ((byteOffset&3)==0u) {
+    //    return RawDataUint(ptr).data[byteOffset>>2u];
+    //} else {
+    //    return pack32(u16vec2(readUint16(ptr, byteOffset+0u), readUint16(ptr, byteOffset+2u)));
+    //}
 };
 
 
