@@ -38,20 +38,16 @@ uint8_t readUint8(in RawData ptr, in uint byteOffset)
     //return buffers[nonuniformEXT(ptr.bufferId)].data[byteOffset+ptr.offset];
 };
 
+// NEEDS OPTIMIZATION (SIMD READ U8VEC2 BLOCK)
 uint16_t readUint16(in RawData ptr, in uint byteOffset) 
 {
-    return pack16(u8vec2(
-        readUint8(ptr, byteOffset+0u),
-        readUint8(ptr, byteOffset+1u)
-    ));
+    return pack16(u8vec2(ptr.data[byteOffset+0u], ptr.data[byteOffset+1u]));
 };
 
+// NEEDS OPTIMIZATION (SIMD READ U8VEC4 BLOCK)
 uint32_t readUint32(in RawData ptr, in uint byteOffset) 
 {
-    return pack32(u16vec2(
-        readUint16(ptr, byteOffset+0u),
-        readUint16(ptr, byteOffset+2u)
-    ));
+    return pack32(u8vec4(ptr.data[byteOffset+0u], ptr.data[byteOffset+1u], ptr.data[byteOffset+2u], ptr.data[byteOffset+3u]));
 };
 
 
