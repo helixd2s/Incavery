@@ -2,6 +2,9 @@
 
 Next gen and my final ray tracing engine, third generation (Planned)
 
+## Too big...
+
+My project and I have again gone down a dead-end path of development... so I will develop a C and C ++ 20 library for the Vulkan API, which is much simpler than this original...
 
 ## Tech spec
 
