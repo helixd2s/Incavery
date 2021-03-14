@@ -6,6 +6,8 @@ Next gen and my final ray tracing engine, third generation (Planned)
 
 My project and I have again gone down a dead-end path of development... so I will develop a C17 and C++20 library for the Vulkan API, which is much simpler than this original...
 
+- [Tommy](https://github.com/helixd2s/Tommy) - new project of GPGPU compute, based on Vulkan API 1.2, for C++20 and C17... 
+
 ## Tech spec
 
 ```
